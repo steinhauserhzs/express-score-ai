@@ -72,14 +72,14 @@ export default function DiagnosticResults() {
       // Award "first_step" badge
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: badgeData } = await supabase.functions.invoke('award-badge', {
+        const { data: badgeData, error: badgeError } = await supabase.functions.invoke('award-badge', {
           body: { userId: user.id, badgeType: 'first_step' }
         });
 
-        if (badgeData?.awarded) {
+        if (!badgeError && badgeData?.success && badgeData?.badge) {
           setNewBadge({
-            badge_name: badgeData.badgeName,
-            badge_description: badgeData.badgeDescription
+            badge_name: badgeData.badge.name,
+            badge_description: badgeData.badge.description
           });
         }
       }
