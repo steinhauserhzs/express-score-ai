@@ -15,6 +15,18 @@ interface ScoreDimensions {
   income: number;
 }
 
+interface ClientProfile {
+  type: 'Endividado' | 'Desorganizado' | 'Poupador' | 'Investidor';
+  description: string;
+  recommendations: string[];
+}
+
+interface ScoreClassification {
+  range: string;
+  label: 'Crítico' | 'Em Evolução' | 'Saudável' | 'Avançado';
+  focus: string[];
+}
+
 const ANALYSIS_PROMPT = `Analise as respostas do diagnóstico financeiro e extraia as informações estruturadas sobre cada dimensão.
 
 Para cada dimensão, retorne um objeto JSON com os dados relevantes:

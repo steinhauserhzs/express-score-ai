@@ -47,6 +47,47 @@ export type Database = {
         }
         Relationships: []
       }
+      diagnostic_history: {
+        Row: {
+          created_at: string
+          diagnostic_id: string
+          dimension_scores: Json
+          id: string
+          profile: string | null
+          score_classification: string | null
+          total_score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          diagnostic_id: string
+          dimension_scores: Json
+          id?: string
+          profile?: string | null
+          score_classification?: string | null
+          total_score: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          diagnostic_id?: string
+          dimension_scores?: Json
+          id?: string
+          profile?: string | null
+          score_classification?: string | null
+          total_score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diagnostic_history_diagnostic_id_fkey"
+            columns: ["diagnostic_id"]
+            isOneToOne: false
+            referencedRelation: "diagnostics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diagnostics: {
         Row: {
           completed: boolean
@@ -54,7 +95,10 @@ export type Database = {
           current_step: number | null
           dimension_scores: Json
           id: string
+          profile: string | null
+          quality_of_life: number | null
           responses_json: Json
+          score_classification: string | null
           total_score: number
           total_steps: number | null
           user_id: string
@@ -65,7 +109,10 @@ export type Database = {
           current_step?: number | null
           dimension_scores: Json
           id?: string
+          profile?: string | null
+          quality_of_life?: number | null
           responses_json: Json
+          score_classification?: string | null
           total_score: number
           total_steps?: number | null
           user_id: string
@@ -76,9 +123,42 @@ export type Database = {
           current_step?: number | null
           dimension_scores?: Json
           id?: string
+          profile?: string | null
+          quality_of_life?: number | null
           responses_json?: Json
+          score_classification?: string | null
           total_score?: number
           total_steps?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
           user_id?: string
         }
         Relationships: []
