@@ -23,15 +23,15 @@ const Hero = () => {
             </div>
             
             {/* Main heading */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-foreground">
               Descubra a Saúde da Sua{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
+              <span className="text-primary">
                 Vida Financeira
               </span>
             </h1>
             
             {/* Description */}
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in">
+            <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">
               Score Express em 5 minutos com análise personalizada por IA
             </p>
             
@@ -56,7 +56,7 @@ const Hero = () => {
             </div>
             
             {/* Trust indicators */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-muted-foreground animate-fade-in">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-foreground/70 animate-fade-in">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
                 <span>100% Online</span>
@@ -72,7 +72,7 @@ const Hero = () => {
             </div>
             
             {/* Security badge */}
-            <div className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 px-6 py-3 rounded-full">
+            <div className="mt-8 inline-flex items-center gap-2 text-sm text-foreground/70 bg-muted/50 px-6 py-3 rounded-full">
               <Shield className="h-4 w-4 text-primary" />
               <span>Seus dados estão protegidos e criptografados</span>
             </div>
@@ -82,7 +82,7 @@ const Hero = () => {
           <div className="hidden lg:flex justify-center items-center animate-fade-in">
             <div className="relative w-full max-w-lg">
               {/* Dashboard Illustration */}
-              <div className="relative bg-card border-2 border-border rounded-2xl p-6 shadow-2xl hover-lift">
+              <div className="relative bg-card border-2 border-primary/20 rounded-2xl p-6 shadow-2xl hover-lift">
                 {/* Mini header */}
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
@@ -91,45 +91,47 @@ const Hero = () => {
                 </div>
                 
                 {/* Score display */}
-                <div className="bg-gradient-primary rounded-xl p-6 mb-6 text-white text-center">
-                  <div className="text-sm mb-2 opacity-90">Seu Score Financeiro</div>
+                <div className="bg-primary rounded-xl p-6 mb-6 text-white text-center shadow-lg">
+                  <div className="text-sm mb-2 font-medium opacity-90">Seu Score Financeiro</div>
                   <div className="text-5xl font-bold mb-1">78</div>
                   <div className="text-sm opacity-90">Bom</div>
                 </div>
                 
                 {/* Mini charts */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-muted rounded-lg p-4">
-                    <div className="h-20 flex items-end gap-1">
-                      <div className="bg-primary/30 w-full h-[40%] rounded-t" />
-                      <div className="bg-primary/50 w-full h-[60%] rounded-t" />
-                      <div className="bg-primary/70 w-full h-[80%] rounded-t" />
+                  <div className="bg-muted rounded-lg p-4 border border-border">
+                    <div className="text-xs text-muted-foreground mb-2">Evolução</div>
+                    <div className="h-16 flex items-end gap-1">
+                      <div className="bg-primary/40 w-full h-[40%] rounded-t" />
+                      <div className="bg-primary/60 w-full h-[60%] rounded-t" />
+                      <div className="bg-primary/80 w-full h-[80%] rounded-t" />
                       <div className="bg-primary w-full h-[100%] rounded-t" />
                     </div>
                   </div>
-                  <div className="bg-muted rounded-lg p-4 flex items-center justify-center">
-                    <div className="relative w-16 h-16">
+                  <div className="bg-muted rounded-lg p-4 border border-border flex flex-col items-center justify-center">
+                    <div className="text-xs text-muted-foreground mb-2">Progresso</div>
+                    <div className="relative w-14 h-14">
                       <svg className="transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-muted-foreground/20" />
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-primary" strokeDasharray="251" strokeDashoffset="75" strokeLinecap="round" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-muted" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-primary" strokeDasharray="251" strokeDashoffset="75" strokeLinecap="round" />
                       </svg>
-                      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold">78%</div>
+                      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">78%</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-success/10 text-success rounded p-2 text-center">
-                    <div className="text-xs mb-1">↑ 12pts</div>
+                  <div className="bg-success/10 text-success rounded p-2 text-center border border-success/20">
+                    <div className="text-xs mb-1 font-bold">↑ 12pts</div>
                     <div className="text-[10px] opacity-80">30 dias</div>
                   </div>
-                  <div className="bg-primary/10 text-primary rounded p-2 text-center">
-                    <div className="text-xs mb-1">6/6</div>
+                  <div className="bg-primary/10 text-primary rounded p-2 text-center border border-primary/20">
+                    <div className="text-xs mb-1 font-bold">6/6</div>
                     <div className="text-[10px] opacity-80">áreas</div>
                   </div>
-                  <div className="bg-accent/10 text-accent rounded p-2 text-center">
-                    <div className="text-xs mb-1">Top 15%</div>
+                  <div className="bg-accent/10 text-accent rounded p-2 text-center border border-accent/20">
+                    <div className="text-xs mb-1 font-bold">Top 15%</div>
                     <div className="text-[10px] opacity-80">usuários</div>
                   </div>
                 </div>

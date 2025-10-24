@@ -36,14 +36,14 @@ export default function FAQ() {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Perguntas Frequentes
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Tire suas dúvidas sobre o Pleno
-          </p>
-        </div>
+      <div className="text-center mb-12 animate-fade-in">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          Perguntas Frequentes
+        </h2>
+        <p className="text-foreground/70 max-w-2xl mx-auto">
+          Tire suas dúvidas sobre o Pleno
+        </p>
+      </div>
         
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="space-y-4">

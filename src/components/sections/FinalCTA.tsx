@@ -21,11 +21,11 @@ export default function FinalCTA() {
             <span className="text-sm font-semibold">100% Gratuito</span>
           </div>
           
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 animate-slide-up">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 animate-slide-up text-foreground">
             Pronto para transformar sua vida financeira?
           </h2>
           
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
+          <p className="text-lg text-foreground/70 mb-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '100ms' }}>
             Junte-se a milhares de pessoas que já descobriram sua saúde financeira e estão no caminho da prosperidade.
           </p>
           
@@ -49,7 +49,7 @@ export default function FinalCTA() {
             </Button>
           </div>
           
-          <p className="text-sm text-muted-foreground mt-8">
+          <p className="text-sm text-foreground/60 mt-8">
             ⏱️ Leva apenas 5 minutos • 🔒 100% seguro e confidencial
           </p>
         </div>

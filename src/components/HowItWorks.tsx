@@ -28,10 +28,10 @@ const HowItWorks = () => {
     <section className="py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
             Como funciona?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
             Apenas 4 passos simples para transformar suas finanças
           </p>
         </div>
@@ -47,8 +47,8 @@ const HowItWorks = () => {
                 <step.icon className="w-6 h-6 text-primary" />
               </div>
               
-              <h3 className="text-xl font-semibold">{step.title}</h3>
-              <p className="text-muted-foreground">{step.description}</p>
+              <h3 className="text-xl font-semibold text-foreground">{step.title}</h3>
+              <p className="text-foreground/70">{step.description}</p>
               
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-gradient-to-r from-primary/50 to-transparent -translate-x-1/2" />

@@ -7,6 +7,7 @@ import ScoreRadar from "@/components/ScoreRadar";
 import ScoreCard from "@/components/ScoreCard";
 import ProfileBadge from "@/components/ProfileBadge";
 import RecommendationCard from "@/components/RecommendationCard";
+import Logo from "@/components/Logo";
 import { toast } from "sonner";
 import { Download, FileText, TrendingUp, Calendar } from "lucide-react";
 
@@ -233,23 +234,28 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-4xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Seu Score Express da Vida Financeira</p>
-          </div>
+    <div className="min-h-screen bg-background">
+      {/* Header Fixo */}
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-6">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Logo size="sm" showText={true} />
           <div className="flex gap-2">
-            <Button onClick={() => navigate('/diagnostic')} variant="outline">
+            <Button onClick={() => navigate('/diagnostic')} variant="outline" size="sm">
               <TrendingUp className="h-4 w-4 mr-2" />
               Novo Diagnóstico
             </Button>
-            <Button onClick={handleSignOut} variant="outline">
+            <Button onClick={handleSignOut} variant="outline" size="sm">
               Sair
             </Button>
           </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
+        {/* Title Section */}
+        <div>
+          <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-foreground/70">Seu Score Express da Vida Financeira</p>
         </div>
 
         {/* Score Total e Perfil */}
