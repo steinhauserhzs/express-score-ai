@@ -2,6 +2,9 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
+import Testimonials from "@/components/sections/Testimonials";
+import FAQ from "@/components/sections/FAQ";
+import FinalCTA from "@/components/sections/FinalCTA";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +35,10 @@ const Index = () => {
       <Hero />
       <Features />
       <HowItWorks />
+      <Testimonials />
       <Pricing />
+      <FAQ />
+      <FinalCTA />
       
       <footer className="py-12 border-t bg-muted/30">
         <div className="container mx-auto px-4">
