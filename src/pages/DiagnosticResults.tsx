@@ -1,0 +1,279 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import Confetti from "react-confetti";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Loader2, ArrowRight, Calendar, Share2 } from "lucide-react";
+import ScoreReveal from "@/components/diagnostic/ScoreReveal";
+import ClassificationBadge from "@/components/diagnostic/ClassificationBadge";
+import ProfileCard from "@/components/diagnostic/ProfileCard";
+import BadgeUnlocked from "@/components/diagnostic/BadgeUnlocked";
+import QuickActions from "@/components/diagnostic/QuickActions";
+import ScoreRadar from "@/components/ScoreRadar";
+
+interface DiagnosticData {
+  total_score: number;
+  dimension_scores: {
+    debts: number;
+    behavior: number;
+    spending: number;
+    goals: number;
+    reserves: number;
+    income: number;
+  };
+  profile: string;
+  score_classification: string;
+  created_at: string;
+}
+
+interface BadgeData {
+  badge_name: string;
+  badge_description: string;
+}
+
+export default function DiagnosticResults() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [diagnostic, setDiagnostic] = useState<DiagnosticData | null>(null);
+  const [newBadge, setNewBadge] = useState<BadgeData | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    loadResults();
+  }, [id]);
+
+  const loadResults = async () => {
+    try {
+      if (!id) return;
+
+      // Load diagnostic data
+      const { data: diagnosticData, error: diagnosticError } = await supabase
+        .from("diagnostics")
+        .select("total_score, dimension_scores, profile, score_classification, created_at")
+        .eq("id", id)
+        .single();
+
+      if (diagnosticError) throw diagnosticError;
+      setDiagnostic(diagnosticData as DiagnosticData);
+
+      // Award "first_step" badge
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: badgeData } = await supabase.functions.invoke('award-badge', {
+          body: { userId: user.id, badgeType: 'first_step' }
+        });
+
+        if (badgeData?.awarded) {
+          setNewBadge({
+            badge_name: badgeData.badgeName,
+            badge_description: badgeData.badgeDescription
+          });
+        }
+      }
+
+      // Show confetti based on score
+      if (diagnosticData.total_score > 80) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+      }
+
+    } catch (error: any) {
+      console.error("Error loading results:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os resultados.",
+        variant: "destructive",
+      });
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleShare = () => {
+    const text = `Completei meu diagnóstico financeiro na Pleno! Score: ${diagnostic?.total_score}/150 🎯`;
+    const url = window.location.href;
+    
+    if (navigator.share) {
+      navigator.share({ title: "Meu Diagnóstico Pleno", text, url });
+    } else {
+      navigator.clipboard.writeText(`${text} ${url}`);
+      toast({
+        title: "Link copiado!",
+        description: "Cole para compartilhar seu resultado.",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-foreground">Preparando seus resultados...</h2>
+            <p className="text-sm text-muted-foreground animate-pulse">Analisando suas finanças</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!diagnostic) {
+    return null;
+  }
+
+  const getRecommendations = () => {
+    const profile = diagnostic.profile.toLowerCase();
+    
+    const recommendations: Record<string, string[]> = {
+      endividado: [
+        "Renegocie suas dívidas para obter melhores condições",
+        "Corte gastos não essenciais imediatamente",
+        "Busque aumentar sua renda com trabalhos extras"
+      ],
+      desorganizado: [
+        "Comece a registrar TODOS os seus gastos",
+        "Crie um orçamento mensal realista",
+        "Automatize suas contas e investimentos"
+      ],
+      poupador: [
+        "Diversifique seus investimentos além da poupança",
+        "Aprenda sobre diferentes classes de ativos",
+        "Defina um percentual para investimentos de maior risco"
+      ],
+      investidor: [
+        "Foque em estratégias de liberdade financeira",
+        "Considere investimentos internacionais",
+        "Otimize sua carga tributária"
+      ]
+    };
+
+    return recommendations[profile] || recommendations.poupador;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-subtle py-8 px-4">
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={0.3}
+        />
+      )}
+
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Hero Section with Score */}
+        <div className="text-center space-y-6 animate-fade-in">
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              🎉 Diagnóstico Completo!
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Seu Score Express de Saúde Financeira
+            </p>
+          </div>
+
+          <ScoreReveal score={diagnostic.total_score} maxScore={150} />
+          
+          <ClassificationBadge 
+            classification={diagnostic.score_classification}
+            score={diagnostic.total_score}
+          />
+        </div>
+
+        {/* Radar Chart */}
+        <Card className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          <ScoreRadar dimensionScores={diagnostic.dimension_scores} />
+        </Card>
+
+        {/* Profile Card */}
+        <div className="animate-slide-up" style={{ animationDelay: "0.3s" }}>
+          <ProfileCard profile={diagnostic.profile} />
+        </div>
+
+        {/* Badge Unlocked */}
+        {newBadge && (
+          <div className="animate-bounce-in" style={{ animationDelay: "0.4s" }}>
+            <BadgeUnlocked 
+              badgeName={newBadge.badge_name}
+              badgeDescription={newBadge.badge_description}
+            />
+          </div>
+        )}
+
+        {/* Top Recommendations */}
+        <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
+          <h2 className="text-2xl font-bold mb-4 text-foreground">
+            🎯 Próximos Passos Recomendados
+          </h2>
+          <div className="space-y-3">
+            {getRecommendations().map((rec, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg hover-scale"
+              >
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                  {idx + 1}
+                </div>
+                <p className="text-foreground">{rec}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Quick Actions */}
+        <div className="animate-slide-up" style={{ animationDelay: "0.6s" }}>
+          <QuickActions />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
+          <Button
+            size="lg"
+            className="gap-2"
+            onClick={() => navigate("/dashboard")}
+          >
+            Ver Dashboard Completo
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            size="lg"
+            variant="outline"
+            className="gap-2"
+            onClick={() => navigate("/consultations")}
+          >
+            <Calendar className="w-4 h-4" />
+            Agendar Consultoria
+          </Button>
+
+          <Button
+            size="lg"
+            variant="outline"
+            className="gap-2"
+            onClick={handleShare}
+          >
+            <Share2 className="w-4 h-4" />
+            Compartilhar
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

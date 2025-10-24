@@ -221,7 +221,7 @@ export default function Diagnostic() {
         description: `Seu Score Express: ${result.totalScore}/150`,
       });
 
-      navigate("/dashboard");
+      navigate(`/diagnostic/results/${diagnosticId}`);
     } catch (error: any) {
       console.error("Error finalizing diagnostic:", error);
       toast({

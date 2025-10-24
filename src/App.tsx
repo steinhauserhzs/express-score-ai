@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
+import DiagnosticResults from "./pages/DiagnosticResults";
 import Consultations from "./pages/Consultations";
 import Education from "./pages/Education";
 import Refer from "./pages/Refer";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
+          <Route path="/diagnostic/results/:id" element={<DiagnosticResults />} />
           <Route path="/consultations" element={<Consultations />} />
           <Route path="/education" element={<Education />} />
           <Route path="/refer" element={<Refer />} />
