@@ -241,7 +241,6 @@ export default function Diagnostic() {
               <Button
                 onClick={handleFinalize}
                 disabled={isCalculating}
-                className="bg-gradient-primary"
               >
                 {isCalculating ? (
                   <>
@@ -267,7 +266,7 @@ export default function Diagnostic() {
                 <div
                   className={`max-w-[80%] rounded-2xl p-4 ${
                     msg.role === "user"
-                      ? "bg-gradient-primary text-white shadow-lg"
+                      ? "bg-primary text-primary-foreground shadow-lg"
                       : "bg-muted text-foreground"
                   }`}
                 >
@@ -299,7 +298,6 @@ export default function Diagnostic() {
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading || isComplete}
                 size="icon"
-                className="bg-gradient-primary"
               >
                 <Send className="w-4 h-4" />
               </Button>

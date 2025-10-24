@@ -139,6 +139,10 @@ All colors MUST be HSL.
     background: var(--gradient-primary);
   }
   
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
   .gradient-hero {
     background: var(--gradient-hero);
   }
