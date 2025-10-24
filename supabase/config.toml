@@ -32,3 +32,12 @@ verify_jwt = true
 
 [functions.manage-user-role]
 verify_jwt = true
+
+[functions.recover-incomplete-diagnostics]
+verify_jwt = false
+
+[functions.auto-tag-leads]
+verify_jwt = false
+
+[functions.ai-insights]
+verify_jwt = false

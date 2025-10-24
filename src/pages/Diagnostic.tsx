@@ -27,6 +27,7 @@ export default function Diagnostic() {
 
   useEffect(() => {
     initDiagnostic();
+    trackEvent('diagnostic_started');
   }, []);
 
   useEffect(() => {
@@ -48,6 +49,25 @@ export default function Diagnostic() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const trackEvent = async (eventName: string, properties?: Record<string, any>) => {
+    try {
+      await supabase.functions.invoke('track-event', {
+        body: {
+          eventName,
+          eventCategory: 'diagnostic',
+          pagePath: '/diagnostic',
+          properties: {
+            diagnosticId,
+            turboMode,
+            ...properties
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error tracking event:', error);
+    }
   };
 
   const initDiagnostic = async () => {
@@ -165,12 +185,35 @@ export default function Diagnostic() {
       }
 
       // Save conversation to database
+      const updatedMessages = [...newMessages, { role: "assistant", content: assistantMessage }];
       await supabase
         .from("diagnostics")
         .update({
-          responses_json: { messages: [...newMessages, { role: "assistant", content: assistantMessage }] },
+          responses_json: { messages: updatedMessages },
         })
         .eq("id", diagnosticId);
+
+      // Track milestone events
+      const userMessageCount = updatedMessages.filter(m => m.role === 'user').length;
+      if (userMessageCount === 5) {
+        trackEvent('diagnostic_milestone_5', { totalMessages: updatedMessages.length });
+        toast({
+          title: "🎯 Ótimo progresso!",
+          description: "Você já está 25% completo!",
+        });
+      } else if (userMessageCount === 10) {
+        trackEvent('diagnostic_milestone_10', { totalMessages: updatedMessages.length });
+        toast({
+          title: "🚀 Metade do caminho!",
+          description: "Continue assim!",
+        });
+      } else if (userMessageCount === 20) {
+        trackEvent('diagnostic_milestone_20', { totalMessages: updatedMessages.length });
+        toast({
+          title: "🏆 Quase lá!",
+          description: "Faltam poucas perguntas!",
+        });
+      }
 
       // Check if diagnostic is complete
       if (
@@ -180,6 +223,9 @@ export default function Diagnostic() {
         assistantMessage.toLowerCase().includes("concluímos")
       ) {
         setIsComplete(true);
+        trackEvent('diagnostic_completed', { 
+          totalMessages: updatedMessages.length
+        });
         
         // Show toast notification
         toast({
@@ -195,6 +241,7 @@ export default function Diagnostic() {
       }
     } catch (error: any) {
       console.error("Error streaming chat:", error);
+      trackEvent('diagnostic_error', { error: error.message });
       toast({
         title: "Erro",
         description: "Ocorreu um erro na conversa. Tente novamente.",

@@ -242,27 +242,51 @@ export default function DiagnosticResults() {
           <QuickActions />
         </div>
 
+        {/* Consultation CTA with Urgency */}
+        <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20 animate-slide-up" style={{ animationDelay: "0.65s" }}>
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 bg-warning/20 text-warning-foreground px-4 py-2 rounded-full text-sm font-semibold">
+              ⏰ OFERTA EXCLUSIVA - Primeiras 24h
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+              🎁 Primeira Consultoria GRATUITA
+            </h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Agende agora e receba <strong>GRATUITAMENTE</strong> uma sessão de 45 minutos com nossos especialistas para criar seu plano de ação personalizado!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
+              <Button
+                size="lg"
+                className="gap-2 w-full sm:w-auto text-lg px-8 py-6"
+                onClick={() => navigate("/consultations")}
+              >
+                <Calendar className="w-5 h-5" />
+                Agendar Minha Consultoria Grátis
+              </Button>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  ⭐⭐⭐⭐⭐
+                </span>
+                <span>98% de satisfação</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              🔒 Apenas <strong className="text-warning">3 vagas</strong> disponíveis esta semana
+            </p>
+          </div>
+        </Card>
+
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
           <Button
             size="lg"
+            variant="outline"
             className="gap-2 w-full sm:w-auto"
             onClick={() => navigate("/dashboard")}
           >
             <span className="hidden sm:inline">Ver Dashboard Completo</span>
             <span className="sm:hidden">Dashboard</span>
             <ArrowRight className="w-4 h-4" />
-          </Button>
-          
-          <Button
-            size="lg"
-            variant="outline"
-            className="gap-2 w-full sm:w-auto"
-            onClick={() => navigate("/consultations")}
-          >
-            <Calendar className="w-4 h-4" />
-            <span className="hidden sm:inline">Agendar Consultoria</span>
-            <span className="sm:hidden">Consultoria</span>
           </Button>
 
           <Button
