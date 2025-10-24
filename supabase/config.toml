@@ -1,5 +1,20 @@
 project_id = "rpjkccdfulotegejzowk"
 
+[functions.send-email]
+verify_jwt = false
+
+[functions.track-event]
+verify_jwt = false
+
+[functions.lead-scoring]
+verify_jwt = false
+
+[functions.chatbot-assistant]
+verify_jwt = true
+
+[functions.award-badge]
+verify_jwt = false
+
 [functions.chat-diagnostic]
 verify_jwt = true
 
