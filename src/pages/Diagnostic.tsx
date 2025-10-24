@@ -20,6 +20,7 @@ export default function Diagnostic() {
   const [diagnosticId, setDiagnosticId] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [turboMode, setTurboMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -61,11 +62,14 @@ export default function Diagnostic() {
       setDiagnosticId(data.id);
 
       // Start conversation
+      const initialMessage = turboMode
+        ? "Olá! 👋 Vou fazer um diagnóstico TURBO da sua saúde financeira. São apenas 10 perguntas essenciais que levam cerca de 5 minutos. Será rápido e direto! Vamos começar?"
+        : "Olá! Sou seu assistente financeiro virtual. Vou te ajudar a fazer um diagnóstico completo da sua vida financeira. Será uma conversa tranquila, sem julgamentos. Vamos começar?";
+      
       setMessages([
         {
           role: "assistant",
-          content:
-            "Olá! Sou seu assistente financeiro virtual. Vou te ajudar a fazer um diagnóstico completo da sua vida financeira. Será uma conversa tranquila, sem julgamentos. Vamos começar?",
+          content: initialMessage,
         },
       ]);
     } catch (error: any) {
@@ -96,6 +100,7 @@ export default function Diagnostic() {
           body: JSON.stringify({
             messages: newMessages,
             diagnosticId,
+            turboMode,
           }),
         }
       );
@@ -231,12 +236,23 @@ export default function Diagnostic() {
             <div className="flex items-center gap-3">
               <Sparkles className="w-6 h-6 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Diagnóstico Financeiro</h1>
+                <h1 className="text-2xl font-bold text-foreground">
+                  Diagnóstico Financeiro {turboMode && "⚡ TURBO"}
+                </h1>
                 <p className="text-sm text-muted-foreground">
-                  Conversa guiada por IA
+                  {turboMode ? "Modo rápido - 10 perguntas essenciais" : "Conversa guiada por IA"}
                 </p>
               </div>
             </div>
+            {messages.length === 0 && (
+              <Button
+                variant={turboMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTurboMode(!turboMode)}
+              >
+                {turboMode ? "Modo Completo" : "⚡ Modo Turbo"}
+              </Button>
+            )}
             {isComplete && (
               <Button
                 onClick={handleFinalize}

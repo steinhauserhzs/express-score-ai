@@ -11,6 +11,10 @@ import Consultations from "./pages/Consultations";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLeads from "./pages/admin/AdminLeads";
+import AdminDiagnostics from "./pages/admin/AdminDiagnostics";
+import AdminConsultations from "./pages/admin/AdminConsultations";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminAudit from "./pages/admin/AdminAudit";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +32,10 @@ const App = () => (
           <Route path="/consultations" element={<Consultations />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
+          <Route path="/admin/diagnostics" element={<AdminDiagnostics />} />
+          <Route path="/admin/consultations" element={<AdminConsultations />} />
+          <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/audit" element={<AdminAudit />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
