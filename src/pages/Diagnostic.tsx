@@ -33,6 +33,19 @@ export default function Diagnostic() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    // Warn user before leaving if diagnostic is in progress
+    if (!isComplete && messages.length > 5) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = 'Seu diagnóstico será perdido. Deseja realmente sair?';
+      };
+      
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [isComplete, messages]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -161,11 +174,24 @@ export default function Diagnostic() {
 
       // Check if diagnostic is complete
       if (
-        assistantMessage.toLowerCase().includes("diagnóstico completo") ||
+        assistantMessage.includes("DIAGNÓSTICO_COMPLETO") ||
+        assistantMessage.toLowerCase().includes("diagnóstico_completo") ||
         assistantMessage.toLowerCase().includes("finalizamos") ||
         assistantMessage.toLowerCase().includes("concluímos")
       ) {
         setIsComplete(true);
+        
+        // Show toast notification
+        toast({
+          title: "🎉 Diagnóstico Concluído!",
+          description: "Calculando seu score... aguarde.",
+          duration: 3000,
+        });
+        
+        // Auto-finalize after 2 seconds
+        setTimeout(() => {
+          handleFinalize();
+        }, 2000);
       }
     } catch (error: any) {
       console.error("Error streaming chat:", error);
@@ -234,7 +260,9 @@ export default function Diagnostic() {
     }
   };
 
-  const progress = Math.min((messages.length / 30) * 100, 100);
+  const userMessages = messages.filter(m => m.role === 'user').length;
+  const expectedQuestions = turboMode ? 10 : 38;
+  const progress = Math.min((userMessages / expectedQuestions) * 100, 100);
 
   return (
     <div className="min-h-screen bg-gradient-subtle p-3 md:p-4">
@@ -285,9 +313,16 @@ export default function Diagnostic() {
             <Progress value={progress} className="h-2 md:h-3" />
             <div className="flex justify-between text-[10px] md:text-xs text-muted-foreground">
               <span>Início</span>
-              <span className="hidden sm:inline">~{turboMode ? '10' : '25'} perguntas</span>
+              <span className="hidden sm:inline">
+                {userMessages}/{expectedQuestions} perguntas
+              </span>
               <span>Completo</span>
             </div>
+            {!isComplete && userMessages > 0 && (
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Faltam aproximadamente {expectedQuestions - userMessages} perguntas
+              </p>
+            )}
           </div>
         </Card>
 
@@ -342,6 +377,21 @@ export default function Diagnostic() {
             </div>
           </div>
         </Card>
+
+        {isCalculating && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+            <Card className="p-8 max-w-md mx-4">
+              <div className="text-center space-y-4">
+                <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
+                <h3 className="text-xl font-bold">Calculando seu Score Express</h3>
+                <p className="text-sm text-muted-foreground">
+                  Analisando suas respostas e gerando seu diagnóstico personalizado...
+                </p>
+                <Progress value={66} className="h-2" />
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
