@@ -47,11 +47,13 @@ export default function ScoreRadar({ dimensionScores }: ScoreRadarProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Análise por Dimensão</CardTitle>
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="text-base md:text-lg break-words">
+          Análise por Dimensão
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={400}>
+      <CardContent className="p-4 md:p-6 pt-0">
+        <ResponsiveContainer width="100%" height={300} className="md:h-[400px]">
           <RadarChart data={data}>
             <PolarGrid stroke="hsl(var(--border))" />
             <PolarAngleAxis

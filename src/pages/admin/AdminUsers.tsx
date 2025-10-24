@@ -74,10 +74,12 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestão de Usuários</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground break-words">
+            Gestão de Usuários
+          </h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Gerencie usuários e suas permissões de acesso
           </p>
         </div>
@@ -137,15 +139,15 @@ export default function AdminUsers() {
               </TabsList>
             </Tabs>
 
-            <div className="rounded-md border">
-              <Table>
+            <div className="rounded-md border overflow-x-auto">
+              <Table className="min-w-[640px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Usuário</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead>Data de Cadastro</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
+                    <TableHead className="whitespace-nowrap">Usuário</TableHead>
+                    <TableHead className="whitespace-nowrap">Email</TableHead>
+                    <TableHead className="whitespace-nowrap">Roles</TableHead>
+                    <TableHead className="hidden md:table-cell whitespace-nowrap">Data de Cadastro</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

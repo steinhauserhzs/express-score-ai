@@ -237,17 +237,17 @@ export default function Diagnostic() {
   const progress = Math.min((messages.length / 30) * 100, 100);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle p-4">
+    <div className="min-h-screen bg-gradient-subtle p-3 md:p-4">
       <div className="max-w-4xl mx-auto">
-        <Card className="p-6 mb-4 bg-card/95 backdrop-blur">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-6 h-6 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
+        <Card className="p-4 md:p-6 mb-4 bg-card/95 backdrop-blur">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2 md:gap-3">
+              <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0" />
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-2xl font-bold text-foreground break-words">
                   Diagnóstico Financeiro {turboMode && "⚡ TURBO"}
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   {turboMode ? "Modo rápido - 10 perguntas essenciais" : "Conversa guiada por IA"}
                 </p>
               </div>
@@ -278,34 +278,36 @@ export default function Diagnostic() {
             )}
           </div>
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-xs md:text-sm">
               <span className="text-muted-foreground">Progresso</span>
               <span className="font-medium">{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-3" />
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <Progress value={progress} className="h-2 md:h-3" />
+            <div className="flex justify-between text-[10px] md:text-xs text-muted-foreground">
               <span>Início</span>
-              <span>~{turboMode ? '10' : '25'} perguntas</span>
+              <span className="hidden sm:inline">~{turboMode ? '10' : '25'} perguntas</span>
               <span>Completo</span>
             </div>
           </div>
         </Card>
 
-        <Card className="h-[600px] flex flex-col bg-card/95 backdrop-blur">
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <Card className="h-[500px] md:h-[600px] flex flex-col bg-card/95 backdrop-blur">
+          <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl p-4 ${
+                  className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-3 md:p-4 ${
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground shadow-lg"
                       : "bg-muted text-foreground"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap font-medium">{msg.content}</p>
+                  <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words">
+                    {msg.content}
+                  </p>
                 </div>
               </div>
             ))}
@@ -319,7 +321,7 @@ export default function Diagnostic() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-4 border-t border-border">
+          <div className="p-3 md:p-4 border-t border-border">
             <div className="flex gap-2">
               <Input
                 value={input}
@@ -327,12 +329,13 @@ export default function Diagnostic() {
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Digite sua resposta..."
                 disabled={isLoading || isComplete}
-                className="flex-1"
+                className="flex-1 text-sm"
               />
               <Button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading || isComplete}
                 size="icon"
+                className="flex-shrink-0"
               >
                 <Send className="w-4 h-4" />
               </Button>

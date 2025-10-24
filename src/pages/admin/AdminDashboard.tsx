@@ -178,14 +178,18 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard Administrativo</h1>
-          <p className="text-muted-foreground">Visão geral do sistema de leads</p>
+          <h1 className="text-2xl md:text-3xl font-bold break-words">
+            Dashboard Administrativo
+          </h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Visão geral do sistema de leads
+          </p>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <AdminStatCard
             title="Total de Leads"
             value={stats.totalLeads}
@@ -237,10 +241,12 @@ export default function AdminDashboard() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Evolução de Cadastros (7 dias)</h3>
-            <ResponsiveContainer width="100%" height={300}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          <Card className="p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold mb-4 break-words">
+              Evolução de Cadastros (7 dias)
+            </h3>
+            <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
               <LineChart data={registrationData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
@@ -252,9 +258,11 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
           </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Distribuição de Scores</h3>
-            <ResponsiveContainer width="100%" height={300}>
+          <Card className="p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold mb-4 break-words">
+              Distribuição de Scores
+            </h3>
+            <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
               <PieChart>
                 <Pie
                   data={scoreDistribution}

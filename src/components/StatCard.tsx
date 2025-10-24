@@ -25,13 +25,17 @@ export default function StatCard({
   iconBg = "bg-primary/10"
 }: StatCardProps) {
   return (
-    <Card className="p-6 hover-lift">
+    <Card className="p-4 md:p-6 hover-lift">
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <h3 className="text-3xl font-bold mb-2">{value}</h3>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs md:text-sm text-muted-foreground mb-1 break-words">
+            {title}
+          </p>
+          <h3 className="text-2xl md:text-3xl font-bold mb-2 break-words">
+            {value}
+          </h3>
           {subtitle && (
-            <p className="text-xs text-muted-foreground">{subtitle}</p>
+            <p className="text-xs text-muted-foreground break-words">{subtitle}</p>
           )}
           {trend && (
             <div className={`flex items-center gap-1 mt-2 text-sm ${
@@ -46,8 +50,8 @@ export default function StatCard({
             </div>
           )}
         </div>
-        <div className={`${iconBg} p-3 rounded-xl`}>
-          <Icon className={`h-6 w-6 ${iconColor}`} />
+        <div className={`${iconBg} p-2 md:p-3 rounded-xl flex-shrink-0`}>
+          <Icon className={`h-5 w-5 md:h-6 md:w-6 ${iconColor}`} />
         </div>
       </div>
     </Card>

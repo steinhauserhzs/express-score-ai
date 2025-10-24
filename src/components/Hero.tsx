@@ -23,7 +23,7 @@ const Hero = () => {
             </div>
             
             {/* Main heading */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up text-foreground">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 animate-slide-up text-foreground break-words">
               Descubra a Saúde da Sua{" "}
               <span className="text-primary">
                 Vida Financeira
@@ -31,24 +31,25 @@ const Hero = () => {
             </h1>
             
             {/* Description */}
-            <p className="text-xl md:text-2xl text-foreground/80 mb-8 animate-fade-in">
+            <p className="text-lg md:text-xl lg:text-2xl text-foreground/80 mb-6 md:mb-8 animate-fade-in">
               Score Express em 5 minutos com análise personalizada por IA
             </p>
             
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8 animate-scale-in">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8 animate-scale-in">
               <Button 
                 size="lg" 
-                className="text-lg px-8 py-6 shadow-glow hover-scale"
+                className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-glow hover-scale w-full sm:w-auto"
                 onClick={() => navigate('/auth')}
               >
-                Começar Diagnóstico Gratuito
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <span className="hidden sm:inline">Começar Diagnóstico Gratuito</span>
+                <span className="sm:hidden">Diagnóstico Gratuito</span>
+                <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Button>
               <Button 
                 size="lg" 
                 variant="outline"
-                className="text-lg px-8 py-6"
+                className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 w-full sm:w-auto"
                 onClick={() => navigate('/auth')}
               >
                 Já tenho conta
@@ -56,25 +57,25 @@ const Hero = () => {
             </div>
             
             {/* Trust indicators */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-foreground/70 animate-fade-in">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 text-xs md:text-sm text-foreground/70 animate-fade-in">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" />
+                <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
                 <span>100% Online</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" />
+                <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
                 <span>5 minutos</span>
               </div>
               <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
+                <Target className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
                 <span>Personalizado</span>
               </div>
             </div>
             
             {/* Security badge */}
-            <div className="mt-8 inline-flex items-center gap-2 text-sm text-foreground/70 bg-muted/50 px-6 py-3 rounded-full">
-              <Shield className="h-4 w-4 text-primary" />
-              <span>Seus dados estão protegidos e criptografados</span>
+            <div className="mt-6 md:mt-8 inline-flex items-center gap-2 text-xs md:text-sm text-foreground/70 bg-muted/50 px-4 md:px-6 py-2 md:py-3 rounded-full">
+              <Shield className="h-4 w-4 text-primary flex-shrink-0" />
+              <span className="break-words">Seus dados estão protegidos e criptografados</span>
             </div>
           </div>
 

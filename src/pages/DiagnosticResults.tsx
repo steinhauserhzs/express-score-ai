@@ -166,7 +166,7 @@ export default function DiagnosticResults() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle py-8 px-4">
+    <div className="min-h-screen bg-gradient-subtle py-6 md:py-8 px-3 md:px-4">
       {showConfetti && (
         <Confetti
           width={windowSize.width}
@@ -177,14 +177,14 @@ export default function DiagnosticResults() {
         />
       )}
 
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-6 md:space-y-8">
         {/* Hero Section with Score */}
-        <div className="text-center space-y-6 animate-fade-in">
+        <div className="text-center space-y-4 md:space-y-6 animate-fade-in">
           <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground break-words">
               🎉 Diagnóstico Completo!
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base md:text-lg text-muted-foreground">
               Seu Score Express de Saúde Financeira
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function DiagnosticResults() {
         </div>
 
         {/* Radar Chart */}
-        <Card className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
+        <Card className="p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
           <ScoreRadar dimensionScores={diagnostic.dimension_scores} />
         </Card>
 
@@ -218,20 +218,20 @@ export default function DiagnosticResults() {
         )}
 
         {/* Top Recommendations */}
-        <Card className="p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
-          <h2 className="text-2xl font-bold mb-4 text-foreground">
+        <Card className="p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-foreground break-words">
             🎯 Próximos Passos Recomendados
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             {getRecommendations().map((rec, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg hover-scale"
+                className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-muted/50 rounded-lg hover-scale"
               >
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs md:text-sm font-bold">
                   {idx + 1}
                 </div>
-                <p className="text-foreground">{rec}</p>
+                <p className="text-sm md:text-base text-foreground break-words">{rec}</p>
               </div>
             ))}
           </div>
@@ -243,30 +243,32 @@ export default function DiagnosticResults() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
           <Button
             size="lg"
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto"
             onClick={() => navigate("/dashboard")}
           >
-            Ver Dashboard Completo
+            <span className="hidden sm:inline">Ver Dashboard Completo</span>
+            <span className="sm:hidden">Dashboard</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
           
           <Button
             size="lg"
             variant="outline"
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto"
             onClick={() => navigate("/consultations")}
           >
             <Calendar className="w-4 h-4" />
-            Agendar Consultoria
+            <span className="hidden sm:inline">Agendar Consultoria</span>
+            <span className="sm:hidden">Consultoria</span>
           </Button>
 
           <Button
             size="lg"
             variant="outline"
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto"
             onClick={handleShare}
           >
             <Share2 className="w-4 h-4" />

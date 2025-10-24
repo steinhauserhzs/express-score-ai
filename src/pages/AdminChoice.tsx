@@ -32,36 +32,42 @@ export default function AdminChoice() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
-      <div className="w-full max-w-4xl space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-3 md:p-4">
+      <div className="w-full max-w-4xl space-y-6 md:space-y-8">
         <div className="text-center space-y-2">
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4 md:mb-6">
             <Logo />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Bem-vindo, Administrador</h1>
-          <p className="text-muted-foreground">Escolha como deseja continuar</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground break-words px-4">
+            Bem-vindo, Administrador
+          </h1>
+          <p className="text-sm md:text-base text-muted-foreground px-4">
+            Escolha como deseja continuar
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {choices.map((choice) => {
             const Icon = choice.icon;
             return (
               <Card key={choice.title} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-center mb-4">
-                    <div className="p-4 rounded-full bg-primary/10">
-                      <Icon className="h-8 w-8 text-primary" />
+                <CardHeader className="p-4 md:p-6">
+                  <div className="flex justify-center mb-3 md:mb-4">
+                    <div className="p-3 md:p-4 rounded-full bg-primary/10">
+                      <Icon className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                     </div>
                   </div>
-                  <CardTitle className="text-center">{choice.title}</CardTitle>
-                  <CardDescription className="text-center">
+                  <CardTitle className="text-center text-base md:text-lg break-words">
+                    {choice.title}
+                  </CardTitle>
+                  <CardDescription className="text-center text-sm break-words">
                     {choice.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4 md:p-6 pt-0">
                   <Button
                     variant={choice.variant}
-                    className="w-full"
+                    className="w-full text-sm md:text-base"
                     onClick={choice.action}
                   >
                     Acessar

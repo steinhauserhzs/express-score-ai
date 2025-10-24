@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ScoreRadar from "@/components/ScoreRadar";
 import ScoreCard from "@/components/ScoreCard";
 import ProfileBadge from "@/components/ProfileBadge";
@@ -284,47 +285,86 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header Fixo */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-6">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Logo size="sm" showText={true} />
-          <div className="flex gap-2 items-center">
-            <Button onClick={() => navigate('/education')} variant="ghost" size="sm">
-              <BookOpen className="h-4 w-4 mr-2" />
-              Educação
-            </Button>
-            <Button onClick={() => navigate('/refer')} variant="ghost" size="sm">
-              <Users className="h-4 w-4 mr-2" />
-              Indicar
-            </Button>
-            <NotificationBell />
-            <Button onClick={() => navigate('/diagnostic')} variant="outline" size="sm">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Novo Diagnóstico
-            </Button>
-            <Button onClick={handleSignOut} variant="outline" size="sm">
-              Sair
-            </Button>
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-4 md:mb-6">
+        <div className="max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between">
+            <Logo size="sm" showText={true} />
+            
+            {/* Desktop: botões visíveis */}
+            <div className="hidden lg:flex gap-2 items-center">
+              <Button onClick={() => navigate('/education')} variant="ghost" size="sm">
+                <BookOpen className="h-4 w-4 mr-2" />
+                Educação
+              </Button>
+              <Button onClick={() => navigate('/refer')} variant="ghost" size="sm">
+                <Users className="h-4 w-4 mr-2" />
+                Indicar
+              </Button>
+              <NotificationBell />
+              <Button onClick={() => navigate('/diagnostic')} variant="outline" size="sm">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Novo Diagnóstico
+              </Button>
+              <Button onClick={handleSignOut} variant="outline" size="sm">
+                Sair
+              </Button>
+            </div>
+            
+            {/* Mobile: menu hamburguer */}
+            <div className="lg:hidden flex items-center gap-2">
+              <NotificationBell />
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Users className="h-4 w-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <div className="flex flex-col gap-4 mt-8">
+                    <Button onClick={() => navigate('/education')} variant="ghost" className="justify-start">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Educação
+                    </Button>
+                    <Button onClick={() => navigate('/refer')} variant="ghost" className="justify-start">
+                      <Users className="h-4 w-4 mr-2" />
+                      Indicar
+                    </Button>
+                    <Button onClick={() => navigate('/diagnostic')} variant="outline" className="justify-start">
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Novo Diagnóstico
+                    </Button>
+                    <Button onClick={handleSignOut} variant="outline" className="justify-start">
+                      Sair
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="max-w-7xl mx-auto p-3 md:p-6 space-y-6 md:space-y-8">
         {/* Title Section */}
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-foreground/70">Seu Score Express da Vida Financeira</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground break-words">
+            Dashboard
+          </h1>
+          <p className="text-sm md:text-base text-foreground/70">
+            Seu Score Express da Vida Financeira
+          </p>
         </div>
 
         {/* Score Total e Perfil */}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
           <Card className="hover-scale bg-gradient-to-br from-primary/10 to-primary/5">
-            <CardHeader>
-              <CardTitle className="text-center text-2xl">Seu Score Total</CardTitle>
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-center text-xl md:text-2xl">Seu Score Total</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center gap-4">
-              <div className={`text-6xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
+            <CardContent className="flex flex-col items-center gap-4 p-4 md:p-6 pt-0">
+              <div className={`text-5xl md:text-6xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
                 {diagnostic.total_score}
-                <span className="text-3xl text-muted-foreground">/150</span>
+                <span className="text-2xl md:text-3xl text-muted-foreground">/150</span>
               </div>
               <div className={`px-4 py-2 rounded-full border-2 ${getClassificationColor(diagnostic.score_classification)}`}>
                 <span className="font-semibold">{diagnostic.score_classification}</span>
@@ -338,30 +378,36 @@ export default function Dashboard() {
           </Card>
 
           <Card className="hover-scale">
-            <CardHeader>
-              <CardTitle className="text-2xl">Seu Perfil Financeiro</CardTitle>
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-xl md:text-2xl break-words">
+                Seu Perfil Financeiro
+              </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center gap-4">
+            <CardContent className="flex flex-col items-center justify-center gap-4 p-4 md:p-6 pt-0">
               {diagnostic.profile && (
                 <ProfileBadge profile={diagnostic.profile} />
               )}
-              <div className="flex gap-2 mt-4 w-full">
+              <div className="flex flex-col sm:flex-row gap-2 mt-4 w-full">
                 <Button 
                   onClick={() => handleGenerateReport('client')} 
                   disabled={generatingReport}
-                  className="flex-1"
+                  className="flex-1 text-sm"
                   variant="default"
+                  size="sm"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Meu Relatório
+                  <span className="hidden sm:inline">Meu Relatório</span>
+                  <span className="sm:hidden">Relatório</span>
                 </Button>
                 <Button 
                   onClick={() => navigate('/consultations')} 
-                  className="flex-1"
+                  className="flex-1 text-sm"
                   variant="outline"
+                  size="sm"
                 >
                   <Calendar className="h-4 w-4 mr-2" />
-                  Agendar Consultoria
+                  <span className="hidden sm:inline">Agendar Consultoria</span>
+                  <span className="sm:hidden">Consultoria</span>
                 </Button>
               </div>
             </CardContent>
@@ -373,8 +419,10 @@ export default function Dashboard() {
 
         {/* Individual Scores */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Análise Detalhada</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
+            Análise Detalhada
+          </h2>
+          <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <ScoreCard
               title="Dívidas e Inadimplência"
               score={dimensionScores.debts}
@@ -416,8 +464,10 @@ export default function Dashboard() {
 
         {/* Recomendações */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Suas Recomendações Personalizadas</h2>
-          <p className="text-muted-foreground mb-4">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
+            Suas Recomendações Personalizadas
+          </h2>
+          <p className="text-sm md:text-base text-muted-foreground mb-4">
             Marque as ações conforme você as completar para acompanhar seu progresso
           </p>
           <div className="space-y-4">
@@ -428,21 +478,52 @@ export default function Dashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b">
-          <Button variant={activeTab === "overview" ? "default" : "ghost"} onClick={() => setActiveTab("overview")}>Visão Geral</Button>
-          <Button variant={activeTab === "comparison" ? "default" : "ghost"} onClick={() => setActiveTab("comparison")}>Comparação</Button>
-          <Button variant={activeTab === "journey" ? "default" : "ghost"} onClick={() => setActiveTab("journey")}>Jornada</Button>
-          <Button variant={activeTab === "gamification" ? "default" : "ghost"} onClick={() => setActiveTab("gamification")}><Award className="h-4 w-4 mr-2" />Conquistas</Button>
+        <div className="flex gap-2 border-b overflow-x-auto pb-2 -mx-3 px-3 md:mx-0 md:px-0">
+          <Button 
+            variant={activeTab === "overview" ? "default" : "ghost"} 
+            onClick={() => setActiveTab("overview")}
+            size="sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+          >
+            Visão Geral
+          </Button>
+          <Button 
+            variant={activeTab === "comparison" ? "default" : "ghost"} 
+            onClick={() => setActiveTab("comparison")}
+            size="sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+          >
+            Comparação
+          </Button>
+          <Button 
+            variant={activeTab === "journey" ? "default" : "ghost"} 
+            onClick={() => setActiveTab("journey")}
+            size="sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+          >
+            Jornada
+          </Button>
+          <Button 
+            variant={activeTab === "gamification" ? "default" : "ghost"} 
+            onClick={() => setActiveTab("gamification")}
+            size="sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+          >
+            <Award className="h-4 w-4 mr-1 md:mr-2" />
+            Conquistas
+          </Button>
         </div>
 
         {activeTab === "comparison" && history.length > 1 && <DiagnosticComparison />}
         {activeTab === "journey" && <CustomerJourney />}
         {activeTab === "gamification" && (
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {gamification && <LevelProgress currentLevel={gamification.current_level} levelPoints={gamification.level_points} totalPoints={gamification.total_points} />}
             <div>
-              <h2 className="text-2xl font-bold mb-4">Suas Conquistas</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
+                Suas Conquistas
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 {badges.map((badge) => (
                   <BadgeCard key={badge.id} badgeName={badge.badge_name} badgeDescription={badge.badge_description} earnedAt={badge.earned_at} />
                 ))}
