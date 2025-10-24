@@ -9,7 +9,11 @@ import {
   UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
+
+interface AdminSidebarProps {
+  isMobileSheet?: boolean;
+  onNavigate?: () => void;
+}
 
 const menuItems = [
   {
@@ -64,12 +68,14 @@ const menuItems = [
   },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isMobileSheet = false, onNavigate }: AdminSidebarProps = {}) {
   const location = useLocation();
-  const isMobile = useIsMobile();
 
   return (
-    <aside className="w-64 lg:w-64 border-r bg-card hidden md:block">
+    <aside className={cn(
+      "w-64 lg:w-64 border-r bg-card",
+      !isMobileSheet && "hidden md:block"
+    )}>
       <div className="p-4 md:p-6">
         <h2 className="text-base md:text-lg font-semibold text-foreground break-words">
           Painel Admin
@@ -86,6 +92,7 @@ export default function AdminSidebar() {
             <NavLink
               key={item.url}
               to={item.url}
+              onClick={() => onNavigate?.()}
               className={cn(
                 "flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors",
                 isActive

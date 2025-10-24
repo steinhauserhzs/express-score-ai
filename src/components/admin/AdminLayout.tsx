@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-64">
-                <AdminSidebar />
+                <AdminSidebar isMobileSheet={true} onNavigate={() => setMobileMenuOpen(false)} />
               </SheetContent>
             </Sheet>
             
