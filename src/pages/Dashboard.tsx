@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [badges, setBadges] = useState<any[]>([]);
   const [gamification, setGamification] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "journey" | "gamification">("overview");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -39,6 +40,13 @@ export default function Dashboard() {
       navigate('/auth');
       return;
     }
+
+    // Check if user is admin
+    const { data: adminCheck } = await supabase.rpc('has_role', {
+      _user_id: user.id,
+      _role: 'admin'
+    });
+    setIsAdmin(adminCheck || false);
 
     await Promise.all([
       loadDiagnostic(user.id),
@@ -292,6 +300,11 @@ export default function Dashboard() {
             
             {/* Desktop: botões visíveis */}
             <div className="hidden lg:flex gap-2 items-center">
+              {isAdmin && (
+                <Button onClick={() => navigate('/admin/dashboard')} variant="default" size="sm">
+                  Painel Admin
+                </Button>
+              )}
               <Button onClick={() => navigate('/education')} variant="ghost" size="sm">
                 <BookOpen className="h-4 w-4 mr-2" />
                 Educação
@@ -321,6 +334,11 @@ export default function Dashboard() {
                 </SheetTrigger>
                 <SheetContent>
                   <div className="flex flex-col gap-4 mt-8">
+                    {isAdmin && (
+                      <Button onClick={() => navigate('/admin/dashboard')} variant="default" className="justify-start">
+                        Painel Admin
+                      </Button>
+                    )}
                     <Button onClick={() => navigate('/education')} variant="ghost" className="justify-start">
                       <BookOpen className="h-4 w-4 mr-2" />
                       Educação

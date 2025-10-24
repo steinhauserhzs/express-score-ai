@@ -185,18 +185,12 @@ const Auth = () => {
         localStorage.removeItem('sb-rpjkccdfulotegejzowk-auth-token');
       }
 
-      // Check if user is admin
-      const { data: isAdmin } = await supabase.rpc('has_role', {
-        _user_id: data.user.id,
-        _role: 'admin'
-      });
-
       toast({
         title: "Bem-vindo de volta!",
-        description: isAdmin ? "Redirecionando..." : "Login realizado com sucesso.",
+        description: "Login realizado com sucesso.",
       });
       
-      navigate(isAdmin ? "/admin-choice" : "/dashboard");
+      navigate("/dashboard");
     } catch (error: any) {
       let errorMessage = error.message;
       
