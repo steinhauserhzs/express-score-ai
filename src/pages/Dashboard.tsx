@@ -8,8 +8,14 @@ import ScoreCard from "@/components/ScoreCard";
 import ProfileBadge from "@/components/ProfileBadge";
 import RecommendationCard from "@/components/RecommendationCard";
 import Logo from "@/components/Logo";
+import NotificationBell from "@/components/NotificationBell";
+import DiagnosticChatbot from "@/components/DiagnosticChatbot";
+import DiagnosticComparison from "@/components/DiagnosticComparison";
+import BadgeCard from "@/components/gamification/BadgeCard";
+import LevelProgress from "@/components/gamification/LevelProgress";
+import CustomerJourney from "@/components/CustomerJourney";
 import { toast } from "sonner";
-import { Download, FileText, TrendingUp, Calendar } from "lucide-react";
+import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -17,6 +23,9 @@ export default function Dashboard() {
   const [diagnostic, setDiagnostic] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [badges, setBadges] = useState<any[]>([]);
+  const [gamification, setGamification] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "journey" | "gamification">("overview");
 
   useEffect(() => {
     checkAuth();
@@ -32,7 +41,9 @@ export default function Dashboard() {
 
     await Promise.all([
       loadDiagnostic(user.id),
-      loadHistory(user.id)
+      loadHistory(user.id),
+      loadBadges(user.id),
+      loadGamification(user.id)
     ]);
   }
 
@@ -70,6 +81,36 @@ export default function Dashboard() {
       setHistory(data || []);
     } catch (error) {
       console.error('Error loading history:', error);
+    }
+  }
+
+  async function loadBadges(userId: string) {
+    try {
+      const { data, error } = await supabase
+        .from('user_badges')
+        .select('*')
+        .eq('user_id', userId)
+        .order('earned_at', { ascending: false });
+
+      if (error) throw error;
+      setBadges(data || []);
+    } catch (error) {
+      console.error('Error loading badges:', error);
+    }
+  }
+
+  async function loadGamification(userId: string) {
+    try {
+      const { data, error } = await supabase
+        .from('user_gamification')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      setGamification(data);
+    } catch (error) {
+      console.error('Error loading gamification:', error);
     }
   }
 
@@ -246,7 +287,16 @@ export default function Dashboard() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-6">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Logo size="sm" showText={true} />
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <Button onClick={() => navigate('/education')} variant="ghost" size="sm">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Educação
+            </Button>
+            <Button onClick={() => navigate('/refer')} variant="ghost" size="sm">
+              <Users className="h-4 w-4 mr-2" />
+              Indicar
+            </Button>
+            <NotificationBell />
             <Button onClick={() => navigate('/diagnostic')} variant="outline" size="sm">
               <TrendingUp className="h-4 w-4 mr-2" />
               Novo Diagnóstico
@@ -377,39 +427,32 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Histórico */}
-        {history.length > 1 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Evolução do Seu Score</h2>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-2">
-                  {history.map((item, index) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{item.profile || 'Diagnóstico'}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(item.created_at).toLocaleDateString('pt-BR')}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-2xl font-bold ${getScoreColor(item.total_score)}`}>
-                          {item.total_score}
-                        </p>
-                        {index > 0 && (
-                          <p className="text-sm text-muted-foreground">
-                            {item.total_score - history[index - 1].total_score > 0 ? '↑' : '↓'} 
-                            {Math.abs(item.total_score - history[index - 1].total_score)} pts
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+        {/* Tabs */}
+        <div className="flex gap-2 border-b">
+          <Button variant={activeTab === "overview" ? "default" : "ghost"} onClick={() => setActiveTab("overview")}>Visão Geral</Button>
+          <Button variant={activeTab === "comparison" ? "default" : "ghost"} onClick={() => setActiveTab("comparison")}>Comparação</Button>
+          <Button variant={activeTab === "journey" ? "default" : "ghost"} onClick={() => setActiveTab("journey")}>Jornada</Button>
+          <Button variant={activeTab === "gamification" ? "default" : "ghost"} onClick={() => setActiveTab("gamification")}><Award className="h-4 w-4 mr-2" />Conquistas</Button>
+        </div>
+
+        {activeTab === "comparison" && history.length > 1 && <DiagnosticComparison />}
+        {activeTab === "journey" && <CustomerJourney />}
+        {activeTab === "gamification" && (
+          <div className="space-y-6">
+            {gamification && <LevelProgress currentLevel={gamification.current_level} levelPoints={gamification.level_points} totalPoints={gamification.total_points} />}
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Suas Conquistas</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {badges.map((badge) => (
+                  <BadgeCard key={badge.id} badgeName={badge.badge_name} badgeDescription={badge.badge_description} earnedAt={badge.earned_at} />
+                ))}
+              </div>
+            </div>
           </div>
         )}
+
+        {/* Chatbot */}
+        <DiagnosticChatbot />
       </div>
     </div>
   );

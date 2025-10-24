@@ -8,6 +8,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
 import Consultations from "./pages/Consultations";
+import Education from "./pages/Education";
+import Refer from "./pages/Refer";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLeads from "./pages/admin/AdminLeads";
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
           <Route path="/consultations" element={<Consultations />} />
+          <Route path="/education" element={<Education />} />
+          <Route path="/refer" element={<Refer />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/leads" element={<AdminLeads />} />
           <Route path="/admin/diagnostics" element={<AdminDiagnostics />} />
