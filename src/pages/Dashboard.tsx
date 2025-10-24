@@ -183,6 +183,11 @@ export default function Dashboard() {
             <p className="text-muted-foreground">
               Você ainda não fez seu diagnóstico financeiro.
             </p>
+            {isAdmin && (
+              <Button onClick={() => navigate('/admin/dashboard')} variant="default" className="w-full">
+                Painel Administrativo
+              </Button>
+            )}
             <Button onClick={() => navigate('/diagnostic')} className="w-full">
               Fazer Diagnóstico Gratuito
             </Button>
