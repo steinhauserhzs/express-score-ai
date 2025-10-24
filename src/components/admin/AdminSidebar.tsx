@@ -6,6 +6,7 @@ import {
   Calendar,
   BarChart3,
   Shield,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +55,11 @@ const menuItems = [
     title: "Segmentos",
     url: "/admin/segments",
     icon: Users,
+  },
+  {
+    title: "Usuários",
+    url: "/admin/users",
+    icon: UserCog,
   },
 ];
 

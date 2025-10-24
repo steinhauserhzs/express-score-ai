@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import AdminChoice from "./pages/AdminChoice";
 import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
 import DiagnosticResults from "./pages/DiagnosticResults";
@@ -21,6 +22,7 @@ import AdminInsights from "./pages/admin/AdminInsights";
 import AdminAudit from "./pages/admin/AdminAudit";
 import AdminMetrics from "./pages/admin/AdminMetrics";
 import AdminSegments from "./pages/admin/AdminSegments";
+import AdminUsers from "./pages/admin/AdminUsers";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/admin-choice" element={<AdminChoice />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
           <Route path="/diagnostic/results/:id" element={<DiagnosticResults />} />
@@ -48,6 +51,7 @@ const App = () => (
           <Route path="/admin/audit" element={<AdminAudit />} />
           <Route path="/admin/metrics" element={<AdminMetrics />} />
           <Route path="/admin/segments" element={<AdminSegments />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
