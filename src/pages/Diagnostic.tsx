@@ -267,11 +267,11 @@ export default function Diagnostic() {
                 <div
                   className={`max-w-[80%] rounded-2xl p-4 ${
                     msg.role === "user"
-                      ? "bg-gradient-primary text-primary-foreground"
+                      ? "bg-gradient-primary text-white shadow-lg"
                       : "bg-muted text-foreground"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-sm whitespace-pre-wrap font-medium">{msg.content}</p>
                 </div>
               </div>
             ))}
