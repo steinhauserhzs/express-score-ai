@@ -45,6 +45,16 @@ const menuItems = [
     url: "/admin/audit",
     icon: Shield,
   },
+  {
+    title: "Métricas",
+    url: "/admin/metrics",
+    icon: BarChart3,
+  },
+  {
+    title: "Segmentos",
+    url: "/admin/segments",
+    icon: Users,
+  },
 ];
 
 export default function AdminSidebar() {

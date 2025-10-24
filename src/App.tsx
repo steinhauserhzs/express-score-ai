@@ -18,6 +18,8 @@ import AdminConsultations from "./pages/admin/AdminConsultations";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminInsights from "./pages/admin/AdminInsights";
 import AdminAudit from "./pages/admin/AdminAudit";
+import AdminMetrics from "./pages/admin/AdminMetrics";
+import AdminSegments from "./pages/admin/AdminSegments";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ const App = () => (
           <Route path="/admin/reports" element={<AdminReports />} />
           <Route path="/admin/insights" element={<AdminInsights />} />
           <Route path="/admin/audit" element={<AdminAudit />} />
+          <Route path="/admin/metrics" element={<AdminMetrics />} />
+          <Route path="/admin/segments" element={<AdminSegments />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
