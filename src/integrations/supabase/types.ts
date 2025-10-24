@@ -256,6 +256,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_assigned_consultant: {
+        Args: { _client_id: string; _consultant_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "client" | "consultant" | "admin"
