@@ -293,7 +293,7 @@ export default function Dashboard() {
                   Meu Relatório
                 </Button>
                 <Button 
-                  onClick={() => toast.info('Funcionalidade em desenvolvimento')} 
+                  onClick={() => navigate('/consultations')} 
                   className="flex-1"
                   variant="outline"
                 >
