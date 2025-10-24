@@ -47,6 +47,48 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_notes: {
+        Row: {
+          admin_id: string
+          client_id: string
+          created_at: string | null
+          id: string
+          note: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_id: string
+          client_id: string
+          created_at?: string | null
+          id?: string
+          note: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_id?: string
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          note?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_notes_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consultations: {
         Row: {
           client_id: string
@@ -230,8 +272,10 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          last_login_at: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          tags: string[] | null
           updated_at: string
         }
         Insert: {
@@ -240,8 +284,10 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          last_login_at?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          tags?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -250,8 +296,10 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          last_login_at?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          tags?: string[] | null
           updated_at?: string
         }
         Relationships: []
