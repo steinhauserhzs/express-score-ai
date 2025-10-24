@@ -30,16 +30,28 @@ const Auth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/dashboard');
+        // Check if user is admin
+        const { data: isAdmin } = await supabase.rpc('has_role', {
+          _user_id: session.user.id,
+          _role: 'admin'
+        });
+        
+        navigate(isAdmin ? '/admin-choice' : '/dashboard');
       }
     };
     
     checkUser();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session) {
-        navigate('/dashboard');
+        // Check if user is admin
+        const { data: isAdmin } = await supabase.rpc('has_role', {
+          _user_id: session.user.id,
+          _role: 'admin'
+        });
+        
+        navigate(isAdmin ? '/admin-choice' : '/dashboard');
       }
     });
 
@@ -135,14 +147,20 @@ const Auth = () => {
       });
       
       // Auto login após cadastro
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) throw signInError;
       
-      navigate("/dashboard");
+      // Check if user is admin
+      const { data: isAdmin } = await supabase.rpc('has_role', {
+        _user_id: signInData.user.id,
+        _role: 'admin'
+      });
+      
+      navigate(isAdmin ? '/admin-choice' : '/dashboard');
     } catch (error: any) {
       let errorMessage = error.message;
       
@@ -185,12 +203,18 @@ const Auth = () => {
         localStorage.removeItem('sb-rpjkccdfulotegejzowk-auth-token');
       }
 
+      // Check if user is admin
+      const { data: isAdmin } = await supabase.rpc('has_role', {
+        _user_id: data.user.id,
+        _role: 'admin'
+      });
+
       toast({
         title: "Bem-vindo de volta!",
         description: "Login realizado com sucesso.",
       });
       
-      navigate("/dashboard");
+      navigate(isAdmin ? '/admin-choice' : '/dashboard');
     } catch (error: any) {
       let errorMessage = error.message;
       
