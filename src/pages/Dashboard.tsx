@@ -87,6 +87,13 @@ export default function Dashboard() {
 
       if (error) throw error;
 
+      // Auto-tag user after completing diagnostic
+      if (diagnostic) {
+        supabase.functions.invoke('auto-tag-leads', {
+          body: { userId: diagnostic.user_id }
+        }).catch(err => console.error('Auto-tag error:', err));
+      }
+
       if (data?.reportUrl) {
         window.open(data.reportUrl, '_blank');
         toast.success('Relatório gerado com sucesso!');

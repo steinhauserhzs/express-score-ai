@@ -36,6 +36,11 @@ const menuItems = [
     icon: BarChart3,
   },
   {
+    title: "Insights IA",
+    url: "/admin/insights",
+    icon: Shield,
+  },
+  {
     title: "Auditoria",
     url: "/admin/audit",
     icon: Shield,

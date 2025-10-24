@@ -74,6 +74,7 @@ export default function AdminLeads() {
             profile: diagnostic?.profile || null,
             completed: diagnostic?.completed || null,
             last_activity: diagnostic?.created_at || profile.created_at,
+            tags: profile.tags || [],
           };
         })
       );

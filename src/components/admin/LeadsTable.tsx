@@ -32,6 +32,7 @@ interface Lead {
   profile: string | null;
   completed: boolean | null;
   last_activity: string | null;
+  tags?: string[];
 }
 
 interface LeadsTableProps {
@@ -187,9 +188,16 @@ export default function LeadsTable({ leads, onViewDetails }: LeadsTableProps) {
                       {maskCPF(lead.cpf)}
                     </TableCell>
                     <TableCell>
-                      <Badge className={`${status.color} text-white`}>
-                        {status.label}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge className={`${status.color} text-white`}>
+                          {status.label}
+                        </Badge>
+                        {lead.tags && lead.tags.slice(0, 2).map((tag, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
                     </TableCell>
                     <TableCell>
                       {lead.total_score ? (

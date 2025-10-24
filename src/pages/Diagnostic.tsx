@@ -208,9 +208,17 @@ export default function Diagnostic() {
 
       const result = await response.json();
       
+      // Auto-tag user after completing diagnostic
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        supabase.functions.invoke('auto-tag-leads', {
+          body: { userId: user.id }
+        }).catch(err => console.error('Auto-tag error:', err));
+      }
+
       toast({
         title: "Diagnóstico Concluído! 🎉",
-        description: `Seu Score Express: ${result.totalScore}/100`,
+        description: `Seu Score Express: ${result.totalScore}/150`,
       });
 
       navigate("/dashboard");
@@ -269,7 +277,18 @@ export default function Diagnostic() {
               </Button>
             )}
           </div>
-          <Progress value={progress} className="h-2" />
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Progresso</span>
+              <span className="font-medium">{Math.round(progress)}%</span>
+            </div>
+            <Progress value={progress} className="h-3" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Início</span>
+              <span>~{turboMode ? '10' : '25'} perguntas</span>
+              <span>Completo</span>
+            </div>
+          </div>
         </Card>
 
         <Card className="h-[600px] flex flex-col bg-card/95 backdrop-blur">
