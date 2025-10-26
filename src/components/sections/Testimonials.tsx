@@ -22,6 +22,27 @@ const testimonials = [
     content: "Um lugar excelente com consultores exemplares, a consultora Larissa Ferreira abriu meu olhos para coisas que eu nem imaginava. Super recomendo!",
     rating: 5,
     initials: "GC"
+  },
+  {
+    name: "Rafael Santos",
+    role: "Cliente Firece",
+    content: "A Firece mudou completamente minha visão sobre dinheiro. Em 6 meses consegui organizar minhas dívidas e começar a investir. Equipe excepcional!",
+    rating: 5,
+    initials: "RS"
+  },
+  {
+    name: "Ana Paula Lima",
+    role: "Cliente Firece",
+    content: "Melhor decisão que tomei! O diagnóstico foi super detalhado e as consultorias me ajudaram a conquistar minha independência financeira. Gratidão à toda equipe!",
+    rating: 5,
+    initials: "AL"
+  },
+  {
+    name: "Carlos Eduardo",
+    role: "Cliente Firece",
+    content: "Profissionalismo e dedicação incomparáveis. Consegui aumentar minha reserva de emergência em 200% em menos de 1 ano. Obrigado Firece!",
+    rating: 5,
+    initials: "CE"
   }
 ];
 
@@ -52,7 +73,7 @@ export default function Testimonials() {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}

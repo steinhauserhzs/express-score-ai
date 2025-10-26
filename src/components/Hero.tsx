@@ -16,8 +16,14 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           {/* Left side - Content */}
           <div className="text-center lg:text-left">
-            {/* Badge Firece */}
-            <div className="inline-flex items-center gap-2 firece-highlight rounded-full mb-6 animate-bounce-in shadow-glow">
+            {/* Badge Produto Firece */}
+            <div className="inline-flex items-center gap-2 firece-highlight rounded-full mb-4 animate-bounce-in shadow-glow">
+              <span className="text-xl">🔥</span>
+              <span className="text-xs md:text-sm font-bold">Tecnologia IA desenvolvida pela Firece</span>
+            </div>
+            
+            {/* Badge Diagnóstico */}
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full px-3 py-2 mb-6 animate-bounce-in">
               <Sparkles className="h-4 w-4" />
               <span className="text-sm font-bold">Diagnóstico Gratuito com IA</span>
             </div>
@@ -31,8 +37,12 @@ const Hero = () => {
             </h1>
             
             {/* Description Firece */}
-            <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-6 md:mb-8 animate-fade-in font-medium">
+            <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-4 animate-fade-in font-medium">
               Educação financeira e planejamento estratégico em 5 minutos
+            </p>
+            
+            <p className="text-sm md:text-base text-white/70 mb-6 md:mb-8 animate-fade-in italic">
+              Diagnóstico financeiro inteligente desenvolvido pela Firece - 9 anos transformando vidas
             </p>
             
             {/* CTA Buttons Firece */}
