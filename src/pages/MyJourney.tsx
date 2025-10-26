@@ -19,6 +19,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+import { JourneySkeleton } from "@/components/ui/skeleton-group";
+
 export default function MyJourney() {
   const [diagnostics, setDiagnostics] = useState<any[]>([]);
   const [milestones, setMilestones] = useState<any[]>([]);
@@ -94,23 +96,12 @@ export default function MyJourney() {
 
   const latestDiagnostic = diagnostics[diagnostics.length - 1];
   const previousDiagnostic = diagnostics[diagnostics.length - 2];
-  const scoreDifference = previousDiagnostic 
+  const scoreDifference = previousDiagnostic && latestDiagnostic
     ? latestDiagnostic.total_score - previousDiagnostic.total_score 
     : 0;
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background p-4 md:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="h-8 bg-muted animate-pulse rounded" />
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-32 bg-muted animate-pulse rounded" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <JourneySkeleton />;
   }
 
   if (diagnostics.length === 0) {
@@ -153,7 +144,7 @@ export default function MyJourney() {
               <CardTitle className="text-sm font-medium text-muted-foreground">Score Atual</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold">{latestDiagnostic.total_score}/150</div>
+              <div className="text-4xl font-bold">{latestDiagnostic?.total_score || 0}/150</div>
               {scoreDifference !== 0 && (
                 <div className={`flex items-center gap-1 text-sm mt-2 ${scoreDifference > 0 ? 'text-success' : 'text-destructive'}`}>
                   {scoreDifference > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}

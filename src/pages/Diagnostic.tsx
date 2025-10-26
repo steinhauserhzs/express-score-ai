@@ -255,11 +255,27 @@ export default function Diagnostic() {
     } catch (error: any) {
       console.error("Error streaming chat:", error);
       trackEvent('diagnostic_error', { error: error.message });
+      
+      const errorMessage = error.message || "Erro desconhecido";
+      const isNetworkError = errorMessage.includes('fetch') || errorMessage.includes('network');
+      
       toast({
-        title: "Erro",
-        description: "Ocorreu um erro na conversa. Tente novamente.",
+        title: isNetworkError ? "Erro de Conexão" : "Erro",
+        description: isNetworkError 
+          ? "Verifique sua conexão e tente novamente." 
+          : "Ocorreu um erro na conversa. Tente enviar novamente.",
         variant: "destructive",
       });
+      
+      // Show retry button separately
+      setTimeout(() => {
+        if (input.trim()) {
+          toast({
+            title: "Tentar Novamente?",
+            description: "Clique no botão de enviar para tentar novamente.",
+          });
+        }
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -320,8 +336,11 @@ export default function Diagnostic() {
     }
   };
 
+  const TURBO_QUESTIONS = 10;
+  const COMPLETE_QUESTIONS = 39;
+  
   const userMessages = messages.filter(m => m.role === 'user').length;
-  const expectedQuestions = turboMode ? 10 : 38;
+  const expectedQuestions = turboMode ? TURBO_QUESTIONS : COMPLETE_QUESTIONS;
   const progress = Math.min((userMessages / expectedQuestions) * 100, 100);
 
   return (

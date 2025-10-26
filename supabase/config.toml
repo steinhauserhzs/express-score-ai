@@ -41,3 +41,18 @@ verify_jwt = false
 
 [functions.ai-insights]
 verify_jwt = false
+
+[functions.validate-coherence]
+verify_jwt = true
+
+[functions.trigger-smart-alerts]
+verify_jwt = false
+
+[functions.recommend-learning-path]
+verify_jwt = true
+
+[functions.generate-monthly-report]
+verify_jwt = true
+
+[functions.get-dashboard-data]
+verify_jwt = true

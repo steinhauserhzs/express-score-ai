@@ -51,7 +51,10 @@ export default function SmartAlerts() {
     }
   };
 
-  const subscribeToAlerts = () => {
+  const subscribeToAlerts = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const channel = supabase
       .channel('financial_alerts')
       .on(
@@ -59,7 +62,8 @@ export default function SmartAlerts() {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'financial_alerts'
+          table: 'financial_alerts',
+          filter: `user_id=eq.${user.id}`
         },
         (payload) => {
           const newAlert = payload.new as Alert;

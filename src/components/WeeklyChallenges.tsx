@@ -43,7 +43,33 @@ export default function WeeklyChallenges() {
 
   useEffect(() => {
     fetchCurrentChallenge();
+    subscribeToProgress();
   }, []);
+
+  const subscribeToProgress = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const channel = supabase
+      .channel('user_challenge_progress')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_challenge_progress',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          fetchCurrentChallenge();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
 
   const fetchCurrentChallenge = async () => {
     try {

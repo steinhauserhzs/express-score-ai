@@ -27,6 +27,8 @@ interface FinancialGoal {
   achieved_at?: string;
 }
 
+import { GoalsSkeleton } from "@/components/ui/skeleton-group";
+
 export default function Goals() {
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,6 +80,46 @@ export default function Goals() {
 
   const handleCreateGoal = async () => {
     try {
+      // Validation
+      if (!formData.title.trim()) {
+        toast({
+          title: "Erro de Validação",
+          description: "O título da meta é obrigatório.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.target_amount || parseFloat(formData.target_amount) <= 0) {
+        toast({
+          title: "Erro de Validação",
+          description: "O valor da meta deve ser maior que zero.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const targetAmount = parseFloat(formData.target_amount);
+      const currentAmount = formData.current_amount ? parseFloat(formData.current_amount) : 0;
+
+      if (currentAmount < 0) {
+        toast({
+          title: "Erro de Validação",
+          description: "O valor atual não pode ser negativo.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (currentAmount > targetAmount) {
+        toast({
+          title: "Erro de Validação",
+          description: "O valor atual não pode ser maior que a meta.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -86,9 +128,9 @@ export default function Goals() {
         .insert({
           user_id: user.id,
           ...formData,
-          target_amount: parseFloat(formData.target_amount),
-          current_amount: parseFloat(formData.current_amount),
-          status: parseFloat(formData.current_amount) > 0 ? 'in_progress' : 'not_started'
+          target_amount: targetAmount,
+          current_amount: currentAmount,
+          status: currentAmount > 0 ? 'in_progress' : 'not_started'
         });
 
       if (error) throw error;
@@ -213,18 +255,7 @@ export default function Goals() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background p-4 md:p-8">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <div className="h-8 bg-muted animate-pulse rounded" />
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2].map((i) => (
-              <div key={i} className="h-64 bg-muted animate-pulse rounded" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <GoalsSkeleton />;
   }
 
   return (
@@ -326,10 +357,21 @@ export default function Goals() {
                           type="number"
                           placeholder="Novo valor"
                           className="flex-1"
+                          min="0"
+                          step="0.01"
                           onKeyPress={(e) => {
                             if (e.key === 'Enter') {
                               const input = e.target as HTMLInputElement;
-                              handleUpdateProgress(goal.id, parseFloat(input.value), goal.target_amount);
+                              const value = parseFloat(input.value);
+                              if (isNaN(value) || value < 0) {
+                                toast({
+                                  title: "Valor Inválido",
+                                  description: "Digite um valor válido maior ou igual a zero.",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              handleUpdateProgress(goal.id, value, goal.target_amount);
                               input.value = '';
                             }
                           }}
@@ -339,7 +381,16 @@ export default function Goals() {
                           size="sm"
                           onClick={(e) => {
                             const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
-                            handleUpdateProgress(goal.id, parseFloat(input.value), goal.target_amount);
+                            const value = parseFloat(input.value);
+                            if (isNaN(value) || value < 0) {
+                              toast({
+                                title: "Valor Inválido",
+                                description: "Digite um valor válido maior ou igual a zero.",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            handleUpdateProgress(goal.id, value, goal.target_amount);
                             input.value = '';
                           }}
                         >

@@ -22,6 +22,8 @@ import OnboardingTour from "@/components/OnboardingTour";
 import { toast } from "sonner";
 import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award } from "lucide-react";
 
+import { DashboardSkeleton } from "@/components/ui/skeleton-group";
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -52,78 +54,61 @@ export default function Dashboard() {
     });
     setIsAdmin(adminCheck || false);
 
-    await Promise.all([
-      loadDiagnostic(user.id),
-      loadHistory(user.id),
-      loadBadges(user.id),
-      loadGamification(user.id)
-    ]);
+    // Load all dashboard data with new optimized function
+    await loadDashboardData(user.id);
   }
 
-  async function loadDiagnostic(userId: string) {
+  async function loadDashboardData(userId: string) {
     try {
-      const { data, error } = await supabase
-        .from('diagnostics')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('completed', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (error) throw error;
-      setDiagnostic(data);
+      setLoading(true);
+      
+      // Try to use cached data first (5 min cache)
+      const cacheKey = `dashboard_${userId}`;
+      const cachedData = localStorage.getItem(cacheKey);
+      const cacheTime = localStorage.getItem(`${cacheKey}_time`);
+      const now = Date.now();
+      
+      if (cachedData && cacheTime && (now - parseInt(cacheTime)) < 5 * 60 * 1000) {
+        const data = JSON.parse(cachedData);
+        setDiagnostic(data.diagnostic);
+        setHistory(data.history);
+        setBadges(data.badges);
+        setGamification(data.gamification);
+        setLoading(false);
+        
+        // Refresh in background
+        loadDashboardDataFromServer(userId, cacheKey);
+        return;
+      }
+      
+      // Load from server
+      await loadDashboardDataFromServer(userId, cacheKey);
     } catch (error) {
-      console.error('Error loading diagnostic:', error);
-      toast.error('Erro ao carregar diagnóstico');
-    } finally {
+      console.error('Error loading dashboard data:', error);
+      toast.error('Erro ao carregar dashboard');
       setLoading(false);
     }
   }
 
-  async function loadHistory(userId: string) {
+  async function loadDashboardDataFromServer(userId: string, cacheKey: string) {
     try {
-      const { data, error } = await supabase
-        .from('diagnostic_history')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
+      const { data, error } = await supabase.functions.invoke('get-dashboard-data');
+      
       if (error) throw error;
-      setHistory(data || []);
+      
+      setDiagnostic(data.diagnostic);
+      setHistory(data.history);
+      setBadges(data.badges);
+      setGamification(data.gamification);
+      
+      // Cache the data
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
     } catch (error) {
-      console.error('Error loading history:', error);
-    }
-  }
-
-  async function loadBadges(userId: string) {
-    try {
-      const { data, error } = await supabase
-        .from('user_badges')
-        .select('*')
-        .eq('user_id', userId)
-        .order('earned_at', { ascending: false });
-
-      if (error) throw error;
-      setBadges(data || []);
-    } catch (error) {
-      console.error('Error loading badges:', error);
-    }
-  }
-
-  async function loadGamification(userId: string) {
-    try {
-      const { data, error } = await supabase
-        .from('user_gamification')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (error) throw error;
-      setGamification(data);
-    } catch (error) {
-      console.error('Error loading gamification:', error);
+      console.error('Error loading from server:', error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -166,14 +151,7 @@ export default function Dashboard() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-lg">Carregando seu dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!diagnostic) {
