@@ -215,13 +215,25 @@ export default function Diagnostic() {
         });
       }
 
-      // Check if diagnostic is complete
-      if (
-        assistantMessage.includes("DIAGNÓSTICO_COMPLETO") ||
-        assistantMessage.toLowerCase().includes("diagnóstico_completo") ||
-        assistantMessage.toLowerCase().includes("finalizamos") ||
-        assistantMessage.toLowerCase().includes("concluímos")
-      ) {
+      // Check if diagnostic is complete - improved detection
+      const completionPhrases = [
+        'DIAGNÓSTICO_COMPLETO',
+        'diagnóstico_completo',
+        'diagnóstico completo',
+        'finalizamos',
+        'concluímos',
+        'finalizar',
+        'está tudo correto',
+        'tudo certo',
+        'resumo confirmado',
+        'pode finalizar'
+      ];
+      
+      const isComplete = completionPhrases.some(phrase => 
+        assistantMessage.toLowerCase().includes(phrase.toLowerCase())
+      );
+      
+      if (isComplete) {
         setIsComplete(true);
         trackEvent('diagnostic_completed', { 
           totalMessages: updatedMessages.length
