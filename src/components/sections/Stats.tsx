@@ -66,7 +66,7 @@ function StatItem({ icon: Icon, value, label, suffix = "" }: StatItemProps) {
       <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
         {displayValue}
       </div>
-      <p className="text-muted-foreground font-medium">{label}</p>
+      <p className="text-white/80 drop-shadow-sm font-medium">{label}</p>
     </div>
   );
 }
@@ -101,12 +101,12 @@ export default function Stats() {
     <section className="py-20 bg-gradient-diagonal">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Nossos Números Falam Por Si
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Anos de dedicação transformando vidas financeiras com resultados comprovados
-          </p>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow-lg">
+          Nossos Números Falam Por Si
+        </h2>
+        <p className="text-white/90 drop-shadow-md max-w-2xl mx-auto">
+          Anos de dedicação transformando vidas financeiras com resultados comprovados
+        </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
