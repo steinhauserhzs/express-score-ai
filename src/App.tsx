@@ -50,11 +50,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <PWAErrorBoundary>
-        <PWAInstallPrompt />
-        <PWAInstallButton />
-      </PWAErrorBoundary>
       <BrowserRouter>
+        <PWAErrorBoundary>
+          <PWAInstallPrompt />
+          <PWAInstallButton />
+        </PWAErrorBoundary>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
