@@ -300,45 +300,57 @@ export type Database = {
       diagnostics: {
         Row: {
           completed: boolean
+          conversation_context: Json | null
           created_at: string
           current_step: number | null
           dimension_scores: Json
           id: string
+          last_question: number | null
           profile: string | null
+          progress_percentage: number | null
           quality_of_life: number | null
           responses_json: Json
           score_classification: string | null
           total_score: number
           total_steps: number | null
           user_id: string
+          validations_triggered: string[] | null
         }
         Insert: {
           completed?: boolean
+          conversation_context?: Json | null
           created_at?: string
           current_step?: number | null
           dimension_scores: Json
           id?: string
+          last_question?: number | null
           profile?: string | null
+          progress_percentage?: number | null
           quality_of_life?: number | null
           responses_json: Json
           score_classification?: string | null
           total_score: number
           total_steps?: number | null
           user_id: string
+          validations_triggered?: string[] | null
         }
         Update: {
           completed?: boolean
+          conversation_context?: Json | null
           created_at?: string
           current_step?: number | null
           dimension_scores?: Json
           id?: string
+          last_question?: number | null
           profile?: string | null
+          progress_percentage?: number | null
           quality_of_life?: number | null
           responses_json?: Json
           score_classification?: string | null
           total_score?: number
           total_steps?: number | null
           user_id?: string
+          validations_triggered?: string[] | null
         }
         Relationships: []
       }
@@ -435,6 +447,126 @@ export type Database = {
           status?: string
           subject?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      financial_alerts: {
+        Row: {
+          action_url: string | null
+          alert_type: string
+          created_at: string | null
+          id: string
+          message: string
+          metadata: Json | null
+          priority: string | null
+          read: boolean | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          message: string
+          metadata?: Json | null
+          priority?: string | null
+          read?: boolean | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          metadata?: Json | null
+          priority?: string | null
+          read?: boolean | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_goals: {
+        Row: {
+          achieved_at: string | null
+          category: string
+          created_at: string | null
+          current_amount: number | null
+          deadline: string | null
+          description: string | null
+          id: string
+          priority: string | null
+          status: string | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          category: string
+          created_at?: string | null
+          current_amount?: number | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          status?: string | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          category?: string
+          created_at?: string | null
+          current_amount?: number | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          priority?: string | null
+          status?: string | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_milestones: {
+        Row: {
+          achieved_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          achieved_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          achieved_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
+          user_id?: string
+          value?: number | null
         }
         Relationships: []
       }
@@ -731,6 +863,51 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          last_payment_at: string | null
+          next_payment_at: string | null
+          payment_method: string | null
+          plan: string
+          started_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          last_payment_at?: string | null
+          next_payment_at?: string | null
+          payment_method?: string | null
+          plan?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          last_payment_at?: string | null
+          next_payment_at?: string | null
+          payment_method?: string | null
+          plan?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_description: string
@@ -760,6 +937,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed: boolean | null
+          completed_at: string | null
+          completed_tasks: Json | null
+          created_at: string | null
+          id: string
+          total_points_earned: number | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean | null
+          completed_at?: string | null
+          completed_tasks?: Json | null
+          created_at?: string | null
+          id?: string
+          total_points_earned?: number | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          completed_tasks?: Json | null
+          created_at?: string | null
+          id?: string
+          total_points_earned?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_content_progress: {
         Row: {
@@ -853,6 +1071,45 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_challenges: {
+        Row: {
+          active: boolean | null
+          bonus_badge: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          tasks: Json
+          title: string
+          total_points: number
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          active?: boolean | null
+          bonus_badge?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          tasks?: Json
+          title: string
+          total_points?: number
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          active?: boolean | null
+          bonus_badge?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          tasks?: Json
+          title?: string
+          total_points?: number
+          week_end?: string
+          week_start?: string
         }
         Relationships: []
       }
