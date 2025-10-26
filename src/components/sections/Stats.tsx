@@ -60,10 +60,10 @@ function StatItem({ icon: Icon, value, label, suffix = "" }: StatItemProps) {
 
   return (
     <div ref={elementRef} className="text-center animate-fade-in">
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-        <Icon className="h-8 w-8 text-primary" />
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
+        <Icon className="h-8 w-8 text-white" />
       </div>
-      <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
+      <div className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg mb-2">
         {displayValue}
       </div>
       <p className="text-white/80 drop-shadow-sm font-medium">{label}</p>
