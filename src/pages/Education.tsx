@@ -35,6 +35,7 @@ export default function Education() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [recommendedPaths, setRecommendedPaths] = useState<string[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -42,6 +43,7 @@ export default function Education() {
     checkAuth();
     loadContent();
     loadProgress();
+    loadRecommendations();
   }, []);
 
   const checkAuth = async () => {
@@ -87,6 +89,23 @@ export default function Education() {
       setUserProgress(progressMap);
     } catch (error) {
       console.error("Error loading progress:", error);
+    }
+  };
+
+  const loadRecommendations = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase.functions.invoke('recommend-learning-path');
+      
+      if (error) throw error;
+      
+      if (data?.recommendations) {
+        setRecommendedPaths(data.recommendations);
+      }
+    } catch (error) {
+      console.error("Error loading recommendations:", error);
     }
   };
 
@@ -188,6 +207,25 @@ export default function Education() {
           <p className="text-muted-foreground">
             Conteúdos selecionados para melhorar sua saúde financeira
           </p>
+          
+          {recommendedPaths.length > 0 && (
+            <Card className="mt-4 p-4 bg-primary/5 border-primary/20">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Recomendado para Você
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Com base no seu diagnóstico, sugerimos focar nestas áreas:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {recommendedPaths.map((path, i) => (
+                  <Badge key={i} variant="secondary" className="cursor-pointer hover:bg-primary/20">
+                    {path}
+                  </Badge>
+                ))}
+              </div>
+            </Card>
+          )}
         </div>
 
         <div className="mb-6">

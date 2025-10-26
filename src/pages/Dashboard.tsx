@@ -372,19 +372,19 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-3 md:p-6 space-y-6 md:space-y-8">
-        {/* Title Section */}
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground break-words">
-            Dashboard
-          </h1>
-          <p className="text-sm md:text-base text-foreground/70">
-            Seu Score Express da Vida Financeira
-          </p>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <p className="text-muted-foreground">Sua visão geral financeira</p>
+          </div>
+          <Button onClick={() => navigate("/diagnostic")} data-tour="diagnostic-button">
+            Novo Diagnóstico
+          </Button>
         </div>
 
         {/* Score Total e Perfil */}
-        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2" data-tour="score-card">
           <Card className="hover-scale bg-gradient-to-br from-primary/10 to-primary/5">
             <CardHeader className="p-4 md:p-6">
               <CardTitle className="text-center text-xl md:text-2xl">Seu Score Total</CardTitle>
@@ -446,13 +446,15 @@ export default function Dashboard() {
         <ScoreRadar dimensionScores={dimensionScores} />
 
         {/* Smart Alerts and Challenges */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6" data-tour="alerts-section">
           <SmartAlerts />
           <WeeklyChallenges />
         </div>
 
         {/* Goals Widget */}
-        <GoalsWidget />
+        <div data-tour="goals-section">
+          <GoalsWidget />
+        </div>
 
         {/* Individual Scores */}
         <div>

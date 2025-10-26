@@ -42,6 +42,16 @@ export default function DiagnosticChatbot() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Get latest diagnostic for context
+      const { data: diagnostic } = await supabase
+        .from("diagnostics")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("completed", true)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
       // Get latest conversation
       const { data: conversation } = await supabase
         .from("chatbot_conversations")
@@ -65,6 +75,15 @@ export default function DiagnosticChatbot() {
         if (msgs) {
           setMessages(msgs as Message[]);
         }
+      } else if (diagnostic) {
+        // Add welcome message with context
+        const welcomeMsg: Message = {
+          id: "welcome",
+          role: "assistant",
+          content: `Olá! 👋 Vi que você completou seu diagnóstico com score de ${diagnostic.total_score}/150. Como posso ajudar você a melhorar sua saúde financeira?`,
+          created_at: new Date().toISOString(),
+        };
+        setMessages([welcomeMsg]);
       }
     } catch (error) {
       console.error("Error loading conversation:", error);
@@ -88,11 +107,28 @@ export default function DiagnosticChatbot() {
     setMessages((prev) => [...prev, tempUserMsg]);
 
     try {
+      // Get diagnostic context
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: diagnostic } = await supabase
+        .from("diagnostics")
+        .select("*")
+        .eq("user_id", user?.id)
+        .eq("completed", true)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
       const { data, error } = await supabase.functions.invoke("chatbot-assistant", {
         body: {
           message: userMessage,
           conversationId: conversationId,
           conversationType: "diagnostic_questions",
+          diagnosticContext: diagnostic ? {
+            totalScore: diagnostic.total_score,
+            dimensionScores: diagnostic.dimension_scores,
+            classification: diagnostic.score_classification,
+            profile: diagnostic.profile,
+          } : null,
         },
       });
 
