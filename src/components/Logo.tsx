@@ -2,9 +2,10 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   className?: string;
+  variant?: 'default' | 'white' | 'dark';
 }
 
-export default function Logo({ size = 'md', showText = true, className = '' }: LogoProps) {
+export default function Logo({ size = 'md', showText = true, className = '', variant = 'default' }: LogoProps) {
   const sizes = {
     sm: 'w-8 h-8',
     md: 'w-12 h-12',
@@ -19,63 +20,106 @@ export default function Logo({ size = 'md', showText = true, className = '' }: L
     xl: 'text-5xl'
   };
 
+  const colors = {
+    default: {
+      flame: 'hsl(14, 100%, 50%)',
+      text: 'text-secondary'
+    },
+    white: {
+      flame: 'hsl(0, 0%, 100%)',
+      text: 'text-white'
+    },
+    dark: {
+      flame: 'hsl(0, 0%, 24%)',
+      text: 'text-secondary'
+    }
+  };
+
+  const currentColors = colors[variant];
+
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* Logo icon - representando crescimento/evolução financeira */}
+      {/* Logo Firece - Símbolo de Chama Estilizado */}
       <div className={`${sizes[size]} relative group`}>
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-105">
-          {/* Círculo base sólido e visível */}
-          <circle 
-            cx="50" 
-            cy="50" 
-            r="45" 
-            fill="hsl(158, 64%, 42%)"
-            opacity="0.15"
+          {/* Chama principal - formato estilizado */}
+          <path
+            d="M 50 10 
+               C 50 10, 65 25, 65 40
+               C 65 50, 60 55, 55 60
+               C 55 60, 60 55, 62 48
+               C 64 40, 60 35, 55 32
+               C 55 32, 58 38, 58 45
+               C 58 52, 52 58, 50 60
+               C 48 58, 42 52, 42 45
+               C 42 38, 45 32, 45 32
+               C 40 35, 36 40, 38 48
+               C 40 55, 45 60, 45 60
+               C 40 55, 35 50, 35 40
+               C 35 25, 50 10, 50 10 Z"
+            fill={currentColors.flame}
+            className="drop-shadow-md"
           />
           
-          {/* Gráfico de crescimento simplificado e VISÍVEL */}
-          <path 
-            d="M 20 70 L 30 60 L 40 62 L 50 45 L 60 48 L 70 30 L 80 20" 
-            stroke="hsl(158, 64%, 42%)" 
-            strokeWidth="5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            fill="none"
+          {/* Base da chama - efeito de intensidade */}
+          <ellipse
+            cx="50"
+            cy="62"
+            rx="18"
+            ry="8"
+            fill={currentColors.flame}
+            opacity="0.3"
           />
           
-          {/* Área preenchida sob o gráfico */}
-          <path 
-            d="M 20 70 L 30 60 L 40 62 L 50 45 L 60 48 L 70 30 L 80 20 L 80 80 L 20 80 Z" 
-            fill="hsl(158, 64%, 42%)"
-            opacity="0.2"
-          />
-          
-          {/* Pontos de destaque VISÍVEIS */}
-          <circle cx="20" cy="70" r="3" fill="hsl(158, 64%, 42%)" />
-          <circle cx="30" cy="60" r="3" fill="hsl(158, 64%, 42%)" />
-          <circle cx="40" cy="62" r="3" fill="hsl(158, 64%, 42%)" />
-          <circle cx="50" cy="45" r="4" fill="hsl(142, 76%, 46%)" />
-          <circle cx="60" cy="48" r="4" fill="hsl(142, 76%, 46%)" />
-          <circle cx="70" cy="30" r="5" fill="hsl(142, 76%, 46%)" />
-          <circle cx="80" cy="20" r="6" fill="white" className="drop-shadow-md" />
-          
-          {/* Seta indicando crescimento */}
-          <path 
-            d="M 72 26 L 80 20 L 80 28 Z" 
+          {/* Detalhe interno - ponto quente */}
+          <path
+            d="M 50 25
+               C 50 25, 55 32, 55 40
+               C 55 45, 52 48, 50 50
+               C 48 48, 45 45, 45 40
+               C 45 32, 50 25, 50 25 Z"
             fill="white"
+            opacity="0.6"
           />
-          <path 
-            d="M 80 20 L 86 20 L 80 14 Z" 
-            fill="white"
+          
+          {/* Faísca 1 - canto superior direito */}
+          <circle
+            cx="70"
+            cy="20"
+            r="2.5"
+            fill={currentColors.flame}
+            className="animate-fire-flicker"
+          />
+          
+          {/* Faísca 2 - canto superior esquerdo */}
+          <circle
+            cx="30"
+            cy="25"
+            r="2"
+            fill={currentColors.flame}
+            className="animate-fire-flicker"
+            style={{ animationDelay: '0.3s' }}
+          />
+          
+          {/* Faísca 3 - lateral */}
+          <circle
+            cx="25"
+            cy="45"
+            r="1.5"
+            fill={currentColors.flame}
+            className="animate-fire-flicker"
+            style={{ animationDelay: '0.6s' }}
           />
         </svg>
       </div>
       
-      {/* Nome da marca */}
+      {/* Nome da marca - Firece com separador vertical */}
       {showText && (
-        <span className={`font-bold ${textSizes[size]} text-primary transition-all hover:opacity-90`}>
-          Pleno
-        </span>
+        <div className={`font-bold ${textSizes[size]} ${currentColors.text} flex items-center gap-1 transition-all hover:opacity-90`}>
+          <span className="tracking-tight">Fire</span>
+          <span className="text-primary font-black">|</span>
+          <span className="tracking-tight">ce</span>
+        </div>
       )}
     </div>
   );
