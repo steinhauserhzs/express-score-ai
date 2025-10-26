@@ -47,22 +47,52 @@ export default function AdminDiagnostics() {
 
   const loadDiagnostics = async () => {
     try {
-      const { data, error } = await supabase
+      // Buscar diagnósticos primeiro
+      const { data: diagnosticsData, error: diagError } = await supabase
         .from("diagnostics")
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            email
-          )
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setDiagnostics(data || []);
+      if (diagError) throw diagError;
+
+      console.log("🔍 Diagnósticos carregados:", diagnosticsData?.length);
+
+      // Buscar profiles separadamente para garantir dados
+      const userIds = diagnosticsData?.map(d => d.user_id) || [];
+      
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, full_name, email")
+          .in("id", userIds);
+
+        if (profileError) {
+          console.error("⚠️ Erro ao carregar profiles:", profileError);
+        }
+
+        console.log("🔍 Profiles encontrados:", profilesData?.length);
+
+        // Mapear profiles manualmente
+        const diagnosticsWithProfiles = diagnosticsData?.map(d => ({
+          ...d,
+          profiles: profilesData?.find(p => p.id === d.user_id) || null
+        }));
+
+        setDiagnostics(diagnosticsWithProfiles || []);
+
+        // Logar acesso de admin aos diagnósticos
+        await supabase.rpc('log_admin_action', {
+          p_action: 'VIEW_DIAGNOSTICS',
+          p_table_name: 'diagnostics',
+          p_record_id: null
+        });
+      } else {
+        setDiagnostics([]);
+      }
     } catch (error) {
-      console.error("Error loading diagnostics:", error);
-      toast.error("Erro ao carregar diagnósticos");
+      console.error("❌ ERRO ao carregar diagnósticos:", error);
+      toast.error("Erro ao carregar diagnósticos. Dados parciais podem ser exibidos.");
+      // Mesmo com erro, mostrar o que foi carregado
     } finally {
       setLoading(false);
     }

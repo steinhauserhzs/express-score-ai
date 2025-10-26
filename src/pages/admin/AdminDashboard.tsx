@@ -268,9 +268,7 @@ export default function AdminDashboard() {
                   data={scoreDistribution}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius={100}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
                 >
@@ -279,6 +277,11 @@ export default function AdminDashboard() {
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value, entry: any) => `${entry.payload.name}: ${entry.payload.value}`}
+                />
               </PieChart>
             </ResponsiveContainer>
           </Card>

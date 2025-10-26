@@ -80,6 +80,13 @@ export default function AdminLeads() {
       );
 
       setLeads(leadsWithDiagnostics);
+
+      // Logar acesso de admin aos leads
+      await supabase.rpc('log_admin_action', {
+        p_action: 'VIEW_LEADS',
+        p_table_name: 'profiles',
+        p_record_id: null
+      });
     } catch (error) {
       console.error("Error loading leads:", error);
       toast({

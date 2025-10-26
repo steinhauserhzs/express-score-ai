@@ -931,6 +931,10 @@ export type Database = {
         Args: { _client_id: string; _consultant_id: string }
         Returns: boolean
       }
+      log_admin_action: {
+        Args: { p_action: string; p_record_id?: string; p_table_name: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "client" | "consultant" | "admin"
