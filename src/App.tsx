@@ -23,6 +23,10 @@ import AdminAudit from "./pages/admin/AdminAudit";
 import AdminMetrics from "./pages/admin/AdminMetrics";
 import AdminSegments from "./pages/admin/AdminSegments";
 import AdminUsers from "./pages/admin/AdminUsers";
+import MyJourney from "./pages/MyJourney";
+import Goals from "./pages/Goals";
+import Pricing from "./pages/Pricing";
+import Calculators from "./pages/Calculators";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +46,10 @@ const App = () => (
           <Route path="/consultations" element={<Consultations />} />
           <Route path="/education" element={<Education />} />
           <Route path="/refer" element={<Refer />} />
+          <Route path="/my-journey" element={<MyJourney />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/calculators" element={<Calculators />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/leads" element={<AdminLeads />} />

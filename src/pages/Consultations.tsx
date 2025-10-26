@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import ConsultationValue from "@/components/ConsultationValue";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
@@ -113,7 +114,7 @@ export default function Consultations() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-success/5 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={() => navigate('/dashboard')}>
@@ -123,7 +124,17 @@ export default function Consultations() {
           <Logo size="sm" />
         </div>
 
-        {/* Main Card */}
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold">Consultoria Financeira Personalizada</h1>
+          <p className="text-xl text-muted-foreground">
+            Transforme sua vida financeira com orientação profissional
+          </p>
+        </div>
+
+        {/* Consultation Value Section */}
+        <ConsultationValue />
+
+        {/* Main Card - Scheduling */}
         <Card className="hover-lift">
           <CardHeader>
             <CardTitle className="text-3xl">Agendar Consultoria</CardTitle>

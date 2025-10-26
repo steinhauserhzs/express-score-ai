@@ -15,6 +15,10 @@ import DiagnosticComparison from "@/components/DiagnosticComparison";
 import BadgeCard from "@/components/gamification/BadgeCard";
 import LevelProgress from "@/components/gamification/LevelProgress";
 import CustomerJourney from "@/components/CustomerJourney";
+import SmartAlerts from "@/components/SmartAlerts";
+import WeeklyChallenges from "@/components/WeeklyChallenges";
+import GoalsWidget from "@/components/GoalsWidget";
+import OnboardingTour from "@/components/OnboardingTour";
 import { toast } from "sonner";
 import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award } from "lucide-react";
 
@@ -297,6 +301,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingTour />
       {/* Header Fixo */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-4 md:mb-6">
         <div className="max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-4">
@@ -439,6 +444,15 @@ export default function Dashboard() {
 
         {/* Radar Chart */}
         <ScoreRadar dimensionScores={dimensionScores} />
+
+        {/* Smart Alerts and Challenges */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <SmartAlerts />
+          <WeeklyChallenges />
+        </div>
+
+        {/* Goals Widget */}
+        <GoalsWidget />
 
         {/* Individual Scores */}
         <div>

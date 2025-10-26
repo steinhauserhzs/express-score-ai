@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Loader2, Send, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import DiagnosticModeModal from "@/components/DiagnosticModeModal";
 
 interface Message {
   role: "user" | "assistant";
@@ -21,14 +22,18 @@ export default function Diagnostic() {
   const [isComplete, setIsComplete] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [turboMode, setTurboMode] = useState(false);
+  const [showModeSelection, setShowModeSelection] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    initDiagnostic();
-    trackEvent('diagnostic_started');
-  }, []);
+    // Don't initialize until mode is selected
+    if (!showModeSelection && !diagnosticId) {
+      initDiagnostic();
+      trackEvent('diagnostic_started');
+    }
+  }, [showModeSelection]);
 
   useEffect(() => {
     scrollToBottom();
@@ -49,6 +54,12 @@ export default function Diagnostic() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleModeSelection = (isTurbo: boolean) => {
+    setTurboMode(isTurbo);
+    setShowModeSelection(false);
+    trackEvent('diagnostic_mode_selected', { turboMode: isTurbo });
   };
 
   const trackEvent = async (eventName: string, properties?: Record<string, any>) => {
@@ -215,42 +226,32 @@ export default function Diagnostic() {
         });
       }
 
-      // Check if diagnostic is complete - improved detection
-      const completionPhrases = [
-        'DIAGNÓSTICO_COMPLETO',
-        'diagnóstico_completo',
-        'diagnóstico completo',
-        'finalizamos',
-        'concluímos',
-        'finalizar',
-        'está tudo correto',
-        'tudo certo',
-        'resumo confirmado',
-        'pode finalizar'
-      ];
-      
-      const isComplete = completionPhrases.some(phrase => 
-        assistantMessage.toLowerCase().includes(phrase.toLowerCase())
-      );
-      
-      if (isComplete) {
+      // Check if diagnostic is complete - improved detection with marker
+      if (assistantMessage.includes('<!-- DIAGNOSTIC_COMPLETE -->')) {
+        // Remove the marker from the message
+        const cleanMessage = assistantMessage.replace('<!-- DIAGNOSTIC_COMPLETE -->', '').trim();
+        setMessages(prev => 
+          prev.map((m, i) => 
+            i === prev.length - 1 ? { ...m, content: cleanMessage } : m
+          )
+        );
         setIsComplete(true);
-        trackEvent('diagnostic_completed', { 
-          totalMessages: updatedMessages.length
-        });
-        
-        // Show toast notification
-        toast({
-          title: "🎉 Diagnóstico Concluído!",
-          description: "Calculando seu score... aguarde.",
-          duration: 3000,
-        });
-        
-        // Auto-finalize after 2 seconds
-        setTimeout(() => {
-          handleFinalize();
-        }, 2000);
+        trackEvent('diagnostic_completed');
+        handleFinalize();
       }
+
+      // Auto-save progress every few messages
+      if (updatedMessages.length % 5 === 0) {
+        await supabase
+          .from('diagnostics')
+          .update({
+            responses_json: { messages: updatedMessages },
+            progress_percentage: Math.min((updatedMessages.length / 50) * 100, 95),
+            last_question: updatedMessages.length
+          })
+          .eq('id', diagnosticId);
+      }
+
     } catch (error: any) {
       console.error("Error streaming chat:", error);
       trackEvent('diagnostic_error', { error: error.message });
