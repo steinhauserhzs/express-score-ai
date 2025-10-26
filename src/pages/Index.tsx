@@ -1,22 +1,25 @@
+import { lazy, Suspense } from "react";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import Stats from "@/components/sections/Stats";
-import HowItWorks from "@/components/HowItWorks";
-import Pricing from "@/components/Pricing";
-import Testimonials from "@/components/sections/Testimonials";
-import AdditionalServices from "@/components/sections/AdditionalServices";
-import CorporateBenefits from "@/components/sections/CorporateBenefits";
-import FAQ from "@/components/sections/FAQ";
-import TrustBadges from "@/components/sections/TrustBadges";
-import FinalCTA from "@/components/sections/FinalCTA";
-import AboutFirece from "@/components/sections/AboutFirece";
-import ContactSection from "@/components/sections/ContactSection";
-import OurConsultants from "@/components/sections/OurConsultants";
-import FreeResources from "@/components/sections/FreeResources";
 import Layout from "@/components/Layout";
 import Logo from "@/components/Logo";
 import { useNavigate } from "react-router-dom";
 import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
+
+// Lazy load components below the fold for better performance
+const Stats = lazy(() => import("@/components/sections/Stats"));
+const HowItWorks = lazy(() => import("@/components/HowItWorks"));
+const Pricing = lazy(() => import("@/components/Pricing"));
+const Testimonials = lazy(() => import("@/components/sections/Testimonials"));
+const AdditionalServices = lazy(() => import("@/components/sections/AdditionalServices"));
+const CorporateBenefits = lazy(() => import("@/components/sections/CorporateBenefits"));
+const FAQ = lazy(() => import("@/components/sections/FAQ"));
+const TrustBadges = lazy(() => import("@/components/sections/TrustBadges"));
+const FinalCTA = lazy(() => import("@/components/sections/FinalCTA"));
+const AboutFirece = lazy(() => import("@/components/sections/AboutFirece"));
+const ContactSection = lazy(() => import("@/components/sections/ContactSection"));
+const OurConsultants = lazy(() => import("@/components/sections/OurConsultants"));
+const FreeResources = lazy(() => import("@/components/sections/FreeResources"));
 
 const Index = () => {
   const navigate = useNavigate();
@@ -25,19 +28,21 @@ const Index = () => {
     <Layout>
       <Hero />
       <Features />
-      <Stats />
-      <AboutFirece />
-      <OurConsultants />
-      <HowItWorks />
-      <Testimonials />
-      <Pricing />
-      <AdditionalServices />
-      <FreeResources />
-      <CorporateBenefits />
-      <ContactSection />
-      <FAQ />
-      <TrustBadges />
-      <FinalCTA />
+      <Suspense fallback={<div className="min-h-[400px]" />}>
+        <Stats />
+        <AboutFirece />
+        <OurConsultants />
+        <HowItWorks />
+        <Testimonials />
+        <Pricing />
+        <AdditionalServices />
+        <FreeResources />
+        <CorporateBenefits />
+        <ContactSection />
+        <FAQ />
+        <TrustBadges />
+        <FinalCTA />
+      </Suspense>
       
       <footer className="py-12 md:py-16 border-t bg-secondary text-white">
         <div className="container mx-auto px-4 md:px-6">

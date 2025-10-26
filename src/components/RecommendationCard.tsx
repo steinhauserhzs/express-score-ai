@@ -1,8 +1,8 @@
+import { memo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
 
 interface RecommendationCardProps {
   title: string;
@@ -26,7 +26,7 @@ const priorityConfig = {
   }
 };
 
-export default function RecommendationCard({ 
+const RecommendationCard = memo(function RecommendationCard({ 
   title, 
   description, 
   priority, 
@@ -66,4 +66,6 @@ export default function RecommendationCard({
       </CardHeader>
     </Card>
   );
-}
+});
+
+export default RecommendationCard;

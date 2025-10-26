@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
@@ -8,7 +9,7 @@ interface ScoreCardProps {
   description?: string;
 }
 
-export default function ScoreCard({ title, score, maxScore, description }: ScoreCardProps) {
+const ScoreCard = memo(function ScoreCard({ title, score, maxScore, description }: ScoreCardProps) {
   const percentage = (score / maxScore) * 100;
   const getScoreColor = (pct: number) => {
     if (pct >= 80) return "text-success";
@@ -41,4 +42,6 @@ export default function ScoreCard({ title, score, maxScore, description }: Score
       </CardContent>
     </Card>
   );
-}
+});
+
+export default ScoreCard;

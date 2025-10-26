@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -15,7 +16,7 @@ interface StatCardProps {
   iconBg?: string;
 }
 
-export default function StatCard({
+const StatCard = memo(function StatCard({
   title,
   value,
   icon: Icon,
@@ -56,4 +57,6 @@ export default function StatCard({
       </div>
     </Card>
   );
-}
+});
+
+export default StatCard;

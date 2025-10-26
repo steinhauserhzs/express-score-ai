@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
-import { Calendar, momentLocalizer, View } from "react-big-calendar";
-import moment from "moment";
+import { Calendar, dateFnsLocalizer, View } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-const localizer = momentLocalizer(moment);
+const locales = {
+  'pt-BR': ptBR,
+};
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek: () => startOfWeek(new Date(), { locale: ptBR }),
+  getDay,
+  locales,
+});
 
 interface CalendarEvent {
   id: string;
@@ -154,7 +165,7 @@ export default function AdminCalendar() {
               <div>
                 <p className="text-sm font-medium">Data/Hora</p>
                 <p className="text-sm text-muted-foreground">
-                  {moment(selectedEvent.start).format("DD/MM/YYYY HH:mm")}
+                  {format(selectedEvent.start, "dd/MM/yyyy HH:mm", { locale: ptBR })}
                 </p>
               </div>
               <div>

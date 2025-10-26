@@ -35,21 +35,29 @@ function StatItem({ icon: Icon, value, label, suffix = "" }: StatItemProps) {
 
     const targetValue = parseInt(value.replace(/\D/g, ""));
     const duration = 2000;
-    const steps = 60;
+    const steps = 30; // Reduced from 60 for better performance
     const increment = targetValue / steps;
     let currentStep = 0;
+    let animationFrame: number;
 
-    const timer = setInterval(() => {
+    const animate = () => {
       currentStep++;
       if (currentStep >= steps) {
         setCount(targetValue);
-        clearInterval(timer);
       } else {
         setCount(Math.floor(increment * currentStep));
+        animationFrame = requestAnimationFrame(animate);
       }
+    };
+
+    const timer = setTimeout(() => {
+      animationFrame = requestAnimationFrame(animate);
     }, duration / steps);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(timer);
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    };
   }, [isVisible, value]);
 
   const displayValue = value.startsWith("R$") 
@@ -59,7 +67,7 @@ function StatItem({ icon: Icon, value, label, suffix = "" }: StatItemProps) {
     : `${count}${suffix}`;
 
   return (
-    <div ref={elementRef} className="text-center animate-fade-in">
+    <div ref={elementRef} className="text-center animate-fade-in" style={{ willChange: isVisible ? 'auto' : 'transform' }}>
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
         <Icon className="h-8 w-8 text-white" />
       </div>

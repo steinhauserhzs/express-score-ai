@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
@@ -10,7 +11,7 @@ interface BadgeCardProps {
   locked?: boolean;
 }
 
-export default function BadgeCard({
+const BadgeCard = memo(function BadgeCard({
   badgeName,
   badgeDescription,
   earnedAt,
@@ -45,4 +46,6 @@ export default function BadgeCard({
       </div>
     </Card>
   );
-}
+});
+
+export default BadgeCard;
