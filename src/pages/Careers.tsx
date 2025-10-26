@@ -30,41 +30,6 @@ const Careers = () => {
     }
   ];
 
-  // Vagas de exemplo - em produção, viriam do banco de dados
-  const openings = [
-    {
-      id: 1,
-      title: "Consultor Financeiro Pleno",
-      area: "Consultoria",
-      location: "São Paulo - Híbrido",
-      type: "CLT",
-      description: "Buscamos consultor experiente para atendimento de clientes e elaboração de planejamentos financeiros personalizados."
-    },
-    {
-      id: 2,
-      title: "Analista de Marketing Digital",
-      area: "Marketing",
-      location: "São Paulo - Remoto",
-      type: "CLT",
-      description: "Profissional para gerenciar campanhas digitais, SEO, redes sociais e análise de métricas."
-    },
-    {
-      id: 3,
-      title: "Desenvolvedor Full Stack",
-      area: "Tecnologia",
-      location: "Remoto",
-      type: "PJ",
-      description: "Desenvolvimento e manutenção das plataformas digitais da Firece com foco em React e Node.js."
-    },
-    {
-      id: 4,
-      title: "Assistente Administrativo",
-      area: "Administrativo",
-      location: "São Paulo - Presencial",
-      type: "CLT",
-      description: "Suporte administrativo geral, atendimento ao cliente e organização de documentos."
-    }
-  ];
 
   return (
     <Layout>
@@ -168,62 +133,24 @@ const Careers = () => {
         </div>
       </section>
 
-      {/* Vagas Abertas */}
+      {/* Oportunidades */}
       <section className="py-20 px-4" id="vagas">
-        <div className="container mx-auto max-w-4xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
-            Vagas Abertas
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            Oportunidades na Firece
           </h2>
-          <div className="space-y-6">
-            {openings.map((opening) => (
-              <Card key={opening.id} className="hover-scale">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                      <CardTitle className="text-xl text-foreground mb-2">
-                        {opening.title}
-                      </CardTitle>
-                      <div className="flex flex-wrap gap-3 text-sm text-foreground/60">
-                        <span className="flex items-center gap-1">
-                          <Briefcase className="w-4 h-4" />
-                          {opening.area}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {opening.location}
-                        </span>
-                        <span className="bg-primary/10 text-primary px-2 py-1 rounded">
-                          {opening.type}
-                        </span>
-                      </div>
-                    </div>
-                    <Button onClick={() => navigate("/contato")}>
-                      Candidatar-se
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-foreground/70">{opening.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <Card className="mt-12 bg-gradient-to-br from-primary/10 to-accent/10">
-            <CardHeader>
-              <CardTitle className="text-center text-foreground">
-                Não encontrou a vaga ideal?
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-foreground/70 mb-6">
-                Cadastre seu currículo no nosso banco de talentos e seja considerado 
-                para futuras oportunidades.
-              </p>
-              <Button variant="outline" onClick={() => navigate("/contato")}>
-                Enviar Currículo
-              </Button>
-            </CardContent>
+          <Card className="p-8">
+            <p className="text-lg text-foreground mb-6">
+              No momento não temos vagas abertas, mas estamos sempre em busca de 
+              talentos excepcionais para fazer parte do nosso time.
+            </p>
+            <p className="text-foreground/70 mb-6">
+              Cadastre seu currículo em nosso banco de talentos e seja o primeiro 
+              a saber quando surgirem novas oportunidades.
+            </p>
+            <Button onClick={() => navigate("/contato")}>
+              Enviar Currículo
+            </Button>
           </Card>
         </div>
       </section>

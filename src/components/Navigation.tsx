@@ -3,11 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "./ThemeProvider";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const location = useLocation();
+  const { theme } = useTheme();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -20,12 +23,16 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2C3E50] text-white shadow-lg">
+    <nav className={`fixed top-0 left-0 right-0 z-50 shadow-lg transition-colors ${
+      theme === "light" 
+        ? "bg-white text-foreground" 
+        : "bg-[#1a1a1a] text-white"
+    }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <Logo variant="white" className="h-10" />
+            <Logo variant={theme === "light" ? "dark" : "white"} className="h-10" />
           </Link>
 
           {/* Desktop Menu */}
@@ -110,6 +117,8 @@ const Navigation = () => {
               Trabalhe Conosco
             </Link>
 
+            <ThemeToggle />
+
             <Link to="/auth">
               <Button size="sm" className="ml-4">
                 Começar Agora
@@ -119,7 +128,7 @@ const Navigation = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden text-white"
+            className={theme === "light" ? "lg:hidden text-foreground" : "lg:hidden text-white"}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -210,11 +219,14 @@ const Navigation = () => {
                 Trabalhe Conosco
               </Link>
 
-              <Link to="/auth" onClick={() => setIsOpen(false)}>
-                <Button size="sm" className="w-full">
-                  Começar Agora
-                </Button>
-              </Link>
+              <div className="flex items-center gap-4">
+                <ThemeToggle />
+                <Link to="/auth" onClick={() => setIsOpen(false)} className="flex-1">
+                  <Button size="sm" className="w-full">
+                    Começar Agora
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         )}
