@@ -410,20 +410,20 @@ export default function Diagnostic() {
         </Card>
 
         <Card className="h-[500px] md:h-[600px] flex flex-col bg-card/95 backdrop-blur">
-          <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 md:p-6 space-y-3 md:space-y-4">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} w-full`}
               >
                 <div
-                  className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-3 md:p-4 ${
+                  className={`max-w-[90%] md:max-w-[80%] rounded-2xl p-3 md:p-4 ${
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground shadow-lg"
                       : "bg-muted text-foreground"
                   }`}
                 >
-                  <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words">
+                  <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words overflow-wrap-anywhere">
                     {msg.content}
                   </p>
                 </div>
