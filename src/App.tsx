@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -38,6 +40,7 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Install from "./pages/Install";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <PWAInstallPrompt />
+      <PWAInstallButton />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -60,6 +65,7 @@ const App = () => (
           <Route path="/sobre" element={<About />} />
           <Route path="/privacidade" element={<Privacy />} />
           <Route path="/termos" element={<Terms />} />
+          <Route path="/instalar" element={<Install />} />
           <Route path="/admin-choice" element={<ProtectedRoute><AdminChoice /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/diagnostic" element={<ProtectedRoute><Diagnostic /></ProtectedRoute>} />
