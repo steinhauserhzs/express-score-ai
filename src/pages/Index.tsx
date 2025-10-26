@@ -22,7 +22,7 @@ const Index = () => {
       {/* Header/Navbar Firece */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-primary/10 shadow-sm">
         <div className="container mx-auto px-3 md:px-4 h-14 md:h-16 flex items-center justify-between">
-          <Logo size="sm" showText={true} />
+          <Logo size="sm" />
           <div className="flex items-center gap-2 md:gap-3">
             <ThemeToggle />
             <Button 
@@ -65,7 +65,7 @@ const Index = () => {
         <div className="container mx-auto px-3 md:px-4">
           <div className="grid gap-6 md:gap-8 grid-cols-2 md:grid-cols-4">
             <div className="space-y-4 col-span-2 md:col-span-1">
-              <Logo size="sm" showText={true} variant="white" />
+              <Logo size="sm" variant="white" />
               <p className="text-xs md:text-sm text-white/70 break-words">
                 Transforme a relação das pessoas com o dinheiro por meio de educação financeira e planejamento estratégico
               </p>

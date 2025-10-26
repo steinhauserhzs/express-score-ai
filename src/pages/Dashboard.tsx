@@ -284,7 +284,7 @@ export default function Dashboard() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50 mb-4 md:mb-6">
         <div className="max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <Logo size="sm" showText={true} />
+            <Logo size="sm" />
             
             {/* Desktop: botões visíveis */}
             <div className="hidden lg:flex gap-2 items-center">

@@ -51,7 +51,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </SheetContent>
             </Sheet>
             
-            <Logo size="sm" showText={!isMobile} />
+            <Logo size="sm" />
           </div>
           
           <div className="flex items-center gap-2">
