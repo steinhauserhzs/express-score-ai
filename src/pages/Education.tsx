@@ -47,8 +47,8 @@ export default function Education() {
   }, []);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
       navigate("/auth");
     }
   };
@@ -72,13 +72,13 @@ export default function Education() {
 
   const loadProgress = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       const { data, error } = await supabase
         .from("user_content_progress")
         .select("*")
-        .eq("user_id", user.id);
+        .eq("user_id", session.user.id);
 
       if (error) throw error;
 
@@ -94,8 +94,8 @@ export default function Education() {
 
   const loadRecommendations = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       const { data, error } = await supabase.functions.invoke('recommend-learning-path');
       
@@ -111,13 +111,13 @@ export default function Education() {
 
   const startContent = async (contentId: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       const { error } = await supabase
         .from("user_content_progress")
         .upsert({
-          user_id: user.id,
+          user_id: session.user.id,
           content_id: contentId,
           status: "started",
           progress_percentage: 0,
@@ -136,7 +136,7 @@ export default function Education() {
 
       // Track journey event
       await supabase.from("customer_journey_events").insert({
-        user_id: user.id,
+        user_id: session.user.id,
         event_type: "content_viewed",
         event_title: "Conteúdo Educacional Iniciado",
         event_description: content?.title,

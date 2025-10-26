@@ -52,8 +52,8 @@ export default function Goals() {
 
   const fetchGoals = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
         navigate("/auth");
         return;
       }
@@ -61,7 +61,7 @@ export default function Goals() {
       const { data, error } = await supabase
         .from("financial_goals")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -120,13 +120,13 @@ export default function Goals() {
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       const { error } = await supabase
         .from("financial_goals")
         .insert({
-          user_id: user.id,
+          user_id: session.user.id,
           ...formData,
           target_amount: targetAmount,
           current_amount: currentAmount,

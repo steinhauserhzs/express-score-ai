@@ -195,19 +195,13 @@ const Auth = () => {
 
       if (error) throw error;
 
-      // Se o usuário não marcou "lembrar de mim", configurar para sessão temporária
-      if (!rememberMe && data.session) {
-        // Copiar token para sessionStorage
-        sessionStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
-        // Limpar do localStorage
-        localStorage.removeItem('sb-rpjkccdfulotegejzowk-auth-token');
-      }
-
       // Check if user is admin
       const { data: isAdmin } = await supabase.rpc('has_role', {
         _user_id: data.user.id,
         _role: 'admin'
       });
+
+      console.log('[Auth] Login successful:', data.user.email, 'Remember me:', rememberMe);
 
       toast({
         title: "Bem-vindo de volta!",
@@ -222,6 +216,8 @@ const Auth = () => {
       if (error.message.includes("Invalid login credentials")) {
         errorMessage = "Email ou senha incorretos.";
       }
+      
+      console.error('[Auth] Login error:', error);
       
       toast({
         title: "Erro ao fazer login",

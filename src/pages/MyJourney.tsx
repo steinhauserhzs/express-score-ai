@@ -35,8 +35,8 @@ export default function MyJourney() {
 
   const fetchData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
         navigate("/auth");
         return;
       }
@@ -45,7 +45,7 @@ export default function MyJourney() {
       const { data: diagData } = await supabase
         .from("diagnostics")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .eq("completed", true)
         .order("created_at", { ascending: true });
 
@@ -55,7 +55,7 @@ export default function MyJourney() {
       const { data: milestoneData } = await supabase
         .from("financial_milestones")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .order("achieved_at", { ascending: false })
         .limit(10);
 
@@ -65,7 +65,7 @@ export default function MyJourney() {
       const { data: goalsData } = await supabase
         .from("financial_goals")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .in("status", ["in_progress", "achieved"])
         .order("created_at", { ascending: false });
 

@@ -25,12 +25,12 @@ export default function Consultations() {
   }, []);
 
   async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
       navigate('/auth');
       return;
     }
-    setUser(user);
+    setUser(session.user);
   }
 
   const availableTimes = [

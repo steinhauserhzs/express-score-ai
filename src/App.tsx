@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AdminChoice from "./pages/AdminChoice";
@@ -39,28 +40,28 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/admin-choice" element={<AdminChoice />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/diagnostic" element={<Diagnostic />} />
-          <Route path="/diagnostic/results/:id" element={<DiagnosticResults />} />
-          <Route path="/consultations" element={<Consultations />} />
-          <Route path="/education" element={<Education />} />
-          <Route path="/refer" element={<Refer />} />
-          <Route path="/my-journey" element={<MyJourney />} />
-          <Route path="/goals" element={<Goals />} />
+          <Route path="/admin-choice" element={<ProtectedRoute><AdminChoice /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/diagnostic" element={<ProtectedRoute><Diagnostic /></ProtectedRoute>} />
+          <Route path="/diagnostic/results/:id" element={<ProtectedRoute><DiagnosticResults /></ProtectedRoute>} />
+          <Route path="/consultations" element={<ProtectedRoute><Consultations /></ProtectedRoute>} />
+          <Route path="/education" element={<ProtectedRoute><Education /></ProtectedRoute>} />
+          <Route path="/refer" element={<ProtectedRoute><Refer /></ProtectedRoute>} />
+          <Route path="/my-journey" element={<ProtectedRoute><MyJourney /></ProtectedRoute>} />
+          <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/calculators" element={<Calculators />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/leads" element={<AdminLeads />} />
-          <Route path="/admin/diagnostics" element={<AdminDiagnostics />} />
-          <Route path="/admin/consultations" element={<AdminConsultations />} />
-          <Route path="/admin/reports" element={<AdminReports />} />
-          <Route path="/admin/insights" element={<AdminInsights />} />
-          <Route path="/admin/audit" element={<AdminAudit />} />
-          <Route path="/admin/metrics" element={<AdminMetrics />} />
-          <Route path="/admin/segments" element={<AdminSegments />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/leads" element={<ProtectedRoute><AdminLeads /></ProtectedRoute>} />
+          <Route path="/admin/diagnostics" element={<ProtectedRoute><AdminDiagnostics /></ProtectedRoute>} />
+          <Route path="/admin/consultations" element={<ProtectedRoute><AdminConsultations /></ProtectedRoute>} />
+          <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>} />
+          <Route path="/admin/insights" element={<ProtectedRoute><AdminInsights /></ProtectedRoute>} />
+          <Route path="/admin/audit" element={<ProtectedRoute><AdminAudit /></ProtectedRoute>} />
+          <Route path="/admin/metrics" element={<ProtectedRoute><AdminMetrics /></ProtectedRoute>} />
+          <Route path="/admin/segments" element={<ProtectedRoute><AdminSegments /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

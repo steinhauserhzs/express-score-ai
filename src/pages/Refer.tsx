@@ -33,22 +33,22 @@ export default function Refer() {
   }, []);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
       navigate("/auth");
     }
   };
 
   const loadReferralData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       // Get referral code
       const { data: profile } = await supabase
         .from("profiles")
         .select("referral_code")
-        .eq("id", user.id)
+        .eq("id", session.user.id)
         .single();
 
       if (profile) {
@@ -59,7 +59,7 @@ export default function Refer() {
       const { data: refData, error } = await supabase
         .from("referrals")
         .select("*")
-        .eq("referrer_id", user.id)
+        .eq("referrer_id", session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -82,13 +82,13 @@ export default function Refer() {
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
 
       const { error } = await supabase
         .from("referrals")
         .insert({
-          referrer_id: user.id,
+          referrer_id: session.user.id,
           referred_email: newEmail,
           referral_code: referralCode,
           status: "pending",

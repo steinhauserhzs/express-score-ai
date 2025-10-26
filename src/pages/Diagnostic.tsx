@@ -83,8 +83,8 @@ export default function Diagnostic() {
 
   const initDiagnostic = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
         navigate("/auth");
         return;
       }
@@ -93,7 +93,7 @@ export default function Diagnostic() {
       const { data, error } = await supabase
         .from("diagnostics")
         .insert({
-          user_id: user.id,
+          user_id: session.user.id,
           responses_json: { messages: [] },
           total_score: 0,
           dimension_scores: {},
@@ -311,10 +311,9 @@ export default function Diagnostic() {
       const result = await response.json();
       
       // Auto-tag user after completing diagnostic
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      if (session?.user) {
         supabase.functions.invoke('auto-tag-leads', {
-          body: { userId: user.id }
+          body: { userId: session.user.id }
         }).catch(err => console.error('Auto-tag error:', err));
       }
 

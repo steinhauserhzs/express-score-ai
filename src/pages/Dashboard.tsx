@@ -40,22 +40,22 @@ export default function Dashboard() {
   }, []);
 
   async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { session } } = await supabase.auth.getSession();
     
-    if (!user) {
+    if (!session?.user) {
       navigate('/auth');
       return;
     }
 
     // Check if user is admin
     const { data: adminCheck } = await supabase.rpc('has_role', {
-      _user_id: user.id,
+      _user_id: session.user.id,
       _role: 'admin'
     });
     setIsAdmin(adminCheck || false);
 
     // Load all dashboard data with new optimized function
-    await loadDashboardData(user.id);
+    await loadDashboardData(session.user.id);
   }
 
   async function loadDashboardData(userId: string) {
