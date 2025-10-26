@@ -28,6 +28,16 @@ import MyJourney from "./pages/MyJourney";
 import Goals from "./pages/Goals";
 import Pricing from "./pages/Pricing";
 import Calculators from "./pages/Calculators";
+import Services from "./pages/Services";
+import CodeCapital from "./pages/CodeCapital";
+import KeyAccount from "./pages/KeyAccount";
+import Partnerships from "./pages/Partnerships";
+import Blog from "./pages/Blog";
+import Careers from "./pages/Careers";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +50,16 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/servicos" element={<Services />} />
+          <Route path="/code-capital" element={<CodeCapital />} />
+          <Route path="/key-account" element={<KeyAccount />} />
+          <Route path="/parcerias" element={<Partnerships />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/trabalhe-conosco" element={<Careers />} />
+          <Route path="/contato" element={<Contact />} />
+          <Route path="/sobre" element={<About />} />
+          <Route path="/privacidade" element={<Privacy />} />
+          <Route path="/termos" element={<Terms />} />
           <Route path="/admin-choice" element={<ProtectedRoute><AdminChoice /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/diagnostic" element={<ProtectedRoute><Diagnostic /></ProtectedRoute>} />

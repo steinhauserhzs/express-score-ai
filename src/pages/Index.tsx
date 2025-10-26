@@ -13,10 +13,8 @@ import AboutFirece from "@/components/sections/AboutFirece";
 import ContactSection from "@/components/sections/ContactSection";
 import OurConsultants from "@/components/sections/OurConsultants";
 import FreeResources from "@/components/sections/FreeResources";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import Layout from "@/components/Layout";
 import Logo from "@/components/Logo";
-import { Button } from "@/components/ui/button";
-import ThemeToggle from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
 
@@ -24,37 +22,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen">
-      {/* Header/Navbar Firece */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-primary/10 shadow-sm">
-        <div className="container mx-auto px-3 md:px-4 h-14 md:h-16 flex items-center justify-between">
-          <Logo size="sm" />
-          <div className="flex items-center gap-2 md:gap-3">
-            <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/auth')}
-              size="sm"
-              className="text-xs md:text-sm font-semibold"
-            >
-              Entrar
-            </Button>
-            <Button 
-              variant="fire"
-              onClick={() => navigate('/auth')}
-              size="sm"
-              className="text-xs md:text-sm shadow-md font-bold"
-            >
-              <span className="hidden sm:inline">Começar Agora</span>
-              <span className="sm:hidden">Começar</span>
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Espaço para o header fixo */}
-      <div className="h-14 md:h-16" />
-      
+    <Layout>
       <Hero />
       <Features />
       <Stats />
@@ -70,7 +38,6 @@ const Index = () => {
       <FAQ />
       <TrustBadges />
       <FinalCTA />
-      <WhatsAppButton />
       
       <footer className="py-12 md:py-16 border-t bg-secondary text-white">
         <div className="container mx-auto px-4 md:px-6">
@@ -86,10 +53,14 @@ const Index = () => {
                   <Mail className="h-4 w-4" />
                   contato@firece.com.br
                 </a>
-                <a href="tel:+5511999999999" className="flex items-center gap-2 text-white/80 hover:text-primary transition-colors">
+                <a href="tel:+5511987201303" className="flex items-center gap-2 text-white/80 hover:text-primary transition-colors">
                   <Phone className="h-4 w-4" />
-                  (11) 99999-9999
+                  (11) 98720-1303
                 </a>
+                <p className="text-xs text-white/70 mt-2">
+                  📍 Dr. Cardoso de Mello, 1666, Cj. 92<br />
+                  Vila Olímpia, São Paulo - SP
+                </p>
               </div>
               <div className="flex gap-3 pt-2">
                 <a href="https://instagram.com/fiercefinancas" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors">
@@ -108,12 +79,12 @@ const Index = () => {
             <div>
               <h3 className="text-base font-bold mb-4 firece-text-highlight">Serviços</h3>
               <ul className="space-y-2 text-sm text-white/80">
-                <li><button onClick={() => navigate('/auth')} className="hover:text-primary transition-colors">Diagnóstico IA</button></li>
-                <li><button onClick={() => navigate('/auth')} className="hover:text-primary transition-colors">Consultoria Individual</button></li>
-                <li><button className="hover:text-primary transition-colors">Educa Fire</button></li>
-                <li><button className="hover:text-primary transition-colors">Clube Empresarial</button></li>
-                <li><button className="hover:text-primary transition-colors">Palestras</button></li>
-                <li><button className="hover:text-primary transition-colors">Programa de Indicação</button></li>
+                <li><button onClick={() => navigate('/diagnostic')} className="hover:text-primary transition-colors">Diagnóstico IA</button></li>
+                <li><button onClick={() => navigate('/consultations')} className="hover:text-primary transition-colors">Consultoria Individual</button></li>
+                <li><button onClick={() => navigate('/servicos')} className="hover:text-primary transition-colors">Educa Fire</button></li>
+                <li><button onClick={() => navigate('/key-account')} className="hover:text-primary transition-colors">Clube Empresarial</button></li>
+                <li><button onClick={() => navigate('/servicos')} className="hover:text-primary transition-colors">Palestras</button></li>
+                <li><button onClick={() => navigate('/refer')} className="hover:text-primary transition-colors">Programa de Indicação</button></li>
               </ul>
             </div>
             
@@ -121,12 +92,12 @@ const Index = () => {
             <div>
               <h3 className="text-base font-bold mb-4 firece-text-highlight">Empresa</h3>
               <ul className="space-y-2 text-sm text-white/80">
-                <li><button className="hover:text-primary transition-colors">Sobre Nós</button></li>
-                <li><button className="hover:text-primary transition-colors">Nossa Equipe</button></li>
-                <li><button className="hover:text-primary transition-colors">Contato</button></li>
-                <li><button className="hover:text-primary transition-colors">Blog</button></li>
-                <li><button className="hover:text-primary transition-colors">Trabalhe Conosco</button></li>
-                <li><button className="hover:text-primary transition-colors">Parcerias</button></li>
+                <li><button onClick={() => navigate('/sobre')} className="hover:text-primary transition-colors">Sobre Nós</button></li>
+                <li><button onClick={() => navigate('/sobre')} className="hover:text-primary transition-colors">Nossa Equipe</button></li>
+                <li><button onClick={() => navigate('/contato')} className="hover:text-primary transition-colors">Contato</button></li>
+                <li><button onClick={() => navigate('/blog')} className="hover:text-primary transition-colors">Blog</button></li>
+                <li><button onClick={() => navigate('/trabalhe-conosco')} className="hover:text-primary transition-colors">Trabalhe Conosco</button></li>
+                <li><button onClick={() => navigate('/parcerias')} className="hover:text-primary transition-colors">Parcerias</button></li>
               </ul>
             </div>
             
@@ -134,15 +105,15 @@ const Index = () => {
             <div>
               <h3 className="text-base font-bold mb-4 firece-text-highlight">Legal</h3>
               <ul className="space-y-2 text-sm text-white/80 mb-6">
-                <li><button className="hover:text-primary transition-colors">Política de Privacidade</button></li>
-                <li><button className="hover:text-primary transition-colors">Termos de Uso</button></li>
-                <li><button className="hover:text-primary transition-colors">LGPD</button></li>
+                <li><button onClick={() => navigate('/privacidade')} className="hover:text-primary transition-colors">Política de Privacidade</button></li>
+                <li><button onClick={() => navigate('/termos')} className="hover:text-primary transition-colors">Termos de Uso</button></li>
+                <li><button onClick={() => navigate('/privacidade')} className="hover:text-primary transition-colors">LGPD</button></li>
               </ul>
               <h3 className="text-base font-bold mb-4 firece-text-highlight">Recursos</h3>
               <ul className="space-y-2 text-sm text-white/80">
-                <li><button className="hover:text-primary transition-colors">Central de Ajuda</button></li>
-                <li><button className="hover:text-primary transition-colors">Calculadoras</button></li>
-                <li><button onClick={() => navigate('/auth')} className="hover:text-primary transition-colors">Área do Cliente</button></li>
+                <li><button onClick={() => navigate('/contato')} className="hover:text-primary transition-colors">Central de Ajuda</button></li>
+                <li><button onClick={() => navigate('/calculators')} className="hover:text-primary transition-colors">Calculadoras</button></li>
+                <li><button onClick={() => navigate('/dashboard')} className="hover:text-primary transition-colors">Área do Cliente</button></li>
               </ul>
             </div>
           </div>
@@ -155,7 +126,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
+    </Layout>
   );
 };
 
