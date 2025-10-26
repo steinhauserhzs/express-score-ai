@@ -57,12 +57,12 @@ const Navigation = () => {
                 <ChevronDown className="w-4 h-4" />
               </button>
               {servicesOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white text-foreground rounded-lg shadow-xl py-2 animate-fade-in">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-popover text-popover-foreground rounded-lg shadow-xl py-2 animate-fade-in border border-border z-50">
                   {services.map((service) => (
                     <Link
                       key={service.path}
                       to={service.path}
-                      className="block px-4 py-2 hover:bg-secondary/10 transition-colors text-sm"
+                      className="block px-4 py-2 hover:bg-accent hover:text-accent-foreground transition-colors text-sm"
                       onClick={() => setServicesOpen(false)}
                     >
                       {service.name}
@@ -166,7 +166,7 @@ const Navigation = () => {
                       <Link
                         key={service.path}
                         to={service.path}
-                        className="text-sm text-white/80 hover:text-primary transition-colors"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
                         onClick={() => {
                           setIsOpen(false);
                           setServicesOpen(false);

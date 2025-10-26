@@ -94,7 +94,7 @@ const Hero = () => {
           <div className="hidden lg:flex justify-center items-center animate-fade-in">
             <div className="relative w-full max-w-lg">
               {/* Dashboard Illustration com cores Firece */}
-              <div className="relative bg-white border-4 border-primary rounded-2xl p-6 shadow-2xl hover-lift">
+              <div className="relative bg-card border-4 border-primary rounded-2xl p-6 shadow-2xl hover-lift">
                 {/* Mini header */}
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-3 h-3 rounded-full bg-destructive" />
@@ -112,7 +112,7 @@ const Hero = () => {
                 {/* Mini charts */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-muted rounded-lg p-4 border-2 border-primary/20">
-                    <div className="text-xs text-secondary font-semibold mb-2">Evolução</div>
+                    <div className="text-xs text-muted-foreground font-semibold mb-2">Evolução</div>
                     <div className="h-16 flex items-end gap-1">
                       <div className="bg-primary/40 w-full h-[40%] rounded-t" />
                       <div className="bg-primary/60 w-full h-[60%] rounded-t" />
@@ -121,30 +121,30 @@ const Hero = () => {
                     </div>
                   </div>
                   <div className="bg-muted rounded-lg p-4 border-2 border-primary/20 flex flex-col items-center justify-center">
-                    <div className="text-xs text-secondary font-semibold mb-2">Progresso</div>
+                    <div className="text-xs text-muted-foreground font-semibold mb-2">Progresso</div>
                     <div className="relative w-14 h-14">
                       <svg className="transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-muted" />
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-muted-foreground/20" />
                         <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="10" className="text-primary" strokeDasharray="251" strokeDashoffset="75" strokeLinecap="round" />
                       </svg>
-                      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-secondary">78%</div>
+                      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">78%</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Stats com cores Firece */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-success/10 text-success rounded p-2 text-center border-2 border-success/30">
-                    <div className="text-xs mb-1 font-bold">↑ 12pts</div>
-                    <div className="text-[10px] opacity-80 font-semibold">30 dias</div>
+                  <div className="bg-success/10 rounded p-2 text-center border-2 border-success/30">
+                    <div className="text-xs mb-1 font-bold text-success">↑ 12pts</div>
+                    <div className="text-[10px] opacity-80 font-semibold text-success">30 dias</div>
                   </div>
-                  <div className="bg-primary/10 text-primary rounded p-2 text-center border-2 border-primary/30 shadow-glow">
-                    <div className="text-xs mb-1 font-bold">6/6</div>
-                    <div className="text-[10px] opacity-80 font-semibold">áreas</div>
+                  <div className="bg-primary/10 rounded p-2 text-center border-2 border-primary/30 shadow-glow">
+                    <div className="text-xs mb-1 font-bold text-primary">6/6</div>
+                    <div className="text-[10px] opacity-80 font-semibold text-primary">áreas</div>
                   </div>
-                  <div className="bg-secondary/10 text-secondary rounded p-2 text-center border-2 border-secondary/30">
-                    <div className="text-xs mb-1 font-bold">Top 15%</div>
-                    <div className="text-[10px] opacity-80 font-semibold">usuários</div>
+                  <div className="bg-card rounded p-2 text-center border-2 border-border">
+                    <div className="text-xs mb-1 font-bold text-foreground">Top 15%</div>
+                    <div className="text-[10px] opacity-80 font-semibold text-muted-foreground">usuários</div>
                   </div>
                 </div>
               </div>
