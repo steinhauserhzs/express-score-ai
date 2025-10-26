@@ -1,12 +1,17 @@
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import Stats from "@/components/sections/Stats";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import Testimonials from "@/components/sections/Testimonials";
+import AdditionalServices from "@/components/sections/AdditionalServices";
+import CorporateBenefits from "@/components/sections/CorporateBenefits";
 import FAQ from "@/components/sections/FAQ";
+import TrustBadges from "@/components/sections/TrustBadges";
 import FinalCTA from "@/components/sections/FinalCTA";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -15,10 +20,11 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Header/Navbar Firece */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-primary/10 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-primary/10 shadow-sm">
         <div className="container mx-auto px-3 md:px-4 h-14 md:h-16 flex items-center justify-between">
           <Logo size="sm" showText={true} />
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3">
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               onClick={() => navigate('/auth')}
@@ -28,6 +34,7 @@ const Index = () => {
               Entrar
             </Button>
             <Button 
+              variant="fire"
               onClick={() => navigate('/auth')}
               size="sm"
               className="text-xs md:text-sm shadow-md font-bold"
@@ -44,10 +51,14 @@ const Index = () => {
       
       <Hero />
       <Features />
+      <Stats />
       <HowItWorks />
       <Testimonials />
       <Pricing />
+      <AdditionalServices />
+      <CorporateBenefits />
       <FAQ />
+      <TrustBadges />
       <FinalCTA />
       
       <footer className="py-8 md:py-12 border-t bg-secondary text-white">
