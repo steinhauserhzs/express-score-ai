@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Send, Sparkles } from "lucide-react";
+import { Loader2, Send, Sparkles, Headphones, Keyboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import DiagnosticModeModal from "@/components/DiagnosticModeModal";
+import VoiceRecorder from "@/components/diagnostic/VoiceRecorder";
+import AudioPlayer from "@/components/diagnostic/AudioPlayer";
 
 interface Message {
   role: "user" | "assistant";
@@ -23,9 +25,18 @@ export default function Diagnostic() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [turboMode, setTurboMode] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
+  const [voiceMode, setVoiceMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Load voice mode preference from localStorage
+  useEffect(() => {
+    const savedVoiceMode = localStorage.getItem('diagnostic-voice-mode');
+    if (savedVoiceMode !== null) {
+      setVoiceMode(savedVoiceMode === 'true');
+    }
+  }, []);
 
   useEffect(() => {
     // Don't initialize until mode is selected
@@ -288,6 +299,30 @@ export default function Diagnostic() {
     await streamChat(userMessage);
   };
 
+  const handleVoiceTranscript = async (text: string) => {
+    setInput(text);
+    // Auto-send after transcription
+    setTimeout(async () => {
+      if (text.trim()) {
+        setInput("");
+        await streamChat(text.trim());
+      }
+    }, 500);
+  };
+
+  const toggleVoiceMode = () => {
+    const newMode = !voiceMode;
+    setVoiceMode(newMode);
+    localStorage.setItem('diagnostic-voice-mode', String(newMode));
+    
+    toast({
+      title: newMode ? "🎤 Modo Voz Ativado" : "⌨️ Modo Texto Ativado",
+      description: newMode 
+        ? "Você pode falar suas respostas agora" 
+        : "Você pode digitar suas respostas agora",
+    });
+  };
+
   const handleFinalize = async () => {
     if (!diagnosticId) return;
     setIsCalculating(true);
@@ -363,15 +398,35 @@ export default function Diagnostic() {
                 </p>
               </div>
             </div>
-            {messages.length === 0 && (
+            <div className="flex gap-2">
               <Button
-                variant={turboMode ? "default" : "outline"}
+                variant="outline"
                 size="sm"
-                onClick={() => setTurboMode(!turboMode)}
+                onClick={toggleVoiceMode}
+                className="flex items-center gap-2"
               >
-                {turboMode ? "Modo Completo" : "⚡ Modo Turbo"}
+                {voiceMode ? (
+                  <>
+                    <Headphones className="w-4 h-4" />
+                    Voz
+                  </>
+                ) : (
+                  <>
+                    <Keyboard className="w-4 h-4" />
+                    Texto
+                  </>
+                )}
               </Button>
-            )}
+              {messages.length === 0 && (
+                <Button
+                  variant={turboMode ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setTurboMode(!turboMode)}
+                >
+                  {turboMode ? "Modo Completo" : "⚡ Modo Turbo"}
+                </Button>
+              )}
+            </div>
             {isComplete && (
               <Button
                 onClick={handleFinalize}
@@ -423,9 +478,14 @@ export default function Diagnostic() {
                       : "bg-muted text-foreground"
                   }`}
                 >
-                  <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words overflow-wrap-anywhere">
-                    {msg.content}
-                  </p>
+                  <div className="flex items-start gap-2">
+                    <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words overflow-wrap-anywhere flex-1">
+                      {msg.content}
+                    </p>
+                    {msg.role === "assistant" && voiceMode && (
+                      <AudioPlayer text={msg.content} autoPlay={idx === messages.length - 1} />
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -445,10 +505,16 @@ export default function Diagnostic() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Digite sua resposta..."
+                placeholder={voiceMode ? "Clique no microfone para falar..." : "Digite sua resposta..."}
                 disabled={isLoading || isComplete}
                 className="flex-1 text-sm"
               />
+              {voiceMode && (
+                <VoiceRecorder
+                  onTranscript={handleVoiceTranscript}
+                  disabled={isLoading || isComplete}
+                />
+              )}
               <Button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading || isComplete}
