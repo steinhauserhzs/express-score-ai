@@ -1,11 +1,11 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Star, Clock, Check } from "lucide-react";
+import { Zap, Star, Clock, Check, Mic, Volume2, Headphones } from "lucide-react";
 
 interface DiagnosticModeModalProps {
   open: boolean;
-  onSelect: (turboMode: boolean) => void;
+  onSelect: (turboMode: boolean, voiceMode?: boolean) => void;
 }
 
 export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeModalProps) {
@@ -19,11 +19,63 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
+        <div className="grid md:grid-cols-3 gap-6 mt-6">
+          {/* Voice Mode - NEW */}
+          <Card 
+            className="border-2 border-primary hover:shadow-xl cursor-pointer transition-all bg-gradient-to-br from-primary/10 to-primary/5"
+            onClick={() => onSelect(false, true)}
+          >
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-primary rounded-full">
+                  <Headphones className="h-8 w-8 text-primary-foreground" />
+                </div>
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    Por Voz
+                    <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">Novo</Badge>
+                  </CardTitle>
+                  <CardDescription>Conversação natural</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-2 text-primary font-semibold">
+                <Clock className="h-5 w-5" />
+                <span>20-30 minutos</span>
+              </div>
+              
+              <ul className="space-y-2 text-sm">
+                <li className="flex gap-2">
+                  <Mic className="h-5 w-5 text-green-500 flex-shrink-0" />
+                  <span>Fale suas respostas</span>
+                </li>
+                <li className="flex gap-2">
+                  <Volume2 className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                  <span>Ouça as perguntas da IA</span>
+                </li>
+                <li className="flex gap-2">
+                  <Check className="h-5 w-5 text-success flex-shrink-0" />
+                  <span>Experiência hands-free</span>
+                </li>
+                <li className="flex gap-2">
+                  <Check className="h-5 w-5 text-success flex-shrink-0" />
+                  <span>Diagnóstico completo</span>
+                </li>
+              </ul>
+              
+              <div className="pt-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Ideal para:</strong> Quem prefere conversar ao invés de digitar
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Turbo Mode */}
           <Card 
             className="border-2 hover:border-primary cursor-pointer transition-all hover:shadow-lg"
-            onClick={() => onSelect(true)}
+            onClick={() => onSelect(true, false)}
           >
             <CardHeader>
               <div className="flex items-center gap-3">
@@ -71,8 +123,8 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
           
           {/* Complete Mode */}
           <Card 
-            className="border-2 border-primary hover:shadow-xl cursor-pointer transition-all bg-primary/5"
-            onClick={() => onSelect(false)}
+            className="border-2 hover:border-primary cursor-pointer transition-all hover:shadow-lg"
+            onClick={() => onSelect(false, false)}
           >
             <CardHeader>
               <div className="flex items-center gap-3">
@@ -80,10 +132,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                   <Star className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <div>
-                  <CardTitle className="flex items-center gap-2">
-                    Diagnóstico Completo
-                    <Badge className="bg-success">Recomendado</Badge>
-                  </CardTitle>
+                  <CardTitle>Diagnóstico Completo</CardTitle>
                   <CardDescription>Análise profunda e detalhada</CardDescription>
                 </div>
               </div>

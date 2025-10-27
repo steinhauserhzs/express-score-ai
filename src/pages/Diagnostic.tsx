@@ -67,10 +67,12 @@ export default function Diagnostic() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleModeSelection = (isTurbo: boolean) => {
+  const handleModeSelection = (isTurbo: boolean, startVoiceMode = false) => {
     setTurboMode(isTurbo);
+    setVoiceMode(startVoiceMode);
+    localStorage.setItem('diagnostic-voice-mode', String(startVoiceMode));
     setShowModeSelection(false);
-    trackEvent('diagnostic_mode_selected', { turboMode: isTurbo });
+    trackEvent('diagnostic_mode_selected', { turboMode: isTurbo, voiceMode: startVoiceMode });
   };
 
   const trackEvent = async (eventName: string, properties?: Record<string, any>) => {
@@ -117,9 +119,13 @@ export default function Diagnostic() {
       setDiagnosticId(data.id);
 
       // Start conversation
-      const initialMessage = turboMode
+      let initialMessage = turboMode
         ? "Olá! 👋 Vou fazer um diagnóstico TURBO da sua saúde financeira. São apenas 10 perguntas essenciais que levam cerca de 5 minutos. Será rápido e direto! Vamos começar?"
         : "Olá! Sou seu assistente financeiro virtual. Vou te ajudar a fazer um diagnóstico completo da sua vida financeira. Será uma conversa tranquila, sem julgamentos. Vamos começar?";
+      
+      if (voiceMode) {
+        initialMessage = "Olá! 🎤 Bem-vindo ao diagnóstico por voz! Vou te fazer algumas perguntas e você pode respondê-las falando. É só clicar no botão do microfone e falar naturalmente. Vamos começar?";
+      }
       
       setMessages([
         {
@@ -398,9 +404,9 @@ export default function Diagnostic() {
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3">
               <Button
-                variant="outline"
+                variant={voiceMode ? "default" : "outline"}
                 size="sm"
                 onClick={toggleVoiceMode}
                 className="flex items-center gap-2"
@@ -408,15 +414,23 @@ export default function Diagnostic() {
                 {voiceMode ? (
                   <>
                     <Headphones className="w-4 h-4" />
-                    Voz
+                    <span className="hidden sm:inline">Modo Voz</span>
+                    <span className="sm:hidden">Voz</span>
                   </>
                 ) : (
                   <>
                     <Keyboard className="w-4 h-4" />
-                    Texto
+                    <span className="hidden sm:inline">Modo Texto</span>
+                    <span className="sm:hidden">Texto</span>
                   </>
                 )}
               </Button>
+              {voiceMode && (
+                <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 animate-pulse">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  <span className="hidden sm:inline">Conversação ativa</span>
+                </div>
+              )}
               {messages.length === 0 && (
                 <Button
                   variant={turboMode ? "default" : "outline"}
@@ -500,30 +514,63 @@ export default function Diagnostic() {
           </div>
 
           <div className="p-3 md:p-4 border-t border-border">
-            <div className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                placeholder={voiceMode ? "Clique no microfone para falar..." : "Digite sua resposta..."}
-                disabled={isLoading || isComplete}
-                className="flex-1 text-sm"
-              />
-              {voiceMode && (
-                <VoiceRecorder
-                  onTranscript={handleVoiceTranscript}
+            {voiceMode ? (
+              // Voice mode layout
+              <div className="space-y-3">
+                <div className="flex justify-center">
+                  <VoiceRecorder
+                    onTranscript={handleVoiceTranscript}
+                    disabled={isLoading || isComplete}
+                    large
+                  />
+                </div>
+                <p className="text-xs text-center text-muted-foreground">
+                  {isLoading ? "Processando..." : "Clique no microfone e fale sua resposta"}
+                </p>
+                <details className="text-xs text-muted-foreground">
+                  <summary className="cursor-pointer text-center hover:text-foreground">
+                    Prefere digitar esta resposta?
+                  </summary>
+                  <div className="flex gap-2 mt-2">
+                    <Input
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                      placeholder="Digite sua resposta..."
+                      disabled={isLoading || isComplete}
+                      className="flex-1 text-sm"
+                    />
+                    <Button
+                      onClick={handleSend}
+                      disabled={!input.trim() || isLoading || isComplete}
+                      size="icon"
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </details>
+              </div>
+            ) : (
+              // Text mode layout
+              <div className="flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="Digite sua resposta..."
                   disabled={isLoading || isComplete}
+                  className="flex-1 text-sm"
                 />
-              )}
-              <Button
-                onClick={handleSend}
-                disabled={!input.trim() || isLoading || isComplete}
-                size="icon"
-                className="flex-shrink-0"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
+                <Button
+                  onClick={handleSend}
+                  disabled={!input.trim() || isLoading || isComplete}
+                  size="icon"
+                  className="flex-shrink-0"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </Card>
 

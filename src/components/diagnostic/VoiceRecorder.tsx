@@ -7,9 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 interface VoiceRecorderProps {
   onTranscript: (text: string) => void;
   disabled?: boolean;
+  large?: boolean;
 }
 
-export default function VoiceRecorder({ onTranscript, disabled }: VoiceRecorderProps) {
+export default function VoiceRecorder({ onTranscript, disabled, large = false }: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -123,19 +124,20 @@ export default function VoiceRecorder({ onTranscript, disabled }: VoiceRecorderP
     <Button
       onClick={handleClick}
       disabled={disabled || isProcessing}
-      size="icon"
-      variant={isRecording ? "destructive" : "outline"}
-      className="relative"
+      size={large ? "lg" : "icon"}
+      variant={isRecording ? "destructive" : large ? "default" : "outline"}
+      className={`relative ${large ? 'h-20 w-20 rounded-full shadow-lg hover:scale-105 transition-transform' : ''}`}
     >
       {isProcessing ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className={`${large ? 'w-8 h-8' : 'w-4 h-4'} animate-spin`} />
       ) : isRecording ? (
         <>
-          <MicOff className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+          <MicOff className={`${large ? 'w-8 h-8' : 'w-4 h-4'}`} />
+          <span className={`absolute ${large ? '-top-2 -right-2 w-5 h-5' : '-top-1 -right-1 w-3 h-3'} bg-red-500 rounded-full animate-ping`} />
+          <span className={`absolute ${large ? '-top-2 -right-2 w-5 h-5' : '-top-1 -right-1 w-3 h-3'} bg-red-500 rounded-full`} />
         </>
       ) : (
-        <Mic className="w-4 h-4" />
+        <Mic className={`${large ? 'w-8 h-8' : 'w-4 h-4'}`} />
       )}
     </Button>
   );
