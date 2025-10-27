@@ -9,6 +9,7 @@ import { PWAErrorBoundary } from "@/components/PWAErrorBoundary";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import AdminChoice from "./pages/AdminChoice";
 import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
@@ -58,6 +59,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/servicos" element={<Services />} />
           <Route path="/code-capital" element={<CodeCapital />} />
           <Route path="/key-account" element={<KeyAccount />} />
