@@ -9,10 +9,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowLeft, User, Mail, Lock, Phone, CreditCard, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, ArrowLeft, User, Mail, Lock, Phone, CreditCard, CheckCircle2, XCircle, MapPin, IdCard } from "lucide-react";
 import InputMask from "react-input-mask";
-import { validateCPF, validatePhone, validateEmail, validatePassword, validateFullName } from "@/utils/validators";
-import { cleanCPF, cleanPhone } from "@/utils/formatters";
+import { validateCPF, validatePhone, validateEmail, validatePassword, validateFullName, validateRG } from "@/utils/validators";
+import { cleanCPF, cleanPhone, cleanRG, cleanCEP } from "@/utils/formatters";
+import { fetchAddressByCEP, validateCEP } from "@/utils/cep";
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,11 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
+  const [cep, setCep] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [rg, setRg] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -67,7 +73,50 @@ const Auth = () => {
   const [cpfValid, setCpfValid] = useState<boolean | null>(null);
   const [phoneValid, setPhoneValid] = useState<boolean | null>(null);
   const [fullNameValid, setFullNameValid] = useState<boolean | null>(null);
+  const [cepValid, setCepValid] = useState<boolean | null>(null);
+  const [rgValid, setRgValid] = useState<boolean | null>(null);
+  const [loadingAddress, setLoadingAddress] = useState(false);
   const passwordValidation = validatePassword(password);
+
+  const handleCEPChange = async (value: string) => {
+    setCep(value);
+    const cleanCEPValue = value.replace(/\D/g, '');
+    
+    if (cleanCEPValue.length === 8) {
+      setLoadingAddress(true);
+      setCepValid(true);
+      
+      const address = await fetchAddressByCEP(cleanCEPValue);
+      
+      if (address) {
+        setStreet(address.street);
+        setCity(address.city);
+        setState(address.state);
+        
+        toast({
+          title: "Endereço encontrado!",
+          description: `${address.street}, ${address.city} - ${address.state}`,
+        });
+      } else {
+        setCepValid(false);
+        setStreet("");
+        setCity("");
+        setState("");
+        toast({
+          title: "CEP não encontrado",
+          description: "Verifique o CEP digitado.",
+          variant: "destructive",
+        });
+      }
+      
+      setLoadingAddress(false);
+    } else {
+      setCepValid(cleanCEPValue.length === 0 ? null : false);
+      setStreet("");
+      setCity("");
+      setState("");
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,6 +144,25 @@ const Auth = () => {
       toast({
         title: "Telefone inválido",
         description: "Digite um telefone válido com DDD.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateCEP(cep)) {
+      toast({
+        title: "CEP inválido",
+        description: "Digite um CEP válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // RG é opcional, mas se preenchido deve ser válido
+    if (rg && !validateRG(rg)) {
+      toast({
+        title: "RG inválido",
+        description: "Digite um RG válido ou deixe em branco.",
         variant: "destructive",
       });
       return;
@@ -138,6 +206,11 @@ const Auth = () => {
             full_name: fullName,
             phone: cleanPhone(phone),
             cpf: cleanCPF(cpf),
+            cep: cleanCEP(cep),
+            street: street,
+            city: city,
+            state: state,
+            rg: rg ? cleanRG(rg) : null,
           },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
@@ -470,6 +543,124 @@ const Auth = () => {
                     </div>
                     {phoneValid === false && (
                       <p className="text-xs text-red-500">Telefone inválido</p>
+                    )}
+                  </div>
+
+                  {/* CEP */}
+                  <div className="space-y-2">
+                    <Label htmlFor="cep">CEP</Label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <InputMask
+                        mask="99999-999"
+                        value={cep}
+                        onChange={(e) => handleCEPChange(e.target.value)}
+                      >
+                        {(inputProps: any) => (
+                          <Input
+                            {...inputProps}
+                            id="cep"
+                            type="text"
+                            placeholder="00000-000"
+                            className="pl-10 pr-10"
+                            required
+                          />
+                        )}
+                      </InputMask>
+                      {loadingAddress && (
+                        <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-primary" />
+                      )}
+                      {!loadingAddress && cepValid !== null && (
+                        <div className="absolute right-3 top-3">
+                          {cepValid ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-red-500" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {cepValid === false && (
+                      <p className="text-xs text-red-500">CEP inválido</p>
+                    )}
+                  </div>
+
+                  {/* Endereço (readonly, preenchido automaticamente) */}
+                  <div className="space-y-2">
+                    <Label htmlFor="street">Endereço</Label>
+                    <Input
+                      id="street"
+                      type="text"
+                      value={street}
+                      readOnly
+                      placeholder="Será preenchido automaticamente"
+                      className="bg-muted"
+                    />
+                  </div>
+
+                  {/* Cidade e Estado (lado a lado) */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="city">Cidade</Label>
+                      <Input
+                        id="city"
+                        type="text"
+                        value={city}
+                        readOnly
+                        placeholder="Cidade"
+                        className="bg-muted"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="state">Estado</Label>
+                      <Input
+                        id="state"
+                        type="text"
+                        value={state}
+                        readOnly
+                        placeholder="UF"
+                        className="bg-muted max-w-[100px]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* RG (Opcional) */}
+                  <div className="space-y-2">
+                    <Label htmlFor="rg">
+                      RG <span className="text-xs text-muted-foreground">(Opcional)</span>
+                    </Label>
+                    <div className="relative">
+                      <IdCard className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <InputMask
+                        mask="99.999.999-9"
+                        value={rg}
+                        onChange={(e) => {
+                          setRg(e.target.value);
+                          setRgValid(e.target.value ? validateRG(e.target.value) : null);
+                        }}
+                      >
+                        {(inputProps: any) => (
+                          <Input
+                            {...inputProps}
+                            id="rg"
+                            type="text"
+                            placeholder="00.000.000-0"
+                            className="pl-10 pr-10"
+                          />
+                        )}
+                      </InputMask>
+                      {rgValid !== null && rg && (
+                        <div className="absolute right-3 top-3">
+                          {rgValid ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-red-500" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {rgValid === false && (
+                      <p className="text-xs text-red-500">RG inválido</p>
                     )}
                   </div>
 

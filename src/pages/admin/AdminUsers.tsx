@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Shield, User } from "lucide-react";
+import { Search, Shield, User, Eye } from "lucide-react";
 import RoleManager from "@/components/admin/RoleManager";
+import UserDetailModal from "@/components/admin/UserDetailModal";
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUserForDetail, setSelectedUserForDetail] = useState<any | null>(null);
   const [filterTab, setFilterTab] = useState<"all" | "admin" | "client">("all");
 
   const { data: currentUser } = useQuery({
@@ -196,13 +198,23 @@ export default function AdminUsers() {
                           {new Date(user.created_at).toLocaleDateString("pt-BR")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedUser(user.id)}
-                          >
-                            Gerenciar Roles
-                          </Button>
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setSelectedUserForDetail(user)}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              Ver Detalhes
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setSelectedUser(user.id)}
+                            >
+                              Gerenciar Roles
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
@@ -213,6 +225,14 @@ export default function AdminUsers() {
           </CardContent>
         </Card>
 
+        {/* Modal de Detalhes do Usuário */}
+        <UserDetailModal
+          user={selectedUserForDetail}
+          open={!!selectedUserForDetail}
+          onClose={() => setSelectedUserForDetail(null)}
+        />
+
+        {/* RoleManager existente */}
         {selectedUser && (
           <RoleManager
             userId={selectedUser}

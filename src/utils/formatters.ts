@@ -22,3 +22,21 @@ export const cleanCPF = (cpf: string): string => {
 export const cleanPhone = (phone: string): string => {
   return phone.replace(/[^\d]/g, '');
 };
+
+export const formatRG = (value: string): string => {
+  // Formato genérico: XX.XXX.XXX-X
+  return value
+    .replace(/\D/g, '')
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+    .replace(/(-\d{1})\d+?$/, '$1');
+};
+
+export const cleanRG = (rg: string): string => {
+  return rg.replace(/[^\dX]/gi, '');
+};
+
+export const cleanCEP = (cep: string): string => {
+  return cep.replace(/\D/g, '');
+};

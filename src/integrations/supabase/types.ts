@@ -704,7 +704,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cep: string | null
           churn_risk: string | null
+          city: string | null
           cpf: string | null
           created_at: string
           email: string
@@ -715,12 +717,17 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           referred_by: string | null
+          rg: string | null
           role: Database["public"]["Enums"]["user_role"]
+          state: string | null
+          street: string | null
           tags: string[] | null
           updated_at: string
         }
         Insert: {
+          cep?: string | null
           churn_risk?: string | null
+          city?: string | null
           cpf?: string | null
           created_at?: string
           email: string
@@ -731,12 +738,17 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          rg?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          state?: string | null
+          street?: string | null
           tags?: string[] | null
           updated_at?: string
         }
         Update: {
+          cep?: string | null
           churn_risk?: string | null
+          city?: string | null
           cpf?: string | null
           created_at?: string
           email?: string
@@ -747,7 +759,10 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          rg?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          state?: string | null
+          street?: string | null
           tags?: string[] | null
           updated_at?: string
         }

@@ -69,3 +69,9 @@ export const validateFullName = (name: string): boolean => {
   // Deve ter pelo menos 3 caracteres e conter espaço (nome e sobrenome)
   return trimmed.length >= 3 && trimmed.includes(' ');
 };
+
+export const validateRG = (rg: string): boolean => {
+  const cleanRG = rg.replace(/[^\dX]/gi, '');
+  // RG tem entre 7 e 9 dígitos (varia por estado)
+  return cleanRG.length >= 7 && cleanRG.length <= 9;
+};
