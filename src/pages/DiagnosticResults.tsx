@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import Confetti from "react-confetti";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Loader2, ArrowRight, Calendar, Share2 } from "lucide-react";
+import { Loader2, ArrowRight, Calendar, Share2, Home } from "lucide-react";
 import ScoreReveal from "@/components/diagnostic/ScoreReveal";
 import ClassificationBadge from "@/components/diagnostic/ClassificationBadge";
 import ProfileCard from "@/components/diagnostic/ProfileCard";
@@ -42,6 +42,7 @@ export default function DiagnosticResults() {
   const [newBadge, setNewBadge] = useState<BadgeData | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [redirectCountdown, setRedirectCountdown] = useState(15);
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,6 +55,24 @@ export default function DiagnosticResults() {
   useEffect(() => {
     loadResults();
   }, [id]);
+
+  // Auto-redirect countdown to dashboard
+  useEffect(() => {
+    if (!diagnostic) return;
+    
+    const timer = setInterval(() => {
+      setRedirectCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          navigate('/dashboard');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [diagnostic, navigate]);
 
   const loadResults = async () => {
     try {
@@ -375,27 +394,40 @@ export default function DiagnosticResults() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
+        <div className="flex flex-col gap-4 animate-fade-in" style={{ animationDelay: "0.7s" }}>
           <Button
             size="lg"
-            variant="outline"
-            className="gap-2 w-full sm:w-auto"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate('/dashboard')}
+            className="gap-2 w-full"
           >
-            <span className="hidden sm:inline">Ver Dashboard Completo</span>
-            <span className="sm:hidden">Dashboard</span>
-            <ArrowRight className="w-4 h-4" />
+            <Home className="h-5 w-5" />
+            Ir para Minha Área de Membros
           </Button>
-
-          <Button
-            size="lg"
-            variant="outline"
-            className="gap-2 w-full sm:w-auto"
-            onClick={handleShare}
-          >
-            <Share2 className="w-4 h-4" />
-            Compartilhar
-          </Button>
+          
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate('/consultations')}
+              className="gap-2 flex-1"
+            >
+              <Calendar className="h-5 w-5" />
+              Agendar Consultoria Gratuita
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleShare}
+              className="gap-2 flex-1"
+            >
+              <Share2 className="h-5 w-5" />
+              Compartilhar
+            </Button>
+          </div>
+          
+          <p className="text-sm text-center text-muted-foreground">
+            Redirecionando automaticamente em {redirectCountdown}s...
+          </p>
         </div>
       </div>
     </div>

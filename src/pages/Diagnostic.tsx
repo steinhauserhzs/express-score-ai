@@ -253,6 +253,22 @@ export default function Diagnostic() {
             i === prev.length - 1 ? { ...m, content: cleanMessage } : m
           )
         );
+        
+        // Flexible validation - allow completion even if some questions were skipped
+        const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
+        const minimumQuestionsRequired = Math.floor(expectedQuestions * 0.75); // At least 75% answered
+        
+        if (userMessagesCount < minimumQuestionsRequired) {
+          console.warn(`⚠️ Diagnostic incomplete: ${userMessagesCount}/${expectedQuestions} questions (min: ${minimumQuestionsRequired})`);
+          toast({
+            title: "Diagnóstico Incompleto",
+            description: `Por favor, responda mais algumas perguntas para completar o diagnóstico.`,
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        console.log(`✅ Diagnostic valid: ${userMessagesCount} questions answered (min: ${minimumQuestionsRequired})`);
         setIsComplete(true);
         trackEvent('diagnostic_completed');
         handleFinalize();

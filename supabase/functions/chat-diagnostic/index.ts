@@ -351,12 +351,19 @@ PERGUNTA 38: QUALIDADE DE VIDA
 PERGUNTA 39: REVISÃO FINAL (CRÍTICO E OBRIGATÓRIO)
 ═══════════════════════════════════════════════════════════
 
+⚠️ PERGUNTAS OPCIONAIS - PULAR SE NÃO APLICÁVEL:
+Se o usuário responder "Não tenho", "Não se aplica", "Não possuo" para perguntas sobre:
+• Cartão de crédito → Pule perguntas relacionadas a cartão
+• Investimentos → Pule perguntas de investimentos
+• Dependentes → Pule perguntas sobre dependentes
+• Dívidas (se não tem) → Pule detalhamento de dívidas
+Registre mentalmente que essas áreas foram puladas e ajuste as próximas perguntas.
+
 ⚠️ REGRA CRÍTICA DE FINALIZAÇÃO:
-1. Você DEVE coletar informações para TODAS as 39 perguntas do diagnóstico
-2. Conte internamente quantas informações você coletou
-3. Após a pergunta 38 (qualidade de vida), OBRIGATORIAMENTE faça a PERGUNTA 39 (revisão completa)
-4. NUNCA pule a pergunta 39
-5. APENAS adicione <!-- DIAGNOSTIC_COMPLETE --> DEPOIS que o usuário CONFIRMAR o resumo
+1. Você deve coletar informações para PELO MENOS 30 das 39 perguntas (75%)
+2. Perguntas podem ser puladas se não aplicáveis ao usuário
+3. Antes de finalizar, faça a PERGUNTA FINAL (revisão completa)
+4. APENAS adicione <!-- DIAGNOSTIC_COMPLETE --> DEPOIS que o usuário CONFIRMAR o resumo
 
 ANTES de finalizar, faça um resumo COMPLETO de TODAS as informações:
 

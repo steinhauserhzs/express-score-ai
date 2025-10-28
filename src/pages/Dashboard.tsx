@@ -20,7 +20,9 @@ import WeeklyChallenges from "@/components/WeeklyChallenges";
 import GoalsWidget from "@/components/GoalsWidget";
 import OnboardingTour from "@/components/OnboardingTour";
 import { toast } from "sonner";
-import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award } from "lucide-react";
+import ScoreComparison from "@/components/ScoreComparison";
+import QuickUpdateModal from "@/components/QuickUpdateModal";
+import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap } from "lucide-react";
 
 import { DashboardSkeleton } from "@/components/ui/skeleton-group";
 
@@ -34,6 +36,7 @@ export default function Dashboard() {
   const [gamification, setGamification] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "journey" | "gamification">("overview");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showQuickUpdateModal, setShowQuickUpdateModal] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -351,14 +354,53 @@ export default function Dashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Meu Score Atual - Destaque no topo */}
+        <Card className="mb-8 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-2xl">📊 Meu Score Atual</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-6">
+              <div className="flex-1">
+                <div className={`text-5xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
+                  {diagnostic.total_score}/150
+                </div>
+                <div className={`inline-block mt-2 px-4 py-1 rounded-full border ${getClassificationColor(diagnostic.score_classification)}`}>
+                  {diagnostic.score_classification}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Última atualização: {new Date(diagnostic.created_at).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button onClick={() => navigate('/diagnostic')} variant="default" className="gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Atualizar Diagnóstico Completo
+                </Button>
+                <Button onClick={() => setShowQuickUpdateModal(true)} variant="outline" className="gap-2">
+                  <Zap className="h-4 w-4" />
+                  Atualização Rápida (5 min)
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Score Comparison - se houver histórico */}
+        {history && history.length >= 2 && (
+          <div className="mb-8">
+            <ScoreComparison 
+              currentDiagnostic={diagnostic}
+              previousDiagnostic={history[history.length - 2]}
+            />
+          </div>
+        )}
+
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
             <p className="text-muted-foreground">Sua visão geral financeira</p>
           </div>
-          <Button onClick={() => navigate("/diagnostic")} data-tour="diagnostic-button">
-            Novo Diagnóstico
-          </Button>
         </div>
 
         {/* Score Total e Perfil */}
@@ -552,6 +594,12 @@ export default function Dashboard() {
         {/* Chatbot */}
         <DiagnosticChatbot />
       </div>
+      
+      {/* Quick Update Modal */}
+      <QuickUpdateModal 
+        open={showQuickUpdateModal}
+        onClose={() => setShowQuickUpdateModal(false)}
+      />
     </div>
   );
 }
