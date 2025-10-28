@@ -32,6 +32,8 @@ import AdminSegments from "./pages/admin/AdminSegments";
 import AdminUsers from "./pages/admin/AdminUsers";
 import MyJourney from "./pages/MyJourney";
 import Goals from "./pages/Goals";
+import Evolution from "./pages/Evolution";
+import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
 import Calculators from "./pages/Calculators";
 import Services from "./pages/Services";
@@ -75,6 +77,8 @@ const App = () => (
           <Route path="/instalar" element={<Install />} />
           <Route path="/admin-choice" element={<ProtectedRoute><AdminChoice /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard/evolution" element={<ProtectedRoute><Evolution /></ProtectedRoute>} />
+          <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/dashboard/update/:dimension" element={<ProtectedRoute><QuickUpdate /></ProtectedRoute>} />
           <Route path="/dashboard/update-result/:diagnosticId" element={<ProtectedRoute><QuickUpdateResult /></ProtectedRoute>} />
           <Route path="/diagnostic" element={<ProtectedRoute><Diagnostic /></ProtectedRoute>} />
