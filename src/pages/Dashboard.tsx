@@ -25,8 +25,8 @@ import QuickUpdateModal from "@/components/QuickUpdateModal";
 import AreasToImprove from "@/components/AreasToImprove";
 import EvolutionChart from "@/components/EvolutionChart";
 import NextSteps from "@/components/NextSteps";
-import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap, LogOut, Loader2 } from "lucide-react";
-
+import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap, LogOut, Loader2, Shield, Target } from "lucide-react";
+import Layout from "@/components/Layout";
 import { DashboardSkeleton } from "@/components/ui/skeleton-group";
 
 export default function Dashboard() {
@@ -41,6 +41,7 @@ export default function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showQuickUpdateModal, setShowQuickUpdateModal] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
     checkAuth();
@@ -53,6 +54,8 @@ export default function Dashboard() {
       navigate('/auth');
       return;
     }
+
+    setSession(session);
 
     // Check if user is admin
     const { data: adminCheck } = await supabase.rpc('has_role', {
@@ -163,29 +166,133 @@ export default function Dashboard() {
 
   if (!diagnostic) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>Bem-vindo ao Pleno!</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
-              Você ainda não fez seu diagnóstico financeiro.
-            </p>
-            {isAdmin && (
-              <Button onClick={() => navigate('/admin/dashboard')} variant="default" className="w-full">
-                Painel Administrativo
-              </Button>
-            )}
-            <Button onClick={() => navigate('/diagnostic')} className="w-full">
-              Fazer Diagnóstico Gratuito
-            </Button>
-            <Button onClick={handleSignOut} variant="outline" className="w-full">
-              Sair
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Layout showSidebar={true}>
+        <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+          <div className="container max-w-5xl mx-auto py-12 px-4">
+            <Card className="border-2">
+              <CardHeader className="text-center space-y-4 pb-8">
+                <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="w-10 h-10 text-primary" />
+                </div>
+                <CardTitle className="text-3xl">
+                  Bem-vindo ao Pleno, {session?.user?.user_metadata?.full_name || 'Investidor'}!
+                </CardTitle>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Descubra sua saúde financeira em apenas 10 minutos através do nosso diagnóstico inteligente por IA
+                </p>
+              </CardHeader>
+              
+              <CardContent className="space-y-8">
+                {/* CTA Principal */}
+                <div className="flex flex-col items-center gap-4">
+                  <Button 
+                    size="lg" 
+                    className="w-full max-w-md h-14 text-lg"
+                    onClick={() => navigate('/diagnostic')}
+                  >
+                    <Zap className="mr-2 h-5 w-5" />
+                    Fazer Diagnóstico Gratuito (10 min)
+                  </Button>
+                  
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Seus dados são 100% seguros e confidenciais
+                  </p>
+                </div>
+                
+                {/* O que você vai descobrir */}
+                <div className="pt-8">
+                  <h3 className="text-center text-lg font-semibold mb-6">📊 O que você vai descobrir:</h3>
+                  <div className="grid md:grid-cols-4 gap-4">
+                    <Card className="border-dashed">
+                      <CardContent className="pt-6 text-center">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                          <FileText className="w-6 h-6 text-primary" />
+                        </div>
+                        <h4 className="font-semibold mb-1">Seu Score</h4>
+                        <p className="text-xs text-muted-foreground">De 0 a 150 pontos</p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="border-dashed">
+                      <CardContent className="pt-6 text-center">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                          <Award className="w-6 h-6 text-primary" />
+                        </div>
+                        <h4 className="font-semibold mb-1">Seu Perfil</h4>
+                        <p className="text-xs text-muted-foreground">Investidor, Poupador...</p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="border-dashed">
+                      <CardContent className="pt-6 text-center">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                          <Target className="w-6 h-6 text-primary" />
+                        </div>
+                        <h4 className="font-semibold mb-1">Áreas Críticas</h4>
+                        <p className="text-xs text-muted-foreground">Onde melhorar</p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="border-dashed">
+                      <CardContent className="pt-6 text-center">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                          <BookOpen className="w-6 h-6 text-primary" />
+                        </div>
+                        <h4 className="font-semibold mb-1">Plano de Ação</h4>
+                        <p className="text-xs text-muted-foreground">Dicas personalizadas</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+                
+                {/* Opções Secundárias */}
+                <div className="pt-4 space-y-3">
+                  <p className="text-center text-sm text-muted-foreground mb-4">Ou explore outras opções:</p>
+                  <div className="flex flex-col md:flex-row gap-3">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => navigate('/consultations')}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Agendar Consultoria
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => navigate('/education')}
+                    >
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      Explorar Educação
+                    </Button>
+                    
+                    {isAdmin && (
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => navigate('/admin/dashboard')}
+                      >
+                        Painel Admin
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                <Button 
+                  variant="ghost" 
+                  className="w-full"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </Layout>
     );
   }
 

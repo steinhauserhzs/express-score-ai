@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2 } from "lucide-react";
+import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2, Home, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import DiagnosticModeModal from "@/components/DiagnosticModeModal";
 import VoiceRecorder from "@/components/diagnostic/VoiceRecorder";
 import AudioPlayer from "@/components/diagnostic/AudioPlayer";
+import Logo from "@/components/Logo";
 
 interface Message {
   role: "user" | "assistant";
@@ -346,6 +347,29 @@ export default function Diagnostic() {
     });
   };
 
+  const handleSaveAndExit = async () => {
+    if (diagnosticId && messages.length > 1) {
+      try {
+      await supabase
+        .from('diagnostics')
+        .update({ 
+          responses_json: { messages } as any,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', diagnosticId);
+        
+        toast({
+          title: "Progresso salvo! 💾",
+          description: "Você pode continuar de onde parou quando voltar.",
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
+    }
+    
+    navigate('/dashboard');
+  };
+
   const handleFinalize = async () => {
     if (!diagnosticId) return;
     
@@ -415,13 +439,52 @@ export default function Diagnostic() {
   const progress = Math.min((userMessages / expectedQuestions) * 100, 100);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle p-3 md:p-4">
+    <div className="min-h-screen flex flex-col">
       <DiagnosticModeModal 
         open={showModeSelection} 
         onSelect={handleModeSelection}
       />
       
-      <div className="max-w-4xl mx-auto">
+      {/* Header fixo */}
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className="container flex h-14 items-center justify-between px-4">
+          <Logo size="sm" />
+          
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Indicador de Progresso */}
+            <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
+              {userMessages}/{expectedQuestions} {turboMode ? "🚀" : ""}
+            </span>
+            
+            {/* Botão Minha Área */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="gap-1 md:gap-2"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Minha Área</span>
+            </Button>
+            
+            {/* Botão Salvar e Sair */}
+            {messages.length > 1 && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleSaveAndExit}
+                className="gap-1 md:gap-2"
+              >
+                <Save className="w-4 h-4" />
+                <span className="hidden sm:inline">Salvar</span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </header>
+      
+      <div className="flex-1 bg-gradient-subtle p-3 md:p-4">
+        <div className="max-w-4xl mx-auto">
         <Card className="p-4 md:p-6 mb-4 bg-card/95 backdrop-blur">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div className="flex items-center gap-2 md:gap-3">
@@ -662,6 +725,7 @@ export default function Diagnostic() {
             </Card>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
