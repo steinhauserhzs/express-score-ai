@@ -16,8 +16,9 @@ interface AudioPlayerProps {
 const audioCache = new Map<string, string>();
 
 const getCacheKey = (text: string): string => {
-  // Use first 200 chars as cache key
-  return text.substring(0, 200);
+  // Use first 500 chars + text length to ensure uniqueness
+  // This prevents cache collisions when messages start with same text
+  return `${text.substring(0, 500)}_${text.length}`;
 };
 
 export default function AudioPlayer({ text, autoPlay = false, onStart, onEnd }: AudioPlayerProps) {
@@ -72,6 +73,10 @@ export default function AudioPlayer({ text, autoPlay = false, onStart, onEnd }: 
       // Check cache first
       const cacheKey = getCacheKey(text);
       const cachedUrl = audioCache.get(cacheKey);
+      
+      console.log('[AudioPlayer] Cache key:', cacheKey);
+      console.log('[AudioPlayer] Text length:', text.length);
+      console.log('[AudioPlayer] First 100 chars:', text.substring(0, 100));
       
       if (cachedUrl) {
         console.log('[AudioPlayer] Using cached audio');
