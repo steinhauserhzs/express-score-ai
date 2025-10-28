@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download, TrendingUp, Users, Target, AlertCircle } from "lucide-react";
+import { Download, TrendingUp, Users, Target, AlertCircle, Eye, FileText } from "lucide-react";
 import { toast } from "sonner";
+import DiagnosticDetailModal from "@/components/admin/DiagnosticDetailModal";
 
 export default function AdminDiagnostics() {
   const { isAdmin, loading: authLoading } = useAdminAuth();
@@ -37,6 +38,8 @@ export default function AdminDiagnostics() {
     avgScore: 0,
     conversionRate: 0,
   });
+  const [selectedDiagnosticId, setSelectedDiagnosticId] = useState<string | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
     if (isAdmin) {
@@ -168,6 +171,33 @@ export default function AdminDiagnostics() {
 
     return matchesSearch && matchesStatus && matchesScore;
   });
+
+  const viewDiagnosticDetails = (diagnosticId: string) => {
+    setSelectedDiagnosticId(diagnosticId);
+    setShowDetailModal(true);
+  };
+
+  const generateConsultantReport = async (diagnosticId: string) => {
+    try {
+      toast.loading("Gerando relatório técnico...");
+      const { data, error } = await supabase.functions.invoke('generate-report', {
+        body: { 
+          diagnosticId,
+          reportType: 'consultant'
+        }
+      });
+      
+      toast.dismiss();
+      
+      if (error) throw error;
+      
+      window.open(data.reportUrl, '_blank');
+      toast.success("Relatório técnico gerado com sucesso!");
+    } catch (error) {
+      console.error("Error generating report:", error);
+      toast.error("Erro ao gerar relatório técnico");
+    }
+  };
 
   if (authLoading) {
     return (
@@ -317,13 +347,14 @@ export default function AdminDiagnostics() {
                     <TableHead>Perfil</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Data</TableHead>
+                    <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredDiagnostics.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={6}
+                        colSpan={7}
                         className="text-center py-8 text-muted-foreground"
                       >
                         Nenhum diagnóstico encontrado
@@ -364,6 +395,28 @@ export default function AdminDiagnostics() {
                             "pt-BR"
                           )}
                         </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => viewDiagnosticDetails(diagnostic.id)}
+                              disabled={!diagnostic.completed}
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              Ver Detalhes
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              onClick={() => generateConsultantReport(diagnostic.id)}
+                              disabled={!diagnostic.completed}
+                            >
+                              <FileText className="w-4 h-4 mr-1" />
+                              Relatório
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))
                   )}
@@ -377,6 +430,16 @@ export default function AdminDiagnostics() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de Detalhes */}
+      <DiagnosticDetailModal 
+        diagnosticId={selectedDiagnosticId}
+        open={showDetailModal}
+        onClose={() => {
+          setShowDetailModal(false);
+          setSelectedDiagnosticId(null);
+        }}
+      />
     </AdminLayout>
   );
 }

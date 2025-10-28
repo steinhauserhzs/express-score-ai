@@ -332,6 +332,20 @@ export default function Diagnostic() {
 
   const handleFinalize = async () => {
     if (!diagnosticId) return;
+    
+    // Validar se diagnóstico está realmente completo
+    const userMessagesCount = messages.filter(m => m.role === 'user').length;
+    if (userMessagesCount < expectedQuestions) {
+      console.warn(`⚠️ Diagnóstico incompleto: ${userMessagesCount}/${expectedQuestions} perguntas`);
+      toast({
+        title: "Diagnóstico Incompleto",
+        description: `Faltam ${expectedQuestions - userMessagesCount} perguntas. Continue a conversa antes de finalizar.`,
+        variant: "destructive",
+      });
+      setIsComplete(false);
+      return;
+    }
+    
     setIsCalculating(true);
 
     try {

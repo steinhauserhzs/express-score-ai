@@ -202,6 +202,104 @@ export default function DiagnosticResults() {
           <ScoreRadar dimensionScores={diagnostic.dimension_scores} />
         </Card>
 
+        {/* Scores por Dimensão */}
+        <Card className="p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.25s" }}>
+          <h2 className="text-xl md:text-2xl font-bold mb-4 text-foreground">
+            📊 Pontuação Detalhada por Dimensão
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">💳 Dívidas</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.debts}/25
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.debts / 25) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">🎯 Comportamento</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.behavior}/20
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.behavior / 20) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">💸 Gastos</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.spending}/15
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.spending / 15) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">🎯 Metas</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.goals}/15
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.goals / 15) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">🏦 Reservas</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.reserves}/15
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.reserves / 15) * 100}%` }}
+                />
+              </div>
+            </div>
+            
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-muted-foreground">📈 Renda</span>
+                <span className="text-lg font-bold text-foreground">
+                  {diagnostic.dimension_scores.income}/10
+                </span>
+              </div>
+              <div className="w-full bg-background rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all" 
+                  style={{ width: `${(diagnostic.dimension_scores.income / 10) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {/* Profile Card */}
         <div className="animate-slide-up" style={{ animationDelay: "0.3s" }}>
           <ProfileCard profile={diagnostic.profile} />
