@@ -385,7 +385,8 @@ serve(async (req) => {
   }
 
   try {
-    const { diagnosticId } = await req.json();
+    const { diagnosticId, quickUpdate = false, dimension = null } = await req.json();
+    console.log('Calculating score for diagnostic:', diagnosticId, 'Quick update:', quickUpdate, 'Dimension:', dimension);
     const authHeader = req.headers.get('Authorization');
     
     if (!authHeader) {
@@ -401,7 +402,7 @@ serve(async (req) => {
     // Get diagnostic data
     const { data: diagnostic, error: fetchError } = await supabaseClient
       .from('diagnostics')
-      .select('responses_json')
+      .select('responses_json, dimension_scores')
       .eq('id', diagnosticId)
       .single();
 
@@ -437,7 +438,18 @@ serve(async (req) => {
     const analysis = JSON.parse(analysisData.choices[0].message.content);
 
     // Calculate scores
-    const dimensionScores = calculateDimensionScores(analysis);
+    let dimensionScores = calculateDimensionScores(analysis);
+    
+    // Se for quick update, manter scores anteriores das outras dimensões
+    if (quickUpdate && dimension) {
+      const previousScores = diagnostic.dimension_scores || {};
+      const dimensionKey = dimension as keyof ScoreDimensions;
+      dimensionScores = {
+        ...previousScores,
+        [dimensionKey]: dimensionScores[dimensionKey],
+      } as ScoreDimensions;
+    }
+    
     const totalScore = Object.values(dimensionScores).reduce((sum, score) => sum + score, 0);
 
     // Classify profile and score

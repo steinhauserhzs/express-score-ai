@@ -319,20 +319,20 @@ export default function DiagnosticResults() {
           </div>
         </Card>
 
-        {/* Profile Card */}
-        <div className="animate-slide-up" style={{ animationDelay: "0.3s" }}>
-          <ProfileCard profile={diagnostic.profile} />
-        </div>
+      {/* Profile Card */}
+      <div className="animate-slide-up" style={{ animationDelay: "0.3s" }}>
+        <ProfileCard profile={diagnostic.profile} />
+      </div>
 
-        {/* Badge Unlocked */}
-        {newBadge && (
-          <div className="animate-bounce-in" style={{ animationDelay: "0.4s" }}>
-            <BadgeUnlocked 
-              badgeName={newBadge.badge_name}
-              badgeDescription={newBadge.badge_description}
-            />
-          </div>
-        )}
+      {/* Badge Unlocked */}
+      {newBadge && (
+        <div className="animate-bounce-in" style={{ animationDelay: "0.4s" }}>
+          <BadgeUnlocked 
+            badgeName={newBadge.badge_name}
+            badgeDescription={newBadge.badge_description}
+          />
+        </div>
+      )}
 
         {/* Top Recommendations */}
         <Card className="p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>

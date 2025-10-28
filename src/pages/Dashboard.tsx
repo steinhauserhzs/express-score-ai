@@ -23,7 +23,9 @@ import { toast } from "sonner";
 import ScoreComparison from "@/components/ScoreComparison";
 import QuickUpdateModal from "@/components/QuickUpdateModal";
 import AreasToImprove from "@/components/AreasToImprove";
-import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap } from "lucide-react";
+import EvolutionChart from "@/components/EvolutionChart";
+import NextSteps from "@/components/NextSteps";
+import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap, LogOut, Loader2 } from "lucide-react";
 
 import { DashboardSkeleton } from "@/components/ui/skeleton-group";
 
@@ -38,6 +40,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "journey" | "gamification">("overview");
   const [isAdmin, setIsAdmin] = useState(false);
   const [showQuickUpdateModal, setShowQuickUpdateModal] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -386,6 +389,23 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Evolution Chart */}
+        <div className="mb-8">
+          <EvolutionChart history={history} />
+        </div>
+
+        {/* Areas to Improve & Next Steps */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <AreasToImprove 
+            dimensionScores={dimensionScores}
+            onQuickUpdate={(dim) => navigate(`/dashboard/update/${dim}`)}
+          />
+          <NextSteps 
+            score={diagnostic.total_score} 
+            profile={diagnostic.profile || ""} 
+          />
+        </div>
 
         {/* Score Comparison - se houver histórico */}
         {history && history.length >= 2 && (

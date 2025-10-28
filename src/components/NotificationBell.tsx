@@ -104,11 +104,14 @@ export default function NotificationBell() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
+      
+      if (unreadIds.length === 0) return;
+
       const { error } = await supabase
         .from("notifications")
         .update({ read: true })
-        .eq("user_id", user.id)
-        .eq("read", false);
+        .in("id", unreadIds);
 
       if (error) throw error;
 
@@ -116,10 +119,15 @@ export default function NotificationBell() {
       setUnreadCount(0);
 
       toast({
-        title: "Notificações marcadas como lidas",
+        title: "✅ Todas as notificações foram marcadas como lidas",
       });
     } catch (error) {
       console.error("Error marking all as read:", error);
+      toast({
+        title: "Erro ao marcar notificações",
+        description: "Tente novamente em alguns instantes",
+        variant: "destructive",
+      });
     }
   };
 

@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
 import DiagnosticResults from "./pages/DiagnosticResults";
 import QuickUpdate from "./pages/QuickUpdate";
+import QuickUpdateResult from "./pages/QuickUpdateResult";
 import Consultations from "./pages/Consultations";
 import Education from "./pages/Education";
 import Refer from "./pages/Refer";
@@ -75,6 +76,7 @@ const App = () => (
           <Route path="/admin-choice" element={<ProtectedRoute><AdminChoice /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/dashboard/update/:dimension" element={<ProtectedRoute><QuickUpdate /></ProtectedRoute>} />
+          <Route path="/dashboard/update-result/:diagnosticId" element={<ProtectedRoute><QuickUpdateResult /></ProtectedRoute>} />
           <Route path="/diagnostic" element={<ProtectedRoute><Diagnostic /></ProtectedRoute>} />
           <Route path="/diagnostic/results/:id" element={<ProtectedRoute><DiagnosticResults /></ProtectedRoute>} />
           <Route path="/consultations" element={<ProtectedRoute><Consultations /></ProtectedRoute>} />

@@ -144,17 +144,20 @@ export default function QuickUpdate() {
       const { data, error } = await supabase.functions.invoke('calculate-score', {
         body: {
           diagnosticId,
-          quickUpdate: {
-            dimension,
-            responses: updateContext
-          }
+          quickUpdate: true,
+          dimension,
+          responses: updateContext
         }
       });
 
       if (error) throw error;
 
       toast.success(`${dimensionLabels[dimension]} atualizado com sucesso!`);
-      navigate('/dashboard');
+      
+      // Redirecionar para página de resultado
+      setTimeout(() => {
+        navigate(`/dashboard/update-result/${diagnosticId}`);
+      }, 1500);
     } catch (error) {
       console.error('Error updating dimension:', error);
       toast.error("Erro ao atualizar. Tente novamente.");
