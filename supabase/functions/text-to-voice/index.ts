@@ -11,13 +11,22 @@ serve(async (req) => {
   }
 
   try {
-    const { text, voice } = await req.json();
+    let { text, voice } = await req.json();
 
     if (!text) {
       throw new Error('Text is required');
     }
 
-    console.log('Generating speech for text:', text.substring(0, 50) + '...');
+    console.log('[TTS] Starting text-to-speech conversion');
+    console.log(`[TTS] Text length: ${text.length} characters`);
+    console.log(`[TTS] First 100 chars: ${text.substring(0, 100)}`);
+    console.log(`[TTS] Last 100 chars: ${text.substring(Math.max(0, text.length - 100))}`);
+
+    // OpenAI TTS has a limit of 4096 characters per request
+    if (text.length > 4000) {
+      console.warn(`[TTS] Text too long (${text.length} chars), truncating to 4000`);
+      text = text.substring(0, 4000) + '...';
+    }
 
     // Generate speech from text
     const response = await fetch('https://api.openai.com/v1/audio/speech', {
@@ -53,7 +62,8 @@ serve(async (req) => {
     
     const base64Audio = btoa(binary);
 
-    console.log('Speech generation successful');
+    console.log('[TTS] Speech generation successful');
+    console.log(`[TTS] Audio size: ${bytes.length} bytes, Base64 size: ${base64Audio.length} chars`);
 
     return new Response(
       JSON.stringify({ audioContent: base64Audio }),

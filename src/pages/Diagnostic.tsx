@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Send, Sparkles, Headphones, Keyboard } from "lucide-react";
+import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import DiagnosticModeModal from "@/components/DiagnosticModeModal";
@@ -26,6 +26,7 @@ export default function Diagnostic() {
   const [turboMode, setTurboMode] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
   const [voiceMode, setVoiceMode] = useState(false);
+  const [isAISpeaking, setIsAISpeaking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -491,16 +492,35 @@ export default function Diagnostic() {
                       ? "bg-primary text-primary-foreground shadow-lg"
                       : "bg-muted text-foreground"
                   }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <p className="text-xs md:text-sm whitespace-pre-wrap font-medium break-words overflow-wrap-anywhere flex-1">
-                      {msg.content}
-                    </p>
-                    {msg.role === "assistant" && voiceMode && (
-                      <AudioPlayer text={msg.content} autoPlay={idx === messages.length - 1} />
-                    )}
-                  </div>
-                </div>
+                 >
+                   <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                   {msg.role === "assistant" && voiceMode && (
+                     <div className="mt-3">
+                       <AudioPlayer 
+                         text={msg.content} 
+                         autoPlay={idx === messages.length - 1}
+                         onStart={() => {
+                           setIsAISpeaking(true);
+                           if (idx === messages.length - 1) {
+                             toast({
+                               title: "🔊 IA falando...",
+                               description: "Aguarde o fim da resposta para falar",
+                             });
+                           }
+                         }}
+                         onEnd={() => {
+                           setIsAISpeaking(false);
+                           if (idx === messages.length - 1) {
+                             toast({
+                               title: "🎤 Sua vez!",
+                               description: "Clique no microfone para responder",
+                             });
+                           }
+                         }}
+                       />
+                     </div>
+                   )}
+                 </div>
               </div>
             ))}
             {isLoading && (
@@ -517,16 +537,40 @@ export default function Diagnostic() {
             {voiceMode ? (
               // Voice mode layout
               <div className="space-y-3">
-                <div className="flex justify-center">
-                  <VoiceRecorder
-                    onTranscript={handleVoiceTranscript}
-                    disabled={isLoading || isComplete}
-                    large
-                  />
-                </div>
-                <p className="text-xs text-center text-muted-foreground">
-                  {isLoading ? "Processando..." : "Clique no microfone e fale sua resposta"}
-                </p>
+                {isAISpeaking ? (
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Volume2 className="w-5 h-5 animate-pulse" />
+                      <span className="text-sm">IA está falando... Aguarde para responder</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsAISpeaking(false);
+                        toast({
+                          title: "Áudio interrompido",
+                          description: "Você pode responder agora",
+                        });
+                      }}
+                    >
+                      Pular resposta
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-center">
+                      <VoiceRecorder
+                        onTranscript={handleVoiceTranscript}
+                        disabled={isLoading || isComplete}
+                        large
+                      />
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground">
+                      {isLoading ? "Processando..." : "Clique no microfone e fale sua resposta"}
+                    </p>
+                  </>
+                )}
                 <details className="text-xs text-muted-foreground">
                   <summary className="cursor-pointer text-center hover:text-foreground">
                     Prefere digitar esta resposta?
