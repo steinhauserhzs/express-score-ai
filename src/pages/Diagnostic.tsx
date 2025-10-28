@@ -1,10 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2, Home, Save } from "lucide-react";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from "@/components/ui/alert-dialog";
+import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2, Home, Save, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import DiagnosticModeModal from "@/components/DiagnosticModeModal";
@@ -28,6 +37,9 @@ export default function Diagnostic() {
   const [showModeSelection, setShowModeSelection] = useState(true);
   const [voiceMode, setVoiceMode] = useState(false);
   const [isAISpeaking, setIsAISpeaking] = useState(false);
+  const [showManualFinalize, setShowManualFinalize] = useState(false);
+  const [showErrorOptions, setShowErrorOptions] = useState(false);
+  const [calculatingProgress, setCalculatingProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -245,15 +257,30 @@ export default function Diagnostic() {
         });
       }
 
-      // Check if diagnostic is complete - improved detection with marker
-      if (assistantMessage.includes('<!-- DIAGNOSTIC_COMPLETE -->')) {
-        // Remove the marker from the message
-        const cleanMessage = assistantMessage.replace('<!-- DIAGNOSTIC_COMPLETE -->', '').trim();
+      // Check if diagnostic is complete - IMPROVED flexible detection
+      const hasCompleteMarker = 
+        assistantMessage.includes('<!-- DIAGNOSTIC_COMPLETE -->') ||
+        assistantMessage.includes('DIAGNOSTIC_COMPLETE') ||
+        assistantMessage.includes('DIAGNÓSTICO_COMPLETO') ||
+        assistantMessage.toLowerCase().includes('diagnóstico completo') ||
+        assistantMessage.toLowerCase().includes('diagnostic complete');
+
+      if (hasCompleteMarker) {
+        // Remove any variation of the marker
+        const cleanMessage = assistantMessage
+          .replace(/<!--\s*DIAGNOSTIC[_\s]COMPLETE\s*-->/gi, '')
+          .replace(/DIAGNOSTIC[_\s]COMPLETE/gi, '')
+          .replace(/DIAGNÓSTICO\s+COMPLETO/gi, '')
+          .trim();
+        
         setMessages(prev => 
           prev.map((m, i) => 
             i === prev.length - 1 ? { ...m, content: cleanMessage } : m
           )
         );
+        
+        // Show manual finalize button as fallback
+        setShowManualFinalize(true);
         
         // Flexible validation - allow completion even if some questions were skipped
         const userMessagesCount = updatedMessages.filter(m => m.role === 'user').length;
@@ -266,13 +293,19 @@ export default function Diagnostic() {
             description: `Por favor, responda mais algumas perguntas para completar o diagnóstico.`,
             variant: "destructive",
           });
+          setShowManualFinalize(false);
           return;
         }
         
         console.log(`✅ Diagnostic valid: ${userMessagesCount} questions answered (min: ${minimumQuestionsRequired})`);
         setIsComplete(true);
         trackEvent('diagnostic_completed');
-        handleFinalize();
+        
+        // Show success toast
+        toast({
+          title: "🎉 Diagnóstico Completo!",
+          description: "Clique no botão abaixo para ver seus resultados",
+        });
       }
 
       // Auto-save progress every few messages
@@ -373,20 +406,24 @@ export default function Diagnostic() {
   const handleFinalize = async () => {
     if (!diagnosticId) return;
     
-    // Validar se diagnóstico está realmente completo
-    const userMessagesCount = messages.filter(m => m.role === 'user').length;
-    if (userMessagesCount < expectedQuestions) {
-      console.warn(`⚠️ Diagnóstico incompleto: ${userMessagesCount}/${expectedQuestions} perguntas`);
-      toast({
-        title: "Diagnóstico Incompleto",
-        description: `Faltam ${expectedQuestions - userMessagesCount} perguntas. Continue a conversa antes de finalizar.`,
-        variant: "destructive",
-      });
-      setIsComplete(false);
-      return;
-    }
-    
     setIsCalculating(true);
+    setCalculatingProgress(0);
+    setShowManualFinalize(false);
+
+    // Fake progress animation
+    const progressInterval = setInterval(() => {
+      setCalculatingProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return 90;
+        }
+        return prev + 10;
+      });
+    }, 1500);
+
+    // Timeout controller
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 segundos
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -399,10 +436,18 @@ export default function Diagnostic() {
             Authorization: `Bearer ${session?.access_token}`,
           },
           body: JSON.stringify({ diagnosticId }),
+          signal: controller.signal,
         }
       );
 
-      if (!response.ok) throw new Error("Failed to calculate score");
+      clearTimeout(timeoutId);
+      clearInterval(progressInterval);
+      setCalculatingProgress(100);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to calculate score");
+      }
 
       const result = await response.json();
       
@@ -420,14 +465,40 @@ export default function Diagnostic() {
 
       navigate(`/diagnostic/results/${diagnosticId}`);
     } catch (error: any) {
+      clearTimeout(timeoutId);
+      clearInterval(progressInterval);
+      
       console.error("Error finalizing diagnostic:", error);
+      
+      // Handle timeout specifically
+      if (error.name === 'AbortError') {
+        toast({
+          title: "Tempo Esgotado",
+          description: "O cálculo está demorando muito. Vamos tentar novamente automaticamente.",
+        });
+        // Auto-retry after 2 seconds
+        setTimeout(() => {
+          setIsCalculating(false);
+          handleFinalize();
+        }, 2000);
+        return;
+      }
+      
+      // Show error and options
       toast({
-        title: "Erro",
-        description: "Não foi possível calcular seu score. Tente novamente.",
+        title: "Erro ao Calcular Score",
+        description: "Não foi possível calcular seu score automaticamente.",
         variant: "destructive",
       });
+      
+      // Show error dialog with options after a brief delay
+      setTimeout(() => {
+        setShowErrorOptions(true);
+      }, 1000);
+      
     } finally {
       setIsCalculating(false);
+      setCalculatingProgress(0);
     }
   };
 
@@ -711,20 +782,100 @@ export default function Diagnostic() {
           </div>
         </Card>
 
-        {isCalculating && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
-            <Card className="p-8 max-w-md mx-4">
-              <div className="text-center space-y-4">
-                <Loader2 className="w-16 h-16 animate-spin mx-auto text-primary" />
-                <h3 className="text-xl font-bold">Calculando seu Score Express</h3>
-                <p className="text-sm text-muted-foreground">
-                  Analisando suas respostas e gerando seu diagnóstico personalizado...
-                </p>
-                <Progress value={66} className="h-2" />
+        {/* Manual Finalize Button */}
+        {showManualFinalize && !isCalculating && (
+          <Card className="mt-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-800 dark:text-green-200">
+                      🎉 Diagnóstico Completo!
+                    </p>
+                    <p className="text-sm text-green-700 dark:text-green-300">
+                      Clique no botão para ver seus resultados
+                    </p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleFinalize}
+                  size="lg"
+                  className="flex-shrink-0"
+                >
+                  Ver Resultados
+                </Button>
               </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Improved Calculating Overlay */}
+        {isCalculating && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <Card className="p-8 max-w-md w-full">
+              <CardContent className="space-y-4 p-0">
+                <div className="flex justify-center">
+                  <Loader2 className="w-16 h-16 animate-spin text-primary" />
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold">Calculando seu Score Express...</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Estamos analisando suas respostas com IA
+                  </p>
+                  <Progress value={calculatingProgress} className="w-full h-2" />
+                  <p className="text-xs text-muted-foreground">
+                    Isso pode levar até 30 segundos
+                  </p>
+                </div>
+              </CardContent>
             </Card>
           </div>
         )}
+
+        {/* Error Options Dialog */}
+        <AlertDialog open={showErrorOptions} onOpenChange={setShowErrorOptions}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Erro ao Finalizar Diagnóstico</AlertDialogTitle>
+              <AlertDialogDescription>
+                Não conseguimos calcular seu score automaticamente. 
+                O que você gostaria de fazer?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+              <AlertDialogAction
+                onClick={() => {
+                  setShowErrorOptions(false);
+                  handleFinalize();
+                }}
+                className="w-full sm:w-auto"
+              >
+                Tentar Novamente
+              </AlertDialogAction>
+              <Button
+                onClick={() => {
+                  setShowErrorOptions(false);
+                  navigate('/dashboard');
+                }}
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
+                Voltar ao Dashboard
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowErrorOptions(false);
+                  navigate('/consultations');
+                }}
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
+                Falar com Consultor
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         </div>
       </div>
     </div>

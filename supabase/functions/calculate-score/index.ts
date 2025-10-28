@@ -386,10 +386,16 @@ serve(async (req) => {
 
   try {
     const { diagnosticId, quickUpdate = false, dimension = null } = await req.json();
-    console.log('Calculating score for diagnostic:', diagnosticId, 'Quick update:', quickUpdate, 'Dimension:', dimension);
+    
+    console.log('=== CALCULATE SCORE DEBUG ===');
+    console.log('Diagnostic ID:', diagnosticId);
+    console.log('Quick Update:', quickUpdate);
+    console.log('Dimension:', dimension);
+    
     const authHeader = req.headers.get('Authorization');
     
     if (!authHeader) {
+      console.error('❌ Missing authorization header');
       throw new Error('Missing authorization header');
     }
 
@@ -406,14 +412,34 @@ serve(async (req) => {
       .eq('id', diagnosticId)
       .single();
 
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.error('❌ Error fetching diagnostic:', fetchError);
+      throw fetchError;
+    }
 
-    console.log('Analyzing diagnostic:', diagnosticId);
+    console.log('Responses JSON length:', JSON.stringify(diagnostic.responses_json).length);
+    console.log('Messages count:', diagnostic.responses_json?.messages?.length || 0);
+
+    // Validate responses_json
+    if (!diagnostic.responses_json || !diagnostic.responses_json.messages || diagnostic.responses_json.messages.length === 0) {
+      console.error('❌ responses_json is empty or malformed');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Diagnostic data is incomplete. Please complete the diagnostic first.',
+          diagnostic_id: diagnosticId
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('✅ Diagnostic data valid, analyzing...');
 
     // Use AI to extract structured data from conversation
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const conversationText = JSON.stringify(diagnostic.responses_json);
 
+    console.log('🤖 Calling AI for analysis...');
+    
     const analysisResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -431,8 +457,27 @@ serve(async (req) => {
     });
 
     if (!analysisResponse.ok) {
-      throw new Error(`AI analysis failed: ${analysisResponse.status}`);
+      const errorText = await analysisResponse.text();
+      console.error('❌ AI analysis failed:', analysisResponse.status, errorText);
+      
+      if (analysisResponse.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (analysisResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      throw new Error(`AI analysis failed: ${analysisResponse.status} - ${errorText}`);
     }
+    
+    console.log('✅ AI analysis successful');
 
     const analysisData = await analysisResponse.json();
     const analysis = JSON.parse(analysisData.choices[0].message.content);
