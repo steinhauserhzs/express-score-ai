@@ -22,6 +22,7 @@ import OnboardingTour from "@/components/OnboardingTour";
 import { toast } from "sonner";
 import ScoreComparison from "@/components/ScoreComparison";
 import QuickUpdateModal from "@/components/QuickUpdateModal";
+import AreasToImprove from "@/components/AreasToImprove";
 import { Download, FileText, TrendingUp, Calendar, BookOpen, Users, Award, Zap } from "lucide-react";
 
 import { DashboardSkeleton } from "@/components/ui/skeleton-group";
@@ -395,6 +396,16 @@ export default function Dashboard() {
             />
           </div>
         )}
+
+        {/* Áreas para Melhorar */}
+        <div className="mb-8">
+          <AreasToImprove 
+            dimensionScores={dimensionScores}
+            onQuickUpdate={(dimension) => {
+              navigate(`/dashboard/update/${dimension}`);
+            }}
+          />
+        </div>
 
         <div className="flex justify-between items-center mb-8">
           <div>
