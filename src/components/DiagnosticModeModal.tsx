@@ -2,10 +2,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from "@/components/ui/carousel";
-import { Zap, Star, Headphones, CheckCircle2, ChevronRight } from "lucide-react";
-import React from "react";
-import { useState, useEffect } from "react";
+import { Zap, Star, Headphones, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 interface DiagnosticModeModalProps {
   open: boolean;
@@ -13,25 +11,17 @@ interface DiagnosticModeModalProps {
 }
 
 export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeModalProps) {
-  const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    if (!api) return;
-
-    setCurrent(api.selectedScrollSnap());
-
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
-    });
-  }, [api]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const diagnosticTypes = [
     {
       id: 'complete',
       title: 'Diagnóstico Completo',
       subtitle: 'Análise profunda e detalhada',
-      icon: <Star className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-purple-500" />,
+      icon: <Star className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 text-purple-500" />,
       time: '20-30 min',
       bgGradient: 'from-purple-500/10 to-pink-500/5',
       features: [
@@ -47,7 +37,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
       id: 'turbo',
       title: 'Diagnóstico Turbo',
       subtitle: 'Rápido e eficiente',
-      icon: <Zap className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-blue-500" />,
+      icon: <Zap className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 text-blue-500" />,
       time: '10-15 min',
       bgGradient: 'from-blue-500/10 to-cyan-500/5',
       features: [
@@ -62,7 +52,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
       id: 'voice',
       title: 'Por Voz',
       subtitle: 'Conversação natural',
-      icon: <Headphones className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-green-500" />,
+      icon: <Headphones className="h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 text-green-500" />,
       time: '20-30 min',
       bgGradient: 'from-green-500/10 to-emerald-500/5',
       features: [
@@ -75,11 +65,68 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
     }
   ];
 
+  // Navigation functions
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % diagnosticTypes.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + diagnosticTypes.length) % diagnosticTypes.length);
+  };
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!open) return;
+      
+      if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [open, currentSlide]);
+
   return (
     <Dialog open={open}>
-      <DialogContent className="w-[90vw] sm:w-[85vw] max-w-4xl max-h-[85vh] p-0 overflow-y-auto">
-        <DialogHeader className="px-4 py-3 md:px-6 md:py-4 sticky top-0 bg-background/95 backdrop-blur z-10 border-b">
-          <DialogTitle className="text-base md:text-xl lg:text-2xl text-center">
+      <DialogContent className="w-[95vw] sm:w-[90vw] max-w-5xl h-[90vh] sm:h-[85vh] p-0 grid grid-rows-[auto_1fr_auto] overflow-hidden">
+        {/* Header */}
+        <DialogHeader className="px-4 py-3 md:px-6 md:py-4 border-b bg-background/95 backdrop-blur z-10">
+          <DialogTitle className="text-lg md:text-xl lg:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground text-xs md:text-sm">
@@ -87,95 +134,115 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative px-3 md:px-6 py-4 md:py-6">
-          <Carousel
-            setApi={setApi}
-            opts={{
-              align: "center",
-              loop: true,
+        {/* Content Area - Carousel */}
+        <div 
+          ref={containerRef}
+          className="relative overflow-hidden flex items-center justify-center px-4 md:px-6 py-6 md:py-8"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Slides Container */}
+          <div 
+            className="flex transition-transform duration-300 ease-in-out w-full"
+            style={{ 
+              transform: `translateX(-${currentSlide * 100}%)`,
             }}
-            className="w-full"
           >
-            <CarouselContent className="flex items-center -ml-2 md:-ml-4">
-              {diagnosticTypes.map((diagnostic, index) => (
-                <CarouselItem key={diagnostic.id} className="pl-2 md:pl-4 basis-full">
-                  <div className="flex items-center justify-center py-2 md:py-4">
-                    <Card 
-                      className={`
-                        w-full max-w-sm md:max-w-lg mx-auto
-                        border cursor-pointer transition-all relative overflow-hidden
-                        ${current === index 
-                          ? 'border-primary shadow-2xl scale-100' 
-                          : 'border-muted opacity-70 hover:opacity-90 scale-95'
-                        }
-                        bg-gradient-to-br ${diagnostic.bgGradient}
-                        hover:shadow-xl
-                      `}
+            {diagnosticTypes.map((diagnostic, index) => (
+              <div 
+                key={diagnostic.id} 
+                className="min-w-full flex items-center justify-center px-2 md:px-4"
+              >
+                <Card 
+                  className={`
+                    w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto
+                    border cursor-pointer transition-all relative overflow-hidden
+                    ${currentSlide === index 
+                      ? 'border-primary shadow-2xl scale-100' 
+                      : 'border-muted opacity-70 scale-95'
+                    }
+                    bg-gradient-to-br ${diagnostic.bgGradient}
+                    hover:shadow-xl
+                  `}
+                  onClick={diagnostic.onClick}
+                >
+                  <CardHeader className="space-y-2 md:space-y-3 p-4 md:p-5 lg:p-6 pb-2 md:pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-3 md:gap-4 flex-1 min-w-0">
+                        <div className="flex-shrink-0">
+                          {diagnostic.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg md:text-xl lg:text-2xl leading-tight">
+                            {diagnostic.title}
+                          </CardTitle>
+                          <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                            {diagnostic.subtitle}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="text-xs md:text-sm whitespace-nowrap flex-shrink-0">
+                        {diagnostic.time}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-3 md:space-y-4 p-4 md:p-5 lg:p-6 pt-0">
+                    <div className="space-y-2 md:space-y-2.5">
+                      {diagnostic.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-sm md:text-base">
+                          <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <span className="text-muted-foreground leading-tight">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <Button 
+                      className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white shadow-lg hover:shadow-xl transition-all text-sm md:text-base h-10 md:h-11"
                       onClick={diagnostic.onClick}
                     >
-                      <CardHeader className="space-y-2 md:space-y-3 p-3 md:p-4 lg:p-5 pb-2 md:pb-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-start gap-2 md:gap-3 flex-1 min-w-0">
-                            <div className="flex-shrink-0">
-                              {diagnostic.icon}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <CardTitle className="text-base md:text-xl lg:text-2xl leading-tight">
-                                {diagnostic.title}
-                              </CardTitle>
-                              <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">
-                                {diagnostic.subtitle}
-                              </p>
-                            </div>
-                          </div>
-                          <Badge variant="secondary" className="text-xs md:text-sm whitespace-nowrap flex-shrink-0">
-                            {diagnostic.time}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      
-                      <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4 lg:p-5 pt-0">
-                        <div className="space-y-1.5 md:space-y-2">
-                          {diagnostic.features.map((feature, idx) => (
-                            <div key={idx} className="flex items-start gap-2 text-xs md:text-sm lg:text-base">
-                              <CheckCircle2 className="h-3.5 w-3.5 md:h-4 md:w-4 lg:h-5 lg:w-5 text-primary mt-0.5 flex-shrink-0" />
-                              <span className="text-muted-foreground leading-tight">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <Button 
-                          className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white shadow-lg hover:shadow-xl transition-all text-xs md:text-sm lg:text-base h-9 md:h-10 lg:h-11"
-                          onClick={diagnostic.onClick}
-                        >
-                          Começar Agora
-                          <ChevronRight className="ml-1 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4" />
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            
-            <CarouselPrevious className="absolute left-1 md:left-2 lg:left-4 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:hover:scale-100" />
-            <CarouselNext className="absolute right-1 md:right-2 lg:right-4 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:hover:scale-100" />
-          </Carousel>
-          
-          <div className="flex justify-center gap-2 mt-4 md:mt-6 pb-2">
-            {diagnosticTypes.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => api?.scrollTo(index)}
-                className={`h-2 rounded-full transition-all ${
-                  current === index 
-                    ? 'w-8 bg-primary' 
-                    : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                }`}
-                aria-label={`Ir para diagnóstico ${index + 1}`}
-              />
+                      Começar Agora
+                      <ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
+            aria-label="Slide anterior"
+          >
+            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
+            aria-label="Próximo slide"
+          >
+            <ChevronRight className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
+          </button>
+        </div>
+
+        {/* Navigation Dots */}
+        <div className="flex justify-center gap-2 pb-4 md:pb-6">
+          {diagnosticTypes.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`h-2 md:h-3 rounded-full transition-all ${
+                currentSlide === index 
+                  ? 'w-8 md:w-10 bg-primary' 
+                  : 'w-2 md:w-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+              }`}
+              aria-label={`Ir para diagnóstico ${index + 1}`}
+            />
+          ))}
         </div>
       </DialogContent>
     </Dialog>
