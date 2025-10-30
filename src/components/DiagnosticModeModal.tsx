@@ -212,38 +212,40 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
             ))}
           </div>
 
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
-            aria-label="Slide anterior"
-          >
-            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
-          </button>
-          
-          <button
-            onClick={nextSlide}
-            className="absolute right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
-            aria-label="Próximo slide"
-          >
-            <ChevronRight className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" />
-          </button>
         </div>
 
-        {/* Navigation Dots */}
-        <div className="flex justify-center gap-2 pb-4 md:pb-6">
-          {diagnosticTypes.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-2 md:h-3 rounded-full transition-all ${
-                currentSlide === index 
-                  ? 'w-8 md:w-10 bg-primary' 
-                  : 'w-2 md:w-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-              }`}
-              aria-label={`Ir para diagnóstico ${index + 1}`}
-            />
-          ))}
+        {/* Navigation Arrows + Dots */}
+        <div className="flex items-center justify-center gap-4 pb-4 md:pb-6 px-4">
+          <button
+            onClick={prevSlide}
+            className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
+            aria-label="Slide anterior"
+          >
+            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+          
+          <div className="flex justify-center gap-2">
+            {diagnosticTypes.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 md:h-3 rounded-full transition-all ${
+                  currentSlide === index 
+                    ? 'w-8 md:w-10 bg-primary' 
+                    : 'w-2 md:w-3 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                }`}
+                aria-label={`Ir para diagnóstico ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={nextSlide}
+            className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center disabled:opacity-30 disabled:hover:scale-100"
+            aria-label="Próximo slide"
+          >
+            <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
         </div>
       </DialogContent>
     </Dialog>
