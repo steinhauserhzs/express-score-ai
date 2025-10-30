@@ -137,7 +137,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
         {/* Content Area - Carousel */}
         <div 
           ref={containerRef}
-          className="relative overflow-hidden flex items-center justify-center px-0 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8"
+          className="relative overflow-hidden flex items-center justify-center px-0 sm:px-4 md:px-6 py-2 sm:py-6 md:py-8"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -152,11 +152,12 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
             {diagnosticTypes.map((diagnostic, index) => (
               <div 
                 key={diagnostic.id} 
-                className="min-w-full flex items-center justify-center px-3 sm:px-2 md:px-4"
+                className="min-w-full flex items-stretch justify-center px-3 sm:px-2 md:px-4 h-full"
               >
                 <Card 
                   className={`
                     w-full sm:max-w-sm md:max-w-md lg:max-w-lg
+                    flex flex-col
                     border cursor-pointer transition-all relative overflow-hidden
                     ${currentSlide === index 
                       ? 'border-primary shadow-2xl scale-100' 
@@ -167,7 +168,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                   `}
                   onClick={diagnostic.onClick}
                 >
-                  <CardHeader className="space-y-2 md:space-y-3 p-4 md:p-5 lg:p-6 pb-2 md:pb-3">
+                  <CardHeader className="space-y-2 md:space-y-3 p-5 md:p-5 lg:p-6 pb-3 md:pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-3 md:gap-4 flex-1 min-w-0">
                         <div className="flex-shrink-0">
@@ -188,22 +189,22 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-3 md:space-y-4 p-4 md:p-5 lg:p-6 pt-0">
-                    <div className="space-y-2 md:space-y-2.5">
+                  <CardContent className="space-y-4 md:space-y-4 p-5 md:p-5 lg:p-6 pt-0 flex-1 flex flex-col justify-between">
+                    <div className="space-y-3 md:space-y-2.5">
                       {diagnostic.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm md:text-base">
-                          <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <span className="text-muted-foreground leading-tight">{feature}</span>
+                        <div key={idx} className="flex items-start gap-2.5 text-sm md:text-base">
+                          <CheckCircle2 className="h-5 w-5 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <span className="text-muted-foreground leading-relaxed">{feature}</span>
                         </div>
                       ))}
                     </div>
                     
                     <Button 
-                      className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white shadow-lg hover:shadow-xl transition-all text-sm md:text-base h-10 md:h-11"
+                      className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white shadow-lg hover:shadow-xl transition-all text-base md:text-base h-12 md:h-11 mt-4"
                       onClick={diagnostic.onClick}
                     >
                       Começar Agora
-                      <ChevronRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
+                      <ChevronRight className="ml-2 h-5 w-5 md:h-5 md:w-5" />
                     </Button>
                   </CardContent>
                 </Card>
