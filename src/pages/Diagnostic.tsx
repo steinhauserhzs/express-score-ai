@@ -13,12 +13,11 @@ import {
   AlertDialogHeader, 
   AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
-import { Loader2, Send, Sparkles, Headphones, Keyboard, Volume2, Home, Save, CheckCircle2 } from "lucide-react";
+import { Loader2, Send, Sparkles, Home, Save, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import DiagnosticModeModal from "@/components/DiagnosticModeModal";
 import VoiceRecorder from "@/components/diagnostic/VoiceRecorder";
-import AudioPlayer from "@/components/diagnostic/AudioPlayer";
 import Logo from "@/components/Logo";
 
 interface Message {
@@ -35,22 +34,22 @@ export default function Diagnostic() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [turboMode, setTurboMode] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
-  const [voiceMode, setVoiceMode] = useState(false);
-  const [isAISpeaking, setIsAISpeaking] = useState(false);
   const [showManualFinalize, setShowManualFinalize] = useState(false);
   const [showErrorOptions, setShowErrorOptions] = useState(false);
   const [calculatingProgress, setCalculatingProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load voice mode preference from localStorage
+  // Auto-focus input after messages load
   useEffect(() => {
-    const savedVoiceMode = localStorage.getItem('diagnostic-voice-mode');
-    if (savedVoiceMode !== null) {
-      setVoiceMode(savedVoiceMode === 'true');
+    if (messages.length > 0 && !isLoading && !isComplete) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
-  }, []);
+  }, [messages.length, isLoading, isComplete]);
 
   useEffect(() => {
     // Don't initialize until mode is selected
@@ -83,10 +82,8 @@ export default function Diagnostic() {
 
   const handleModeSelection = (isTurbo: boolean, startVoiceMode = false) => {
     setTurboMode(isTurbo);
-    setVoiceMode(startVoiceMode);
-    localStorage.setItem('diagnostic-voice-mode', String(startVoiceMode));
     setShowModeSelection(false);
-    trackEvent('diagnostic_mode_selected', { turboMode: isTurbo, voiceMode: startVoiceMode });
+    trackEvent('diagnostic_mode_selected', { turboMode: isTurbo });
   };
 
   const trackEvent = async (eventName: string, properties?: Record<string, any>) => {
@@ -133,13 +130,9 @@ export default function Diagnostic() {
       setDiagnosticId(data.id);
 
       // Start conversation
-      let initialMessage = turboMode
+      const initialMessage = turboMode
         ? "Olá! 👋 Vou fazer um diagnóstico TURBO da sua saúde financeira. São apenas 10 perguntas essenciais que levam cerca de 5 minutos. Será rápido e direto! Vamos começar?"
         : "Olá! Sou seu assistente financeiro virtual. Vou te ajudar a fazer um diagnóstico completo da sua vida financeira. Será uma conversa tranquila, sem julgamentos. Vamos começar?";
-      
-      if (voiceMode) {
-        initialMessage = "Olá! 🎤 Bem-vindo ao diagnóstico por voz! Vou te fazer algumas perguntas e você pode respondê-las falando. É só clicar no botão do microfone e falar naturalmente. Vamos começar?";
-      }
       
       setMessages([
         {
@@ -354,31 +347,29 @@ export default function Diagnostic() {
     const userMessage = input.trim();
     setInput("");
     await streamChat(userMessage);
+    
+    // Auto-focus after sending
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
   };
 
   const handleVoiceTranscript = async (text: string) => {
-    setInput(text);
+    console.log('Voice transcript received:', text);
+    
     // Auto-send after transcription
     setTimeout(async () => {
       if (text.trim()) {
-        setInput("");
         await streamChat(text.trim());
+        
+        // Auto-focus after voice input
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 100);
       }
     }, 500);
   };
 
-  const toggleVoiceMode = () => {
-    const newMode = !voiceMode;
-    setVoiceMode(newMode);
-    localStorage.setItem('diagnostic-voice-mode', String(newMode));
-    
-    toast({
-      title: newMode ? "🎤 Modo Voz Ativado" : "⌨️ Modo Texto Ativado",
-      description: newMode 
-        ? "Você pode falar suas respostas agora" 
-        : "Você pode digitar suas respostas agora",
-    });
-  };
 
   const handleSaveAndExit = async () => {
     if (diagnosticId && messages.length > 1) {
@@ -569,43 +560,6 @@ export default function Diagnostic() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant={voiceMode ? "default" : "outline"}
-                size="sm"
-                onClick={toggleVoiceMode}
-                className="flex items-center gap-2"
-              >
-                {voiceMode ? (
-                  <>
-                    <Headphones className="w-4 h-4" />
-                    <span className="hidden sm:inline">Modo Voz</span>
-                    <span className="sm:hidden">Voz</span>
-                  </>
-                ) : (
-                  <>
-                    <Keyboard className="w-4 h-4" />
-                    <span className="hidden sm:inline">Modo Texto</span>
-                    <span className="sm:hidden">Texto</span>
-                  </>
-                )}
-              </Button>
-              {voiceMode && (
-                <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 animate-pulse">
-                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span className="hidden sm:inline">Conversação ativa</span>
-                </div>
-              )}
-              {messages.length === 0 && (
-                <Button
-                  variant={turboMode ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setTurboMode(!turboMode)}
-                >
-                  {turboMode ? "Modo Completo" : "⚡ Modo Turbo"}
-                </Button>
-              )}
-            </div>
             {isComplete && (
               <Button
                 onClick={handleFinalize}
@@ -658,32 +612,6 @@ export default function Diagnostic() {
                   }`}
                  >
                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
-                   {msg.role === "assistant" && voiceMode && (
-                     <div className="mt-3">
-                       <AudioPlayer 
-                         text={msg.content} 
-                         autoPlay={idx === messages.length - 1}
-                         onStart={() => {
-                           setIsAISpeaking(true);
-                           if (idx === messages.length - 1) {
-                             toast({
-                               title: "🔊 IA falando...",
-                               description: "Aguarde o fim da resposta para falar",
-                             });
-                           }
-                         }}
-                         onEnd={() => {
-                           setIsAISpeaking(false);
-                           if (idx === messages.length - 1) {
-                             toast({
-                               title: "🎤 Sua vez!",
-                               description: "Clique no microfone para responder",
-                             });
-                           }
-                         }}
-                       />
-                     </div>
-                   )}
                  </div>
               </div>
             ))}
@@ -698,87 +626,33 @@ export default function Diagnostic() {
           </div>
 
           <div className="p-3 md:p-4 border-t border-border">
-            {voiceMode ? (
-              // Voice mode layout
-              <div className="space-y-3">
-                {isAISpeaking ? (
-                  <div className="flex flex-col items-center gap-3 py-4">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Volume2 className="w-5 h-5 animate-pulse" />
-                      <span className="text-sm">IA está falando... Aguarde para responder</span>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setIsAISpeaking(false);
-                        toast({
-                          title: "Áudio interrompido",
-                          description: "Você pode responder agora",
-                        });
-                      }}
-                    >
-                      Pular resposta
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex justify-center">
-                      <VoiceRecorder
-                        onTranscript={handleVoiceTranscript}
-                        disabled={isLoading || isComplete}
-                        large
-                      />
-                    </div>
-                    <p className="text-xs text-center text-muted-foreground">
-                      {isLoading ? "Processando..." : "Clique no microfone e fale sua resposta"}
-                    </p>
-                  </>
-                )}
-                <details className="text-xs text-muted-foreground">
-                  <summary className="cursor-pointer text-center hover:text-foreground">
-                    Prefere digitar esta resposta?
-                  </summary>
-                  <div className="flex gap-2 mt-2">
-                    <Input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                      placeholder="Digite sua resposta..."
-                      disabled={isLoading || isComplete}
-                      className="flex-1 text-sm"
-                    />
-                    <Button
-                      onClick={handleSend}
-                      disabled={!input.trim() || isLoading || isComplete}
-                      size="icon"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </details>
-              </div>
-            ) : (
-              // Text mode layout
-              <div className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Digite sua resposta..."
-                  disabled={isLoading || isComplete}
-                  className="flex-1 text-sm"
-                />
-                <Button
-                  onClick={handleSend}
-                  disabled={!input.trim() || isLoading || isComplete}
-                  size="icon"
-                  className="flex-shrink-0"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
+            <div className="flex gap-2 items-end">
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+                placeholder="Digite sua resposta ou use o microfone..."
+                disabled={isLoading || isComplete}
+                className="flex-1 text-sm"
+              />
+              <VoiceRecorder
+                onTranscript={handleVoiceTranscript}
+                disabled={isLoading || isComplete}
+                large={false}
+              />
+              <Button
+                onClick={handleSend}
+                disabled={!input.trim() || isLoading || isComplete}
+                size="icon"
+                className="flex-shrink-0"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              {isLoading ? "Processando..." : "Digite ou clique no 🎤 para falar"}
+            </p>
           </div>
         </Card>
 
