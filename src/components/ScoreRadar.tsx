@@ -53,12 +53,13 @@ export default function ScoreRadar({ dimensionScores }: ScoreRadarProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 md:p-6 pt-0">
-        <ResponsiveContainer width="100%" height={300} className="md:h-[400px]">
+        <ResponsiveContainer width="100%" height={280} minHeight={280}>
           <RadarChart data={data}>
             <PolarGrid stroke="hsl(var(--border))" />
             <PolarAngleAxis
               dataKey="dimension"
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 12 }}
+              tick={{ fill: "hsl(var(--foreground))", fontSize: 10 }}
+              className="text-[10px] md:text-xs"
             />
             <PolarRadiusAxis
               angle={90}

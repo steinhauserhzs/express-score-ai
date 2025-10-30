@@ -464,31 +464,31 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container max-w-7xl mx-auto px-3 md:px-4 lg:px-6 py-4 md:py-6 lg:py-8">
         {/* Meu Score Atual - Destaque no topo */}
-        <Card className="mb-8 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-2xl">📊 Meu Score Atual</CardTitle>
+        <Card className="mb-4 md:mb-6 lg:mb-8 bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-xl md:text-2xl">📊 Meu Score Atual</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-4 md:p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-              <div className="flex-1 w-full">
-                <div className={`text-4xl md:text-5xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
+              <div className="flex-1 w-full min-w-0">
+                <div className={`text-4xl md:text-5xl font-bold break-words ${getScoreColor(diagnostic.total_score)}`}>
                   {diagnostic.total_score}/150
                 </div>
-                <div className={`inline-block mt-2 px-4 py-1 rounded-full border ${getClassificationColor(diagnostic.score_classification)}`}>
+                <div className={`inline-block mt-2 px-3 md:px-4 py-1 rounded-full border text-sm ${getClassificationColor(diagnostic.score_classification)}`}>
                   {diagnostic.score_classification}
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-xs md:text-sm text-muted-foreground mt-2">
                   Última atualização: {new Date(diagnostic.created_at).toLocaleDateString('pt-BR')}
                 </p>
               </div>
-              <div className="flex flex-col gap-2 w-full md:w-auto">
-                <Button onClick={() => navigate('/diagnostic')} variant="default" className="gap-2 w-full md:w-auto">
+              <div className="flex flex-col gap-2 w-full md:w-auto md:min-w-[200px]">
+                <Button onClick={() => navigate('/diagnostic')} variant="default" className="gap-2 w-full text-sm md:text-base">
                   <TrendingUp className="h-4 w-4" />
                   Atualizar Diagnóstico Completo
                 </Button>
-                <Button onClick={() => setShowQuickUpdateModal(true)} variant="outline" className="gap-2 w-full md:w-auto">
+                <Button onClick={() => setShowQuickUpdateModal(true)} variant="outline" className="gap-2 w-full text-sm md:text-base">
                   <Zap className="h-4 w-4" />
                   Atualização Rápida (5 min)
                 </Button>
@@ -498,12 +498,12 @@ export default function Dashboard() {
         </Card>
 
         {/* Evolution Chart */}
-        <div className="mb-8">
+        <div className="mb-4 md:mb-6 lg:mb-8">
           <EvolutionChart history={history} />
         </div>
 
         {/* Areas to Improve & Next Steps */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mb-4 md:mb-6 lg:mb-8">
           <AreasToImprove 
             dimensionScores={dimensionScores}
             onQuickUpdate={(dim) => navigate(`/dashboard/update/${dim}`)}
@@ -516,7 +516,7 @@ export default function Dashboard() {
 
         {/* Score Comparison - se houver histórico */}
         {history && history.length >= 2 && (
-          <div className="mb-8">
+          <div className="mb-4 md:mb-6 lg:mb-8">
             <ScoreComparison 
               currentDiagnostic={diagnostic}
               previousDiagnostic={history[history.length - 2]}
@@ -524,25 +524,13 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Áreas para Melhorar */}
-        <div className="mb-8">
-          <AreasToImprove 
-            dimensionScores={dimensionScores}
-            onQuickUpdate={(dimension) => {
-              navigate(`/dashboard/update/${dimension}`);
-            }}
-          />
+        {/* Radar Chart */}
+        <div className="mb-4 md:mb-6 lg:mb-8">
+          <ScoreRadar dimensionScores={dimensionScores} />
         </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Sua visão geral financeira</p>
-          </div>
-        </div>
-
-        {/* Score Total e Perfil */}
-        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2" data-tour="score-card">
+        {/* Score Cards e Perfil */}
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 mb-4 md:mb-6 lg:mb-8" data-tour="score-card">
           <Card className="hover-scale bg-gradient-to-br from-primary/10 to-primary/5">
             <CardHeader className="p-4 md:p-6">
               <CardTitle className="text-center text-xl md:text-2xl">Seu Score Total</CardTitle>
@@ -573,49 +561,44 @@ export default function Dashboard() {
               {diagnostic.profile && (
                 <ProfileBadge profile={diagnostic.profile} />
               )}
-              <div className="flex flex-col sm:flex-row gap-2 mt-4 w-full">
+              <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full min-w-0">
                 <Button 
                   onClick={() => handleGenerateReport('client')} 
                   disabled={generatingReport}
-                  className="flex-1 text-sm"
+                  className="flex-1 text-xs md:text-sm min-w-0"
                   variant="default"
                   size="sm"
                 >
-                  <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Meu Relatório</span>
-                  <span className="sm:hidden">Relatório</span>
+                  <Download className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Meu Relatório</span>
                 </Button>
                 <Button 
                   onClick={() => navigate('/consultations')} 
-                  className="flex-1 text-sm"
+                  className="flex-1 text-xs md:text-sm min-w-0"
                   variant="outline"
                   size="sm"
                 >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Agendar Consultoria</span>
-                  <span className="sm:hidden">Consultoria</span>
+                  <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Consultoria</span>
                 </Button>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Radar Chart */}
-        <ScoreRadar dimensionScores={dimensionScores} />
-
         {/* Smart Alerts and Challenges */}
-        <div className="grid md:grid-cols-2 gap-6" data-tour="alerts-section">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6 lg:mb-8" data-tour="alerts-section">
           <SmartAlerts />
           <WeeklyChallenges />
         </div>
 
         {/* Goals Widget */}
-        <div data-tour="goals-section">
+        <div className="mb-4 md:mb-6 lg:mb-8" data-tour="goals-section">
           <GoalsWidget />
         </div>
 
         {/* Individual Scores */}
-        <div>
+        <div className="mb-4 md:mb-6 lg:mb-8">
           <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
             Análise Detalhada
           </h2>
@@ -660,14 +643,14 @@ export default function Dashboard() {
         </div>
 
         {/* Recomendações */}
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
+        <div className="mb-4 md:mb-6 lg:mb-8">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 break-words">
             Suas Recomendações Personalizadas
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground mb-4">
+          <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
             Marque as ações conforme você as completar para acompanhar seu progresso
           </p>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {getRecommendations().map((rec, index) => (
               <RecommendationCard key={index} {...rec} />
             ))}
@@ -675,12 +658,12 @@ export default function Dashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b overflow-x-auto pb-2 -mx-3 px-3 md:mx-0 md:px-0">
+        <div className="flex gap-2 border-b overflow-x-auto pb-2 mb-4 md:mb-6 scrollbar-hide -mx-3 px-3 md:mx-0 md:px-0 scroll-smooth">
           <Button 
             variant={activeTab === "overview" ? "default" : "ghost"} 
             onClick={() => setActiveTab("overview")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
           >
             Visão Geral
           </Button>
@@ -688,7 +671,7 @@ export default function Dashboard() {
             variant={activeTab === "comparison" ? "default" : "ghost"} 
             onClick={() => setActiveTab("comparison")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
           >
             Comparação
           </Button>
@@ -696,7 +679,7 @@ export default function Dashboard() {
             variant={activeTab === "journey" ? "default" : "ghost"} 
             onClick={() => setActiveTab("journey")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
           >
             Jornada
           </Button>
@@ -704,9 +687,9 @@ export default function Dashboard() {
             variant={activeTab === "gamification" ? "default" : "ghost"} 
             onClick={() => setActiveTab("gamification")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm"
+            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
           >
-            <Award className="h-4 w-4 mr-1 md:mr-2" />
+            <Award className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
             Conquistas
           </Button>
         </div>
@@ -714,7 +697,7 @@ export default function Dashboard() {
         {activeTab === "comparison" && history.length > 1 && <DiagnosticComparison />}
         {activeTab === "journey" && <CustomerJourney />}
         {activeTab === "gamification" && (
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-4 md:space-y-6 mt-4 md:mt-6">
             {gamification && <LevelProgress currentLevel={gamification.current_level} levelPoints={gamification.level_points} totalPoints={gamification.total_points} />}
             <div>
               <h2 className="text-xl md:text-2xl font-bold mb-4 break-words">
@@ -730,7 +713,9 @@ export default function Dashboard() {
         )}
 
         {/* Chatbot */}
-        <DiagnosticChatbot />
+        <div className="mt-4 md:mt-6 lg:mt-8">
+          <DiagnosticChatbot />
+        </div>
       </div>
       
       {/* Quick Update Modal */}

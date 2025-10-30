@@ -167,7 +167,7 @@ export default function DiagnosticChatbot() {
   };
 
   return (
-    <Card className="flex flex-col h-[600px]">
+    <Card className="flex flex-col h-[500px] md:h-[600px]">
       <div className="p-4 border-b">
         <h3 className="font-semibold flex items-center gap-2">
           <Bot className="h-5 w-5 text-primary" />
@@ -204,13 +204,13 @@ export default function DiagnosticChatbot() {
               )}
 
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`max-w-[85%] sm:max-w-[80%] rounded-lg p-3 ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
               </div>
 
               {message.role === "user" && (
@@ -246,8 +246,9 @@ export default function DiagnosticChatbot() {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={loading}
+            className="min-w-0 flex-1"
           />
-          <Button onClick={sendMessage} disabled={loading || !input.trim()}>
+          <Button onClick={sendMessage} disabled={loading || !input.trim()} className="flex-shrink-0">
             <Send className="h-4 w-4" />
           </Button>
         </div>

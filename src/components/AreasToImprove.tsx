@@ -171,26 +171,26 @@ export default function AreasToImprove({ dimensionScores, onQuickUpdate }: Areas
 
                 <Progress value={area.percentage} className="h-2" />
 
-                <div className="bg-muted/50 p-3 rounded-md space-y-2">
+                <div className="bg-muted/50 p-4 rounded-md space-y-2">
                   <p className="text-xs font-medium text-muted-foreground uppercase">
                     Dicas Rápidas:
                   </p>
-                  <ul className="space-y-1">
+                  <ul className="space-y-1.5">
                     {area.tips.slice(0, 2).map((tip, idx) => (
                       <li key={idx} className="text-sm flex items-start gap-2">
                         <span className="text-primary mt-0.5">•</span>
-                        <span>{tip}</span>
+                        <span className="break-words">{tip}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     size="sm"
                     variant="default"
                     onClick={() => onQuickUpdate(area.key)}
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-2 w-full sm:w-auto"
                   >
                     <Zap className="h-4 w-4" />
                     Atualizar Status
@@ -199,7 +199,7 @@ export default function AreasToImprove({ dimensionScores, onQuickUpdate }: Areas
                     size="sm"
                     variant="outline"
                     onClick={() => navigate('/education')}
-                    className="gap-2"
+                    className="gap-2 w-full sm:w-auto"
                   >
                     <BookOpen className="h-4 w-4" />
                     Ver Dicas
@@ -216,15 +216,15 @@ export default function AreasToImprove({ dimensionScores, onQuickUpdate }: Areas
               <TrendingUp className="h-4 w-4 text-success" />
               ✅ Áreas com Bom Desempenho
             </h4>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {areasDoingWell.map((area) => (
                 <div
                   key={area.key}
-                  className="p-2 bg-success/5 rounded border border-success/20 flex items-center gap-2"
+                  className="p-3 bg-success/5 rounded border border-success/20 flex items-center gap-2"
                 >
                   <span className="text-lg">{area.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium truncate">{area.label}</p>
+                    <p className="text-xs font-medium break-words">{area.label}</p>
                     <p className="text-xs text-success font-semibold">
                       {Math.round(area.percentage)}%
                     </p>
