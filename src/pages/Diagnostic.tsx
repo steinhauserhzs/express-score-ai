@@ -86,6 +86,11 @@ export default function Diagnostic() {
     trackEvent('diagnostic_mode_selected', { turboMode: isTurbo });
   };
 
+  const handleCloseModal = () => {
+    setShowModeSelection(false);
+    navigate('/dashboard');
+  };
+
   const trackEvent = async (eventName: string, properties?: Record<string, any>) => {
     try {
       await supabase.functions.invoke('track-event', {
@@ -505,6 +510,7 @@ export default function Diagnostic() {
       <DiagnosticModeModal 
         open={showModeSelection} 
         onSelect={handleModeSelection}
+        onClose={handleCloseModal}
       />
       
       {/* Header fixo */}

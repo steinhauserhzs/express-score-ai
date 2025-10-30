@@ -2,15 +2,16 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Zap, Star, Headphones, CheckCircle2, ChevronRight, ChevronLeft } from "lucide-react";
+import { Zap, Star, Headphones, CheckCircle2, ChevronRight, ChevronLeft, X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 interface DiagnosticModeModalProps {
   open: boolean;
   onSelect: (turboMode: boolean, voiceMode?: boolean) => void;
+  onClose?: () => void;
 }
 
-export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeModalProps) {
+export default function DiagnosticModeModal({ open, onSelect, onClose }: DiagnosticModeModalProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -125,8 +126,17 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
     <Dialog open={open}>
       <DialogContent className="w-full sm:w-[90vw] max-w-5xl h-[95vh] sm:h-[85vh] p-0 grid grid-rows-[auto_1fr_auto] overflow-hidden">
         {/* Header */}
-        <DialogHeader className="px-4 py-3 md:px-6 md:py-4 border-b bg-background/95 backdrop-blur z-10">
-          <DialogTitle className="text-lg md:text-xl lg:text-2xl text-center">
+        <DialogHeader className="px-4 py-3 md:px-6 md:py-4 border-b bg-background/95 backdrop-blur z-10 relative">
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="absolute right-4 top-4 rounded-full p-2 hover:bg-muted transition-colors"
+              aria-label="Fechar"
+            >
+              <X className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+            </button>
+          )}
+          <DialogTitle className="text-lg md:text-xl lg:text-2xl text-center pr-10">
             Escolha o Tipo de Diagnóstico
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground text-xs md:text-sm">
