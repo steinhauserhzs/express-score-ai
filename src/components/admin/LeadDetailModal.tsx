@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -18,11 +19,13 @@ import {
   Calendar,
   FileText,
   MessageSquare,
+  MessageSquareText,
   TrendingUp,
   Clock,
 } from "lucide-react";
 import { formatCPF, formatPhone } from "@/utils/formatters";
 import ScoreRadar from "@/components/ScoreRadar";
+import { DiagnosticResponsesView } from "./DiagnosticResponsesView";
 
 interface Lead {
   id: string;
@@ -270,6 +273,49 @@ export default function LeadDetailModal({ lead, open, onClose }: LeadDetailModal
               </Button>
             </div>
           </Card>
+
+          {/* Diagnostic Responses History */}
+          {diagnostics.filter(d => d.completed && d.responses_json?.messages).length > 0 && (
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <MessageSquareText className="h-5 w-5" />
+                Histórico de Respostas Completo
+              </h3>
+              <Accordion type="single" collapsible className="w-full">
+                {diagnostics
+                  .filter(d => d.completed && d.responses_json?.messages)
+                  .map((diagnostic) => {
+                    const userResponses = diagnostic.responses_json.messages.filter(
+                      (m: any) => m.role === 'user'
+                    ).length;
+                    
+                    return (
+                      <AccordionItem value={diagnostic.id} key={diagnostic.id}>
+                        <AccordionTrigger className="hover:no-underline">
+                          <div className="flex justify-between items-center w-full pr-4">
+                            <div className="flex items-center gap-3">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm font-medium">
+                                {new Date(diagnostic.created_at).toLocaleDateString("pt-BR")}
+                              </span>
+                              <Badge variant="default" className="ml-2">
+                                {diagnostic.total_score} pontos
+                              </Badge>
+                            </div>
+                            <Badge variant="outline" className="text-xs">
+                              {userResponses} {userResponses === 1 ? 'resposta' : 'respostas'}
+                            </Badge>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="pt-4">
+                          <DiagnosticResponsesView diagnostic={diagnostic} />
+                        </AccordionContent>
+                      </AccordionItem>
+                    );
+                  })}
+              </Accordion>
+            </Card>
+          )}
         </div>
       </DialogContent>
     </Dialog>
