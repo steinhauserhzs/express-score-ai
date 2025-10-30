@@ -86,7 +86,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
 
   return (
     <Dialog open={open}>
-      <DialogContent className="w-[92vw] max-w-[820px] md:max-w-[860px] p-0 overflow-hidden">
+      <DialogContent className="w-[92vw] max-w-[820px] md:max-w-[860px] max-h-[90vh] p-0 overflow-hidden">
         <DialogHeader className="px-4 pt-4 pb-2">
           <DialogTitle className="text-lg md:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
@@ -96,8 +96,8 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative flex flex-col h-full px-3 pb-3">
-          <div className="relative flex-1 overflow-hidden">
+        <div className="relative flex flex-col px-3 pb-3" style={{ maxHeight: 'calc(90vh - 6rem)' }}>
+          <div className="relative overflow-y-auto" style={{ maxHeight: 'calc(90vh - 10rem)' }}>
             <Carousel
               setApi={setApi}
               opts={{
@@ -108,10 +108,10 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
             >
               <CarouselContent className="h-full">
                 {diagnosticTypes.map((diagnostic, index) => (
-                  <CarouselItem key={diagnostic.id} className="basis-full h-full">
+                  <CarouselItem key={diagnostic.id} className="basis-full">
                     <Card 
                       className={`
-                        border cursor-pointer transition-all relative overflow-hidden h-full
+                        border cursor-pointer transition-all relative overflow-hidden
                         ${current === index 
                           ? 'border-primary shadow-2xl' 
                           : 'border-muted opacity-70 hover:opacity-90'
@@ -184,8 +184,8 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                 ))}
               </CarouselContent>
               
-              <CarouselPrevious className="z-20 left-2 md:left-3 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
-              <CarouselNext className="z-20 right-2 md:right-3 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
+              <CarouselPrevious className="absolute z-20 left-2 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
+              <CarouselNext className="absolute z-20 right-2 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
             </Carousel>
           </div>
           
