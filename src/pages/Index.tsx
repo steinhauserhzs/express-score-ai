@@ -7,12 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
 
 // Lazy load components below the fold for better performance
-const Stats = lazy(() => import("@/components/sections/Stats"));
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
 const Pricing = lazy(() => import("@/components/Pricing"));
 const Testimonials = lazy(() => import("@/components/sections/Testimonials"));
-const AdditionalServices = lazy(() => import("@/components/sections/AdditionalServices"));
-const CorporateBenefits = lazy(() => import("@/components/sections/CorporateBenefits"));
 const FAQ = lazy(() => import("@/components/sections/FAQ"));
 const TrustBadges = lazy(() => import("@/components/sections/TrustBadges"));
 const FinalCTA = lazy(() => import("@/components/sections/FinalCTA"));
@@ -29,15 +26,12 @@ const Index = () => {
       <Hero />
       <Features />
       <Suspense fallback={<div className="min-h-[400px]" />}>
-        <Stats />
         <AboutFirece />
         <OurConsultants />
         <HowItWorks />
         <Testimonials />
         <Pricing />
-        <AdditionalServices />
         <FreeResources />
-        <CorporateBenefits />
         <ContactSection />
         <FAQ />
         <TrustBadges />
