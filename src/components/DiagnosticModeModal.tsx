@@ -123,7 +123,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
 
   return (
     <Dialog open={open}>
-      <DialogContent className="w-[95vw] sm:w-[90vw] max-w-5xl h-[90vh] sm:h-[85vh] p-0 grid grid-rows-[auto_1fr_auto] overflow-hidden">
+      <DialogContent className="w-full sm:w-[90vw] max-w-5xl h-[95vh] sm:h-[85vh] p-0 grid grid-rows-[auto_1fr_auto] overflow-hidden">
         {/* Header */}
         <DialogHeader className="px-4 py-3 md:px-6 md:py-4 border-b bg-background/95 backdrop-blur z-10">
           <DialogTitle className="text-lg md:text-xl lg:text-2xl text-center">
@@ -137,7 +137,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
         {/* Content Area - Carousel */}
         <div 
           ref={containerRef}
-          className="relative overflow-hidden flex items-center justify-center px-4 md:px-6 py-6 md:py-8"
+          className="relative overflow-hidden flex items-center justify-center px-0 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -152,11 +152,11 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
             {diagnosticTypes.map((diagnostic, index) => (
               <div 
                 key={diagnostic.id} 
-                className="min-w-full flex items-center justify-center px-2 md:px-4"
+                className="min-w-full flex items-center justify-center px-3 sm:px-2 md:px-4"
               >
                 <Card 
                   className={`
-                    w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto
+                    w-full sm:max-w-sm md:max-w-md lg:max-w-lg
                     border cursor-pointer transition-all relative overflow-hidden
                     ${currentSlide === index 
                       ? 'border-primary shadow-2xl scale-100' 
