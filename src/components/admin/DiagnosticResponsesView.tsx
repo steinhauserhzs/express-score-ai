@@ -1,6 +1,8 @@
 import { Bot, User } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   role: 'assistant' | 'user';
@@ -57,9 +59,11 @@ export function DiagnosticResponsesView({ diagnostic }: DiagnosticResponsesViewP
                   {message.role === 'assistant' ? 'Assistente' : 'Usuário'}
                 </span>
               </div>
-              <p className="text-sm break-words whitespace-pre-wrap leading-relaxed">
-                {message.content}
-              </p>
+              <div className="text-sm break-words leading-relaxed prose prose-sm max-w-none dark:prose-invert">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.content}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         ))}

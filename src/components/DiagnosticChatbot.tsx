@@ -7,6 +7,8 @@ import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Bot, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   id: string;
@@ -210,7 +212,11 @@ export default function DiagnosticChatbot() {
                     : "bg-muted"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                <div className="text-sm prose prose-sm max-w-none dark:prose-invert break-words">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {message.content}
+                  </ReactMarkdown>
+                </div>
               </div>
 
               {message.role === "user" && (
