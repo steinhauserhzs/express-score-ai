@@ -86,32 +86,32 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl md:text-2xl text-center">
+      <DialogContent className="w-[92vw] max-w-[820px] md:max-w-[860px] p-0 overflow-hidden">
+        <DialogHeader className="px-4 pt-4 pb-2">
+          <DialogTitle className="text-lg md:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
           </DialogTitle>
-          <DialogDescription className="text-center text-base">
+          <DialogDescription className="text-center text-xs md:text-sm">
             Ambos são gratuitos e você receberá seu score completo
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative py-8">
-          <Carousel
-            setApi={setApi}
-            opts={{
-              align: "center",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent>
-              {diagnosticTypes.map((diagnostic, index) => (
-                <CarouselItem key={diagnostic.id} className="basis-full">
-                  <div className="px-2 md:px-6">
+        <div className="relative flex flex-col h-full px-3 pb-3">
+          <div className="relative flex-1 overflow-hidden">
+            <Carousel
+              setApi={setApi}
+              opts={{
+                align: "center",
+                loop: true,
+              }}
+              className="w-full h-full"
+            >
+              <CarouselContent className="h-full">
+                {diagnosticTypes.map((diagnostic, index) => (
+                  <CarouselItem key={diagnostic.id} className="basis-full h-full">
                     <Card 
                       className={`
-                        border-2 cursor-pointer transition-all relative overflow-hidden
+                        border cursor-pointer transition-all relative overflow-hidden h-full
                         ${current === index 
                           ? 'border-primary shadow-2xl' 
                           : 'border-muted opacity-70 hover:opacity-90'
@@ -123,44 +123,44 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                     >
                       <div className={`absolute inset-0 bg-gradient-to-r ${diagnostic.gradient} opacity-0 hover:opacity-5 transition-opacity duration-500`} />
                       
-                      <CardHeader className="relative z-10">
+                      <CardHeader className="relative z-10 p-4 md:p-5">
                         <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
-                          <div className={`p-3 md:p-5 ${diagnostic.iconBg} rounded-2xl shadow-lg`}>
-                            <diagnostic.icon className="h-10 w-10 md:h-14 md:w-14 text-white" />
+                          <div className={`p-2.5 md:p-4 ${diagnostic.iconBg} rounded-2xl shadow-lg`}>
+                            <diagnostic.icon className="h-8 w-8 md:h-12 md:w-12 text-white" />
                           </div>
                           <div className="text-center md:text-left flex-1">
-                            <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                              <CardTitle className="text-xl md:text-2xl">{diagnostic.title}</CardTitle>
+                            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+                              <CardTitle className="text-lg md:text-2xl">{diagnostic.title}</CardTitle>
                               {diagnostic.badge && (
-                                <Badge className={`bg-gradient-to-r ${diagnostic.badge.gradient} text-white border-0`}>
+                                <Badge className={`bg-gradient-to-r ${diagnostic.badge.gradient} text-white border-0 text-xs`}>
                                   {diagnostic.badge.text}
                                 </Badge>
                               )}
                             </div>
-                            <CardDescription className="text-base">{diagnostic.subtitle}</CardDescription>
+                            <CardDescription className="text-sm md:text-base">{diagnostic.subtitle}</CardDescription>
                           </div>
                         </div>
                       </CardHeader>
                       
-                      <CardContent className="space-y-4 md:space-y-6 relative z-10">
-                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold text-base md:text-lg">
-                          <Clock className="h-5 w-5 md:h-6 md:w-6" />
+                      <CardContent className="p-4 md:p-5 space-y-3 md:space-y-4 relative z-10">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-semibold text-sm md:text-base">
+                          <Clock className="h-4 w-4 md:h-5 md:w-5" />
                           <span>{diagnostic.time}</span>
                         </div>
                         
-                        <ul className="space-y-2 md:space-y-3">
+                        <ul className="space-y-2">
                           {diagnostic.features.map((feature, idx) => (
                             <li 
                               key={idx}
                               className="flex gap-2 md:gap-3 items-start"
                             >
-                              <feature.icon className={`h-5 w-5 md:h-6 md:w-6 ${feature.color} flex-shrink-0 mt-0.5`} />
+                              <feature.icon className={`h-4 w-4 md:h-5 md:w-5 ${feature.color} flex-shrink-0 mt-0.5`} />
                               <span className="text-sm md:text-base">{feature.text}</span>
                             </li>
                           ))}
                         </ul>
                         
-                        <div className="pt-6 border-t border-border/50">
+                        <div className="pt-3 md:pt-4 border-t border-border/50">
                           <p className="text-sm md:text-base">
                             <strong className="text-primary">Ideal para:</strong> {diagnostic.idealFor}
                           </p>
@@ -169,7 +169,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                         {current === index && (
                           <button
                             className={`
-                              w-full py-3 md:py-4 rounded-lg font-bold text-white text-base md:text-lg
+                              w-full py-3 rounded-lg font-bold text-white text-sm md:text-base
                               bg-gradient-to-r ${diagnostic.gradient}
                               hover:shadow-lg transition-all
                             `}
@@ -180,36 +180,29 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                         )}
                       </CardContent>
                     </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            
-            <CarouselPrevious className="left-1 md:left-2 h-10 w-10 md:h-12 md:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
-            <CarouselNext className="right-1 md:right-2 h-10 w-10 md:h-12 md:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
-          </Carousel>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              
+              <CarouselPrevious className="z-20 left-2 md:left-3 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
+              <CarouselNext className="z-20 right-2 md:right-3 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
+            </Carousel>
+          </div>
           
-          <div className="flex justify-center gap-2 mt-8">
+          <div className="flex justify-center gap-2 mt-3">
             {diagnosticTypes.map((_, index) => (
               <button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
-                className={`
-                  h-3 w-3 rounded-full transition-all duration-300
-                  ${current === index 
-                    ? 'bg-primary w-8' 
-                    : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                  }
-                `}
+                className={`h-2 rounded-full transition-all ${
+                  current === index 
+                    ? 'w-8 bg-primary' 
+                    : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                }`}
                 aria-label={`Ir para diagnóstico ${index + 1}`}
               />
             ))}
           </div>
-        </div>
-        
-        <div className="p-4 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 rounded-lg text-sm text-center border border-primary/20">
-          💡 <strong>Dica:</strong> O diagnóstico completo fornece insights muito mais profundos 
-          e é o que nossos consultores usam para criar seu plano personalizado.
         </div>
       </DialogContent>
     </Dialog>
