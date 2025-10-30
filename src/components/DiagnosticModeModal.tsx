@@ -1,8 +1,10 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from "@/components/ui/carousel";
-import { Zap, Star, Clock, Check, Mic, Volume2, Headphones } from "lucide-react";
+import { Zap, Star, Headphones, CheckCircle2, ChevronRight } from "lucide-react";
+import React from "react";
 import { useState, useEffect } from "react";
 
 interface DiagnosticModeModalProps {
@@ -29,184 +31,138 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
       id: 'complete',
       title: 'Diagnóstico Completo',
       subtitle: 'Análise profunda e detalhada',
-      icon: Star,
-      time: '20-30 minutos',
-      gradient: 'from-purple-500 via-pink-500 to-orange-500',
+      icon: <Star className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-purple-500" />,
+      time: '20-30 min',
       bgGradient: 'from-purple-500/10 to-pink-500/5',
-      iconBg: 'bg-gradient-to-br from-purple-500 to-pink-500',
       features: [
-        { icon: Check, text: '39 perguntas detalhadas', color: 'text-success' },
-        { icon: Check, text: 'Score completo + subscore por dimensão', color: 'text-success' },
-        { icon: Check, text: 'Análise comportamental aprofundada', color: 'text-success' },
-        { icon: Check, text: 'Plano de ação com 15+ recomendações', color: 'text-success' },
-        { icon: Star, text: 'Relatório PDF completo GRÁTIS', color: 'text-warning' }
+        '39 perguntas detalhadas',
+        'Score completo + subscore',
+        'Análise comportamental',
+        'Plano com 15+ recomendações',
+        'Relatório PDF GRÁTIS'
       ],
-      idealFor: 'Quem quer um diagnóstico preciso e um plano de ação detalhado',
-      badge: { text: 'Recomendado', gradient: 'from-yellow-500 to-orange-500' },
       onClick: () => onSelect(false, false)
     },
     {
       id: 'turbo',
       title: 'Diagnóstico Turbo',
       subtitle: 'Rápido e eficiente',
-      icon: Zap,
-      time: '10-15 minutos',
-      gradient: 'from-blue-500 via-cyan-500 to-teal-500',
+      icon: <Zap className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-blue-500" />,
+      time: '10-15 min',
       bgGradient: 'from-blue-500/10 to-cyan-500/5',
-      iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-500',
       features: [
-        { icon: Check, text: '10 perguntas essenciais', color: 'text-success' },
-        { icon: Check, text: 'Score completo de 0-150', color: 'text-success' },
-        { icon: Check, text: 'Análise básica por dimensão', color: 'text-success' },
-        { icon: Check, text: 'Top 5 recomendações', color: 'text-success' }
+        '10 perguntas essenciais',
+        'Score completo de 0-150',
+        'Análise básica por dimensão',
+        'Top 5 recomendações'
       ],
-      idealFor: 'Quem quer uma avaliação rápida e objetiva',
       onClick: () => onSelect(true, false)
     },
     {
       id: 'voice',
       title: 'Por Voz',
       subtitle: 'Conversação natural',
-      icon: Headphones,
-      time: '20-30 minutos',
-      gradient: 'from-green-500 via-emerald-500 to-teal-500',
+      icon: <Headphones className="h-6 w-6 md:h-8 md:w-8 lg:h-10 lg:w-10 text-green-500" />,
+      time: '20-30 min',
       bgGradient: 'from-green-500/10 to-emerald-500/5',
-      iconBg: 'bg-gradient-to-br from-green-500 to-emerald-500',
       features: [
-        { icon: Mic, text: 'Fale suas respostas', color: 'text-green-500' },
-        { icon: Volume2, text: 'Ouça as perguntas da IA', color: 'text-blue-500' },
-        { icon: Check, text: 'Experiência hands-free', color: 'text-success' },
-        { icon: Check, text: 'Diagnóstico completo', color: 'text-success' }
+        'Fale suas respostas',
+        'Ouça as perguntas da IA',
+        'Experiência hands-free',
+        'Diagnóstico completo'
       ],
-      idealFor: 'Quem prefere conversar ao invés de digitar',
-      badge: { text: 'Novo', gradient: 'from-blue-500 to-purple-500' },
       onClick: () => onSelect(false, true)
     }
   ];
 
   return (
     <Dialog open={open}>
-      <DialogContent className="w-[95vw] max-w-3xl max-h-[92vh] p-0 overflow-hidden">
-        <DialogHeader className="px-4 pt-4 pb-2">
-          <DialogTitle className="text-lg md:text-2xl text-center">
+      <DialogContent className="w-[90vw] sm:w-[85vw] max-w-4xl max-h-[85vh] p-0 overflow-y-auto">
+        <DialogHeader className="px-4 py-3 md:px-6 md:py-4 sticky top-0 bg-background/95 backdrop-blur z-10 border-b">
+          <DialogTitle className="text-base md:text-xl lg:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
           </DialogTitle>
-          <DialogDescription className="text-center text-xs md:text-sm">
-            Ambos são gratuitos e você receberá seu score completo
+          <DialogDescription className="text-center text-muted-foreground text-xs md:text-sm">
+            Selecione a experiência que melhor se adapta às suas necessidades
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative flex flex-col px-3 pb-3">
-          <div className="relative">
-            <Carousel
-              setApi={setApi}
-              opts={{
-                align: "center",
-                loop: true,
-              }}
-              className="w-full h-full"
-            >
-              <CarouselContent>
-                {diagnosticTypes.map((diagnostic, index) => (
-                  <CarouselItem key={diagnostic.id} className="basis-full flex items-center justify-center py-4">
+        <div className="relative px-3 md:px-6 py-4 md:py-6">
+          <Carousel
+            setApi={setApi}
+            opts={{
+              align: "center",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="flex items-center -ml-2 md:-ml-4">
+              {diagnosticTypes.map((diagnostic, index) => (
+                <CarouselItem key={diagnostic.id} className="pl-2 md:pl-4 basis-full">
+                  <div className="flex items-center justify-center py-2 md:py-4">
                     <Card 
                       className={`
-                        w-full max-w-2xl mx-auto
+                        w-full max-w-sm md:max-w-lg mx-auto
                         border cursor-pointer transition-all relative overflow-hidden
                         ${current === index 
-                          ? 'border-primary shadow-2xl' 
-                          : 'border-muted opacity-70 hover:opacity-90'
+                          ? 'border-primary shadow-2xl scale-100' 
+                          : 'border-muted opacity-70 hover:opacity-90 scale-95'
                         }
                         bg-gradient-to-br ${diagnostic.bgGradient}
                         hover:shadow-xl
                       `}
                       onClick={diagnostic.onClick}
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-r ${diagnostic.gradient} opacity-0 hover:opacity-5 transition-opacity duration-500`} />
-                      
-                      <CardHeader className="relative z-10 p-4 md:p-5">
-                        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
-                          <div className={`p-2.5 md:p-4 ${diagnostic.iconBg} rounded-2xl shadow-lg`}>
-                            <diagnostic.icon className="h-8 w-8 md:h-12 md:w-12 text-white" />
-                          </div>
-                          <div className="text-center md:text-left flex-1">
-                            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-                              <CardTitle className="text-lg md:text-2xl">{diagnostic.title}</CardTitle>
-                              {diagnostic.badge && (
-                                <Badge className={`bg-gradient-to-r ${diagnostic.badge.gradient} text-white border-0 text-xs`}>
-                                  {diagnostic.badge.text}
-                                </Badge>
-                              )}
+                      <CardHeader className="space-y-2 md:space-y-3 p-3 md:p-4 lg:p-5 pb-2 md:pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2 md:gap-3 flex-1 min-w-0">
+                            <div className="flex-shrink-0">
+                              {diagnostic.icon}
                             </div>
-                            <CardDescription className="text-sm md:text-base">{diagnostic.subtitle}</CardDescription>
+                            <div className="flex-1 min-w-0">
+                              <CardTitle className="text-base md:text-xl lg:text-2xl leading-tight">
+                                {diagnostic.title}
+                              </CardTitle>
+                              <p className="text-xs md:text-sm text-muted-foreground mt-0.5 md:mt-1">
+                                {diagnostic.subtitle}
+                              </p>
+                            </div>
                           </div>
+                          <Badge variant="secondary" className="text-xs md:text-sm whitespace-nowrap flex-shrink-0">
+                            {diagnostic.time}
+                          </Badge>
                         </div>
                       </CardHeader>
                       
-                      <CardContent className="p-4 md:p-5 space-y-3 md:space-y-4 relative z-10">
-                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-semibold text-sm md:text-base">
-                          <Clock className="h-4 w-4 md:h-5 md:w-5" />
-                          <span>{diagnostic.time}</span>
-                        </div>
-                        
-                        <ul className="space-y-2">
+                      <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4 lg:p-5 pt-0">
+                        <div className="space-y-1.5 md:space-y-2">
                           {diagnostic.features.map((feature, idx) => (
-                            <li 
-                              key={idx}
-                              className="flex gap-2 md:gap-3 items-start"
-                            >
-                              <feature.icon className={`h-4 w-4 md:h-5 md:w-5 ${feature.color} flex-shrink-0 mt-0.5`} />
-                              <span className="text-sm md:text-base">{feature.text}</span>
-                            </li>
+                            <div key={idx} className="flex items-start gap-2 text-xs md:text-sm lg:text-base">
+                              <CheckCircle2 className="h-3.5 w-3.5 md:h-4 md:w-4 lg:h-5 lg:w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-muted-foreground leading-tight">{feature}</span>
+                            </div>
                           ))}
-                        </ul>
-                        
-                        <div className="pt-3 md:pt-4 border-t border-border/50">
-                          <p className="text-sm md:text-base">
-                            <strong className="text-primary">Ideal para:</strong> {diagnostic.idealFor}
-                          </p>
                         </div>
                         
-                        {current === index && (
-                          <button
-                            className={`
-                              w-full py-3 rounded-lg font-bold text-white text-sm md:text-base
-                              bg-gradient-to-r ${diagnostic.gradient}
-                              hover:shadow-lg transition-all
-                            `}
-                            onClick={diagnostic.onClick}
-                          >
-                            Começar Agora
-                          </button>
-                        )}
+                        <Button 
+                          className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white shadow-lg hover:shadow-xl transition-all text-xs md:text-sm lg:text-base h-9 md:h-10 lg:h-11"
+                          onClick={diagnostic.onClick}
+                        >
+                          Começar Agora
+                          <ChevronRight className="ml-1 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4" />
+                        </Button>
                       </CardContent>
                     </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
             
-            {/* Setas de navegação posicionadas externamente */}
-            <button
-              onClick={() => api?.scrollPrev()}
-              disabled={!api?.canScrollPrev()}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
-              aria-label="Anterior"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            
-            <button
-              onClick={() => api?.scrollNext()}
-              disabled={!api?.canScrollNext()}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
-              aria-label="Próximo"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-          </div>
+            <CarouselPrevious className="absolute left-1 md:left-2 lg:left-4 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:hover:scale-100" />
+            <CarouselNext className="absolute right-1 md:right-2 lg:right-4 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:hover:scale-100" />
+          </Carousel>
           
-          <div className="flex justify-center gap-2 mt-4 pb-2">
+          <div className="flex justify-center gap-2 mt-4 md:mt-6 pb-2">
             {diagnosticTypes.map((_, index) => (
               <button
                 key={index}
