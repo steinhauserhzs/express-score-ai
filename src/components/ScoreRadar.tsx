@@ -6,6 +6,7 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 interface ScoreRadarProps {
@@ -53,28 +54,48 @@ export default function ScoreRadar({ dimensionScores }: ScoreRadarProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 md:p-6 pt-0">
-        <ResponsiveContainer width="100%" height={280} minHeight={280}>
-          <RadarChart data={data}>
-            <PolarGrid stroke="hsl(var(--border))" />
-            <PolarAngleAxis
-              dataKey="dimension"
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 10 }}
-              className="text-[10px] md:text-xs"
-            />
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, 100]}
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
-            />
-            <Radar
-              name="Score"
-              dataKey="percentage"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
-              fillOpacity={0.5}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+        <div className="h-[320px] md:h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+              <PolarGrid stroke="hsl(var(--border))" />
+              <PolarAngleAxis
+                dataKey="dimension"
+                tick={{ 
+                  fill: "hsl(var(--foreground))", 
+                  fontSize: 12,
+                  fontWeight: 500
+                }}
+                tickLine={false}
+                className="text-[10px] md:text-xs font-medium"
+              />
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, 100]}
+                tick={{ 
+                  fill: "hsl(var(--muted-foreground))",
+                  fontSize: 11
+                }}
+                tickCount={5}
+                tickFormatter={(value) => `${value}%`}
+              />
+              <Radar
+                name="Score"
+                dataKey="percentage"
+                stroke="hsl(var(--primary))"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.5}
+              />
+              <Tooltip
+                formatter={(value: number) => `${value.toFixed(1)}%`}
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "8px"
+                }}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

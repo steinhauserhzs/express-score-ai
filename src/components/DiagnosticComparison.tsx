@@ -178,28 +178,58 @@ export default function DiagnosticComparison() {
           Comparando primeiro e último diagnósticos
         </p>
 
-        <ResponsiveContainer width="100%" height={400}>
-          <RadarChart data={radarData}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="dimension" />
-            <PolarRadiusAxis domain={[0, 30]} />
-            <Radar
-              name="Primeiro"
-              dataKey="primeiro"
-              stroke="hsl(var(--muted-foreground))"
-              fill="hsl(var(--muted-foreground))"
-              fillOpacity={0.3}
-            />
-            <Radar
-              name="Último"
-              dataKey="ultimo"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
-              fillOpacity={0.5}
-            />
-            <Legend />
-          </RadarChart>
-        </ResponsiveContainer>
+        <div className="h-[320px] md:h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={radarData} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+              <PolarGrid stroke="hsl(var(--border))" />
+              <PolarAngleAxis 
+                dataKey="dimension"
+                tick={{ 
+                  fill: "hsl(var(--foreground))", 
+                  fontSize: 12,
+                  fontWeight: 500
+                }}
+                tickLine={false}
+                className="text-[10px] md:text-xs font-medium"
+              />
+              <PolarRadiusAxis 
+                angle={90}
+                domain={[0, 25]}
+                tick={{ 
+                  fill: "hsl(var(--muted-foreground))",
+                  fontSize: 11
+                }}
+                tickCount={6}
+              />
+              <Radar
+                name="Primeiro"
+                dataKey="primeiro"
+                stroke="hsl(var(--muted-foreground))"
+                fill="hsl(var(--muted-foreground))"
+                fillOpacity={0.3}
+              />
+              <Radar
+                name="Último"
+                dataKey="ultimo"
+                stroke="hsl(var(--primary))"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.5}
+              />
+              <Legend 
+                verticalAlign="bottom" 
+                height={36}
+                iconType="circle"
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "8px"
+                }}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
           {radarData.map((dim) => {
