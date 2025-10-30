@@ -1,5 +1,8 @@
 import Testimonial from "@/components/Testimonial";
 import { Star } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 const testimonials = [
   {
@@ -47,6 +50,14 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  const plugin = useRef(
+    Autoplay({ 
+      delay: 4000,
+      stopOnInteraction: true,
+      stopOnMouseEnter: true,
+    })
+  );
+
   return (
     <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -73,17 +84,31 @@ export default function Testimonials() {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {testimonials.map((testimonial, index) => (
-            <div 
-              key={index}
-              className="animate-slide-up"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <Testimonial {...testimonial} />
-            </div>
-          ))}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+            slidesToScroll: 1,
+          }}
+          plugins={[plugin.current]}
+          className="w-full max-w-7xl mx-auto"
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {testimonials.map((testimonial, index) => (
+              <CarouselItem 
+                key={index} 
+                className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3"
+              >
+                <Testimonial {...testimonial} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          <CarouselPrevious className="hidden md:flex" />
+          <CarouselNext className="hidden md:flex" />
+        </Carousel>
 
         <div className="text-center mt-8 animate-fade-in">
           <a
