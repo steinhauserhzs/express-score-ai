@@ -471,9 +471,9 @@ export default function Dashboard() {
             <CardTitle className="text-2xl">📊 Meu Score Atual</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-6">
-              <div className="flex-1">
-                <div className={`text-5xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+              <div className="flex-1 w-full">
+                <div className={`text-4xl md:text-5xl font-bold ${getScoreColor(diagnostic.total_score)}`}>
                   {diagnostic.total_score}/150
                 </div>
                 <div className={`inline-block mt-2 px-4 py-1 rounded-full border ${getClassificationColor(diagnostic.score_classification)}`}>
@@ -483,12 +483,12 @@ export default function Dashboard() {
                   Última atualização: {new Date(diagnostic.created_at).toLocaleDateString('pt-BR')}
                 </p>
               </div>
-              <div className="flex flex-col gap-2">
-                <Button onClick={() => navigate('/diagnostic')} variant="default" className="gap-2">
+              <div className="flex flex-col gap-2 w-full md:w-auto">
+                <Button onClick={() => navigate('/diagnostic')} variant="default" className="gap-2 w-full md:w-auto">
                   <TrendingUp className="h-4 w-4" />
                   Atualizar Diagnóstico Completo
                 </Button>
-                <Button onClick={() => setShowQuickUpdateModal(true)} variant="outline" className="gap-2">
+                <Button onClick={() => setShowQuickUpdateModal(true)} variant="outline" className="gap-2 w-full md:w-auto">
                   <Zap className="h-4 w-4" />
                   Atualização Rápida (5 min)
                 </Button>
