@@ -658,12 +658,12 @@ export default function Dashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b overflow-x-auto pb-2 mb-4 md:mb-6 scrollbar-hide -mx-3 px-3 md:mx-0 md:px-0 scroll-smooth">
+        <div className="grid grid-cols-2 md:flex gap-2 mb-4 md:mb-6 md:border-b md:pb-2">
           <Button 
             variant={activeTab === "overview" ? "default" : "ghost"} 
             onClick={() => setActiveTab("overview")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
+            className="text-xs md:text-sm w-full md:w-auto"
           >
             Visão Geral
           </Button>
@@ -671,7 +671,7 @@ export default function Dashboard() {
             variant={activeTab === "comparison" ? "default" : "ghost"} 
             onClick={() => setActiveTab("comparison")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
+            className="text-xs md:text-sm w-full md:w-auto"
           >
             Comparação
           </Button>
@@ -679,7 +679,7 @@ export default function Dashboard() {
             variant={activeTab === "journey" ? "default" : "ghost"} 
             onClick={() => setActiveTab("journey")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
+            className="text-xs md:text-sm w-full md:w-auto"
           >
             Jornada
           </Button>
@@ -687,7 +687,7 @@ export default function Dashboard() {
             variant={activeTab === "gamification" ? "default" : "ghost"} 
             onClick={() => setActiveTab("gamification")}
             size="sm"
-            className="whitespace-nowrap flex-shrink-0 text-xs md:text-sm px-3 md:px-4"
+            className="text-xs md:text-sm w-full md:w-auto"
           >
             <Award className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
             Conquistas
