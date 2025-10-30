@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from "@/components/ui/carousel";
 import { Zap, Star, Clock, Check, Mic, Volume2, Headphones } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 interface DiagnosticModeModalProps {
   open: boolean;
@@ -87,9 +86,9 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-5xl overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl md:text-3xl text-center bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <DialogTitle className="text-xl md:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
           </DialogTitle>
           <DialogDescription className="text-center text-base">
@@ -109,39 +108,29 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
             <CarouselContent>
               {diagnosticTypes.map((diagnostic, index) => (
                 <CarouselItem key={diagnostic.id} className="basis-full">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                    className="px-4 md:px-12"
-                  >
+                  <div className="px-2 md:px-6">
                     <Card 
                       className={`
                         border-2 cursor-pointer transition-all relative overflow-hidden
                         ${current === index 
-                          ? 'border-primary shadow-2xl scale-105' 
+                          ? 'border-primary shadow-2xl' 
                           : 'border-muted opacity-70 hover:opacity-90'
                         }
                         bg-gradient-to-br ${diagnostic.bgGradient}
-                        hover:shadow-xl transform hover:scale-[1.02]
+                        hover:shadow-xl
                       `}
                       onClick={diagnostic.onClick}
                     >
                       <div className={`absolute inset-0 bg-gradient-to-r ${diagnostic.gradient} opacity-0 hover:opacity-5 transition-opacity duration-500`} />
                       
                       <CardHeader className="relative z-10">
-                        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-                          <motion.div 
-                            className={`p-4 md:p-6 ${diagnostic.iconBg} rounded-2xl shadow-lg`}
-                            whileHover={{ scale: 1.1, rotate: 5 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                          >
-                            <diagnostic.icon className="h-12 w-12 md:h-16 md:w-16 text-white" />
-                          </motion.div>
+                        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
+                          <div className={`p-3 md:p-5 ${diagnostic.iconBg} rounded-2xl shadow-lg`}>
+                            <diagnostic.icon className="h-10 w-10 md:h-14 md:w-14 text-white" />
+                          </div>
                           <div className="text-center md:text-left flex-1">
                             <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                              <CardTitle className="text-2xl md:text-3xl">{diagnostic.title}</CardTitle>
+                              <CardTitle className="text-xl md:text-2xl">{diagnostic.title}</CardTitle>
                               {diagnostic.badge && (
                                 <Badge className={`bg-gradient-to-r ${diagnostic.badge.gradient} text-white border-0`}>
                                   {diagnostic.badge.text}
@@ -153,28 +142,21 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                         </div>
                       </CardHeader>
                       
-                      <CardContent className="space-y-6 relative z-10">
-                        <motion.div 
-                          className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold text-lg"
-                          animate={{ scale: [1, 1.05, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          <Clock className="h-6 w-6" />
+                      <CardContent className="space-y-4 md:space-y-6 relative z-10">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold text-base md:text-lg">
+                          <Clock className="h-5 w-5 md:h-6 md:w-6" />
                           <span>{diagnostic.time}</span>
-                        </motion.div>
+                        </div>
                         
-                        <ul className="space-y-3">
+                        <ul className="space-y-2 md:space-y-3">
                           {diagnostic.features.map((feature, idx) => (
-                            <motion.li 
+                            <li 
                               key={idx}
-                              className="flex gap-3 items-start"
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: idx * 0.1 }}
+                              className="flex gap-2 md:gap-3 items-start"
                             >
-                              <feature.icon className={`h-6 w-6 ${feature.color} flex-shrink-0 mt-0.5`} />
-                              <span className="text-base">{feature.text}</span>
-                            </motion.li>
+                              <feature.icon className={`h-5 w-5 md:h-6 md:w-6 ${feature.color} flex-shrink-0 mt-0.5`} />
+                              <span className="text-sm md:text-base">{feature.text}</span>
+                            </li>
                           ))}
                         </ul>
                         
@@ -185,28 +167,26 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                         </div>
                         
                         {current === index && (
-                          <motion.button
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                          <button
                             className={`
-                              w-full py-4 rounded-lg font-bold text-white text-lg
+                              w-full py-3 md:py-4 rounded-lg font-bold text-white text-base md:text-lg
                               bg-gradient-to-r ${diagnostic.gradient}
-                              hover:shadow-lg transform hover:scale-105 transition-all
+                              hover:shadow-lg transition-all
                             `}
                             onClick={diagnostic.onClick}
                           >
                             Começar Agora
-                          </motion.button>
+                          </button>
                         )}
                       </CardContent>
                     </Card>
-                  </motion.div>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
             
-            <CarouselPrevious className="left-2 md:left-4 h-12 w-12 md:h-14 md:w-14 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
-            <CarouselNext className="right-2 md:right-4 h-12 w-12 md:h-14 md:w-14 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
+            <CarouselPrevious className="left-1 md:left-2 h-10 w-10 md:h-12 md:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
+            <CarouselNext className="right-1 md:right-2 h-10 w-10 md:h-12 md:w-12 bg-gradient-to-r from-primary to-purple-500 text-white border-0 hover:scale-110 shadow-lg" />
           </Carousel>
           
           <div className="flex justify-center gap-2 mt-8">
