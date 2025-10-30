@@ -86,7 +86,7 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
 
   return (
     <Dialog open={open}>
-      <DialogContent className="w-[92vw] max-w-[820px] md:max-w-[860px] max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="w-[95vw] max-w-3xl max-h-[92vh] p-0 overflow-hidden">
         <DialogHeader className="px-4 pt-4 pb-2">
           <DialogTitle className="text-lg md:text-2xl text-center">
             Escolha o Tipo de Diagnóstico
@@ -96,8 +96,8 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative flex flex-col px-3 pb-3" style={{ maxHeight: 'calc(90vh - 6rem)' }}>
-          <div className="relative overflow-y-auto" style={{ maxHeight: 'calc(90vh - 10rem)' }}>
+        <div className="relative flex flex-col px-3 pb-3">
+          <div className="relative">
             <Carousel
               setApi={setApi}
               opts={{
@@ -106,11 +106,12 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
               }}
               className="w-full h-full"
             >
-              <CarouselContent className="h-full">
+              <CarouselContent>
                 {diagnosticTypes.map((diagnostic, index) => (
-                  <CarouselItem key={diagnostic.id} className="basis-full">
+                  <CarouselItem key={diagnostic.id} className="basis-full flex items-center justify-center py-4">
                     <Card 
                       className={`
+                        w-full max-w-2xl mx-auto
                         border cursor-pointer transition-all relative overflow-hidden
                         ${current === index 
                           ? 'border-primary shadow-2xl' 
@@ -183,13 +184,29 @@ export default function DiagnosticModeModal({ open, onSelect }: DiagnosticModeMo
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              
-              <CarouselPrevious className="absolute z-20 left-2 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
-              <CarouselNext className="absolute z-20 right-2 top-1/2 -translate-y-1/2 h-8 w-8 md:h-10 md:w-10 bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg" />
             </Carousel>
+            
+            {/* Setas de navegação posicionadas externamente */}
+            <button
+              onClick={() => api?.scrollPrev()}
+              disabled={!api?.canScrollPrev()}
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+              aria-label="Anterior"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            
+            <button
+              onClick={() => api?.scrollNext()}
+              disabled={!api?.canScrollNext()}
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white border-0 shadow-lg hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center"
+              aria-label="Próximo"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
           </div>
           
-          <div className="flex justify-center gap-2 mt-3">
+          <div className="flex justify-center gap-2 mt-4 pb-2">
             {diagnosticTypes.map((_, index) => (
               <button
                 key={index}
