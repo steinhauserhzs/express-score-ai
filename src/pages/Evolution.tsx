@@ -24,6 +24,8 @@ interface DiagnosticHistory {
     goals: number;
     reserves: number;
     income: number;
+    protections: number;
+    quality_of_life: number;
   };
   created_at: string;
   profile: string;
@@ -54,7 +56,24 @@ export default function Evolution() {
     if (error) {
       console.error("Error loading history:", error);
     } else if (data) {
-      setHistory(data as any);
+      // Normalizar dados antigos que podem não ter as novas dimensões
+      const normalizedData = data.map((item: any) => {
+        const scores = item.dimension_scores;
+        return {
+          ...item,
+          dimension_scores: {
+            debts: scores.debts ?? 0,
+            behavior: scores.behavior ?? 0,
+            spending: scores.spending ?? 0,
+            goals: scores.goals ?? 0,
+            reserves: scores.reserves ?? 0,
+            income: scores.income ?? 0,
+            protections: scores.protections ?? 0,
+            quality_of_life: scores.quality_of_life ?? 0,
+          }
+        };
+      });
+      setHistory(normalizedData as any);
     }
     setLoading(false);
   };
@@ -92,7 +111,9 @@ export default function Evolution() {
       spending: "Gastos",
       goals: "Metas",
       reserves: "Reservas",
-      income: "Renda"
+      income: "Renda",
+      protections: "Proteções",
+      quality_of_life: "Qualidade de Vida"
     };
     return names[key] || key;
   };

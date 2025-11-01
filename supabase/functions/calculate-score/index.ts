@@ -13,6 +13,8 @@ interface ScoreDimensions {
   goals: number;
   reserves: number;
   income: number;
+  protections: number;
+  quality_of_life: number;
 }
 
 interface ClientProfile {
@@ -99,9 +101,11 @@ function calculateDimensionScores(analysis: any): ScoreDimensions {
     goals: 0,
     reserves: 0,
     income: 0,
+    protections: 0,
+    quality_of_life: 0,
   };
 
-  // 1. Dívidas e Inadimplência (25 pontos BASE + bonificações)
+  // 1. Dívidas e Inadimplência (25 pontos)
   if (analysis.debts) {
     if (!analysis.debts.has_debts) {
       scores.debts = 25;
@@ -125,7 +129,7 @@ function calculateDimensionScores(analysis: any): ScoreDimensions {
   }
   scores.debts = Math.max(0, scores.debts);
 
-  // 2. Comportamento Financeiro (20 pontos BASE + bonificações)
+  // 2. Comportamento Financeiro (20 pontos)
   if (analysis.behavior) {
     if (analysis.behavior.tracks_expenses === 'rigorous') scores.behavior += 8;
     else if (analysis.behavior.tracks_expenses === 'partial') scores.behavior += 5;
@@ -139,23 +143,23 @@ function calculateDimensionScores(analysis: any): ScoreDimensions {
     else if (analysis.behavior.credit_card_usage === 'sometimes_installments') scores.behavior += 2;
     else if (analysis.behavior.credit_card_usage === 'revolving') scores.behavior -= 5;
   }
-  scores.behavior = Math.max(0, scores.behavior);
+  scores.behavior = Math.max(0, Math.min(20, scores.behavior));
 
-  // 3. Gastos vs Renda (15 pontos BASE)
+  // 3. Gastos vs Renda (20 pontos - era 15)
   if (analysis.spending) {
     const fixedExpenseRatio = analysis.spending.fixed_expenses_percentage || 0;
-    if (fixedExpenseRatio <= 0.3) scores.spending = 15;
-    else if (fixedExpenseRatio <= 0.5) scores.spending = 11;
-    else if (fixedExpenseRatio <= 0.7) scores.spending = 7;
-    else scores.spending = 3;
+    if (fixedExpenseRatio <= 0.3) scores.spending = 17;
+    else if (fixedExpenseRatio <= 0.5) scores.spending = 13;
+    else if (fixedExpenseRatio <= 0.7) scores.spending = 8;
+    else scores.spending = 4;
     
-    // Bônus se sobra dinheiro no final do mês
+    // Ajuste se sobra ou falta dinheiro
     if (analysis.spending.end_of_month === 'save') scores.spending += 3;
     else if (analysis.spending.end_of_month === 'lack') scores.spending -= 2;
   }
-  scores.spending = Math.max(0, scores.spending);
+  scores.spending = Math.max(0, Math.min(20, scores.spending));
 
-  // 4. Metas e Planejamento (15 pontos BASE)
+  // 4. Metas e Planejamento (15 pontos)
   if (analysis.goals) {
     if (analysis.goals.has_defined_goals) scores.goals += 6;
     if (analysis.goals.has_deadlines === 'all') scores.goals += 5;
@@ -164,62 +168,73 @@ function calculateDimensionScores(analysis: any): ScoreDimensions {
     if (analysis.goals.tracks_progress === 'monthly') scores.goals += 4;
     else if (analysis.goals.tracks_progress === 'sometimes') scores.goals += 2;
   }
-  scores.goals = Math.max(0, scores.goals);
+  scores.goals = Math.max(0, Math.min(15, scores.goals));
 
-  // 5. Reserva e Patrimônio (15 pontos BASE + bonificações até 35)
+  // 5. Reservas e Investimentos (20 pontos - era 15)
   if (analysis.reserves) {
-    // Reserva de emergência (10 pts)
-    if (analysis.reserves.emergency_fund_months >= 6) scores.reserves += 10;
-    else if (analysis.reserves.emergency_fund_months >= 3) scores.reserves += 7;
+    // Reserva de emergência (12 pts)
+    if (analysis.reserves.emergency_fund_months >= 6) scores.reserves += 12;
+    else if (analysis.reserves.emergency_fund_months >= 3) scores.reserves += 8;
     else if (analysis.reserves.emergency_fund_months >= 1) scores.reserves += 4;
     else if (analysis.reserves.emergency_fund_months > 0) scores.reserves += 2;
     
-    // Investimentos (5 pts base)
-    if (analysis.reserves.invests) scores.reserves += 5;
-    
-    // BONIFICAÇÕES:
-    // Diversificação de investimentos (+10 pts)
-    const investmentTypes = analysis.reserves.investment_types || [];
-    if (investmentTypes.length >= 5) scores.reserves += 10;
-    else if (investmentTypes.length >= 3) scores.reserves += 7;
-    else if (investmentTypes.length >= 2) scores.reserves += 4;
-    
-    // Patrimônio líquido positivo (+5 pts)
-    const netWorth = (analysis.reserves.total_assets || 0) - (analysis.debts?.total_debt || 0);
-    if (netWorth > 0) scores.reserves += 5;
-    
-    // Bens que geram renda (+5 pts)
-    if (analysis.reserves.has_income_generating_assets) scores.reserves += 5;
+    // Investimentos e diversificação (8 pts)
+    if (analysis.reserves.invests) {
+      scores.reserves += 4;
+      const investmentTypes = analysis.reserves.investment_types || [];
+      if (investmentTypes.length >= 4) scores.reserves += 4;
+      else if (investmentTypes.length >= 2) scores.reserves += 2;
+    }
   }
-  scores.reserves = Math.max(0, scores.reserves);
+  scores.reserves = Math.max(0, Math.min(20, scores.reserves));
 
-  // 6. Renda e Estabilidade (10 pontos BASE + bonificações até 20)
+  // 6. Renda e Estabilidade (15 pontos - era 10)
   if (analysis.income) {
-    // Múltiplas fontes de renda (+5 pts)
-    if (analysis.income.has_multiple_sources) scores.income += 5;
+    // Múltiplas fontes de renda (6 pts)
+    if (analysis.income.has_multiple_sources) scores.income += 6;
     
-    // Estabilidade profissional (5 pts)
-    if (analysis.income.job_stability_years >= 5) scores.income += 5;
-    else if (analysis.income.job_stability_years >= 3) scores.income += 4;
+    // Estabilidade profissional (6 pts)
+    if (analysis.income.job_stability_years >= 5) scores.income += 6;
+    else if (analysis.income.job_stability_years >= 3) scores.income += 5;
     else if (analysis.income.job_stability_years >= 1) scores.income += 3;
     else scores.income += 1;
     
-    // BONIFICAÇÕES:
-    // Renda passiva (+5 pts)
-    if (analysis.income.has_passive_income) scores.income += 5;
-    
-    // Crescimento de renda (+5 pts)
-    if (analysis.income.income_growth === 'significant') scores.income += 5;
-    else if (analysis.income.income_growth === 'some') scores.income += 3;
+    // Renda passiva (3 pts)
+    if (analysis.income.has_passive_income) scores.income += 3;
   }
-  scores.income = Math.max(0, scores.income);
+  scores.income = Math.max(0, Math.min(15, scores.income));
 
-  // BONIFICAÇÃO ADICIONAL: Proteções (+5 pts no total)
-  if (analysis.protections?.has_protections) {
-    const protectionCount = (analysis.protections.protection_types || []).length;
-    const bonusPoints = Math.min(5, protectionCount);
-    scores.reserves += bonusPoints; // Adiciona nas reservas pois está relacionado
+  // 7. Proteções (15 pontos - NOVA DIMENSÃO)
+  if (analysis.protections) {
+    if (analysis.protections.has_protections) {
+      const protectionTypes = analysis.protections.protection_types || [];
+      
+      // Seguros básicos (vida, saúde): 8pts
+      const hasBasicProtection = protectionTypes.some((p: string) => 
+        p.toLowerCase().includes('vida') || p.toLowerCase().includes('saúde')
+      );
+      if (hasBasicProtection) scores.protections += 8;
+      
+      // Proteções adicionais (residencial, auto, etc): +4pts
+      if (protectionTypes.length >= 2) scores.protections += 4;
+      
+      // Previdência privada: +3pts
+      const hasPrivatePension = protectionTypes.some((p: string) => 
+        p.toLowerCase().includes('previdência') || p.toLowerCase().includes('aposentadoria')
+      );
+      if (hasPrivatePension) scores.protections += 3;
+    }
   }
+  scores.protections = Math.max(0, Math.min(15, scores.protections));
+
+  // 8. Qualidade de Vida Financeira (20 pontos - NOVA DIMENSÃO)
+  if (analysis.quality_of_life !== undefined) {
+    const qol = analysis.quality_of_life; // 0-10
+    
+    // Conversão linear: 0-10 → 0-20 pontos
+    scores.quality_of_life = Math.round((qol / 10) * 20);
+  }
+  scores.quality_of_life = Math.max(0, Math.min(20, scores.quality_of_life));
 
   return scores;
 }

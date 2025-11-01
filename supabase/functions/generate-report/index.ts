@@ -144,7 +144,7 @@ INSTRUÇÕES PARA O RELATÓRIO:
    - Principais conquistas identificadas
    - Áreas que precisam de atenção
 
-2. ANÁLISE POR DIMENSÃO (para cada uma das 6):
+2. ANÁLISE POR DIMENSÃO (para cada uma das 8):
    - Pontuação obtida vs máxima
    - O que está indo bem
    - O que precisa melhorar
@@ -195,7 +195,7 @@ INSTRUÇÕES PARA O RELATÓRIO TÉCNICO:
    - Principais riscos identificados
    - Oportunidades de melhoria
 
-2. BREAKDOWN POR DIMENSÃO:
+2. BREAKDOWN POR DIMENSÃO (8 dimensões):
    - Análise detalhada de cada dimensão
    - Correlações entre dimensões
    - Insights técnicos

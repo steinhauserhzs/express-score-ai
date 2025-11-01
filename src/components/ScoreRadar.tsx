@@ -17,6 +17,8 @@ interface ScoreRadarProps {
     goals: number;
     reserves: number;
     income: number;
+    protections: number;
+    quality_of_life: number;
   };
 }
 
@@ -27,15 +29,19 @@ const dimensionLabels = {
   goals: "Metas",
   reserves: "Reservas",
   income: "Renda",
+  protections: "Proteções",
+  quality_of_life: "Qualidade",
 };
 
 const dimensionMaxScores = {
   debts: 25,
   behavior: 20,
-  spending: 15,
+  spending: 20,
   goals: 15,
-  reserves: 15,
-  income: 10,
+  reserves: 20,
+  income: 15,
+  protections: 15,
+  quality_of_life: 20,
 };
 
 export default function ScoreRadar({ dimensionScores }: ScoreRadarProps) {

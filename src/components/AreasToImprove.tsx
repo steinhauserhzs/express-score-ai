@@ -11,6 +11,8 @@ interface DimensionScores {
   goals: number;
   reserves: number;
   income: number;
+  protections: number;
+  quality_of_life: number;
 }
 
 interface AreasToImproveProps {
@@ -53,7 +55,7 @@ const dimensions: DimensionInfo[] = [
     key: 'spending',
     label: 'Gastos',
     icon: '💸',
-    maxScore: 15,
+    maxScore: 20,
     tips: [
       'Identifique e corte gastos não essenciais',
       'Compare preços antes de comprar',
@@ -75,22 +77,44 @@ const dimensions: DimensionInfo[] = [
     key: 'reserves',
     label: 'Reservas',
     icon: '🏦',
-    maxScore: 15,
+    maxScore: 20,
     tips: [
       'Construa uma reserva de emergência de 6 meses',
       'Comece guardando ao menos 10% da renda',
-      'Mantenha sua reserva em aplicações líquidas'
+      'Diversifique seus investimentos'
     ]
   },
   {
     key: 'income',
     label: 'Renda',
     icon: '📈',
-    maxScore: 10,
+    maxScore: 15,
     tips: [
       'Busque formas de aumentar sua renda',
       'Considere trabalhos extras ou freelances',
       'Invista em sua qualificação profissional'
+    ]
+  },
+  {
+    key: 'protections',
+    label: 'Proteções',
+    icon: '🛡️',
+    maxScore: 15,
+    tips: [
+      'Contrate seguros básicos (vida e saúde)',
+      'Considere previdência privada para aposentadoria',
+      'Proteja seu patrimônio com seguros adequados'
+    ]
+  },
+  {
+    key: 'quality_of_life',
+    label: 'Qualidade de Vida',
+    icon: '✨',
+    maxScore: 20,
+    tips: [
+      'Equilibre finanças e bem-estar pessoal',
+      'Invista em experiências que trazem felicidade',
+      'Mantenha uma relação saudável com o dinheiro'
     ]
   }
 ];

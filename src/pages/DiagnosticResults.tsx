@@ -22,6 +22,8 @@ interface DiagnosticData {
     goals: number;
     reserves: number;
     income: number;
+    protections: number;
+    quality_of_life: number;
   };
   profile: string;
   score_classification: string;
@@ -86,7 +88,23 @@ export default function DiagnosticResults() {
         .single();
 
       if (diagnosticError) throw diagnosticError;
-      setDiagnostic(diagnosticData as DiagnosticData);
+      
+      // Adicionar fallbacks para diagnósticos antigos (typing-safe)
+      const scores = diagnosticData.dimension_scores as any;
+      const normalizedDiagnostic = {
+        ...diagnosticData,
+        dimension_scores: {
+          debts: scores.debts ?? 0,
+          behavior: scores.behavior ?? 0,
+          spending: scores.spending ?? 0,
+          goals: scores.goals ?? 0,
+          reserves: scores.reserves ?? 0,
+          income: scores.income ?? 0,
+          protections: scores.protections ?? 0,
+          quality_of_life: scores.quality_of_life ?? 0,
+        }
+      };
+      setDiagnostic(normalizedDiagnostic as DiagnosticData);
 
       // Award "first_step" badge
       const { data: { user } } = await supabase.auth.getUser();
