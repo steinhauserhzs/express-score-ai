@@ -44,6 +44,7 @@ export default function AdminAudit() {
 
   const loadAuditLogs = async () => {
     try {
+      // Try query with JOIN first
       const { data, error } = await supabase
         .from("admin_audit_logs")
         .select(`
@@ -56,16 +57,43 @@ export default function AdminAudit() {
         .order("accessed_at", { ascending: false })
         .limit(100);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error with JOIN:", error);
+        // Fallback: fetch logs and profiles separately
+        const { data: logsData } = await supabase
+          .from("admin_audit_logs")
+          .select("*")
+          .order("accessed_at", { ascending: false })
+          .limit(100);
 
-      setLogs(data || []);
+        if (logsData && logsData.length > 0) {
+          const adminIds = [...new Set(logsData.map((l) => l.admin_id))];
+          const { data: adminsData } = await supabase
+            .from("profiles")
+            .select("id, full_name, email")
+            .in("id", adminIds);
+
+          const adminsMap = new Map(adminsData?.map((a) => [a.id, a]));
+          const enrichedLogs = logsData.map((log) => ({
+            ...log,
+            admin: adminsMap.get(log.admin_id),
+          }));
+
+          setLogs(enrichedLogs);
+        } else {
+          setLogs([]);
+        }
+      } else {
+        setLogs(data || []);
+      }
 
       // Calculate stats
-      const totalAccesses = data?.length || 0;
-      const uniqueAdmins = new Set(data?.map((log) => log.admin_id)).size;
+      const logs = data || [];
+      const totalAccesses = logs.length;
+      const uniqueAdmins = new Set(logs.map((log) => log.admin_id)).size;
       const today = new Date().toISOString().split("T")[0];
       const todayAccesses =
-        data?.filter((log) => log.accessed_at.startsWith(today)).length || 0;
+        logs.filter((log) => log.accessed_at.startsWith(today)).length;
 
       setStats({ totalAccesses, uniqueAdmins, todayAccesses });
     } catch (error) {
