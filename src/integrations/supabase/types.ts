@@ -352,7 +352,15 @@ export type Database = {
           user_id?: string
           validations_triggered?: string[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_diagnostics_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       educational_content: {
         Row: {
