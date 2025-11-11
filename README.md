@@ -1,73 +1,70 @@
-# Welcome to your Lovable project
+# Pleno Score — Diagnóstico Financeiro em Laravel
 
-## Project info
+Aplicação web compacta construída com Laravel, Blade e PHP 8.2 para conduzir diagnósticos financeiros com apoio de IA e calcular o score final do usuário.
 
-**URL**: https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65
+## Visão Geral
 
-## How can I edit this code?
+O fluxo principal segue quatro etapas simples:
 
-There are several ways of editing your application.
+1. **Autenticação** com email e senha.
+2. **Diagnóstico guiado** por formulário com validações essenciais.
+3. **Revisão e confirmação** dos dados informados.
+4. **Resultado** com score de 0 a 150, perfil financeiro e histórico completo.
 
-**Use Lovable**
+O cálculo do score utiliza seis dimensões ponderadas:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and start prompting.
+| Dimensão             | Peso |
+|---------------------|------|
+| Dívidas              | 25   |
+| Comportamento        | 20   |
+| Gastos vs Renda      | 15   |
+| Metas                | 15   |
+| Reserva              | 15   |
+| Renda                | 10   |
 
-Changes made via Lovable will be committed automatically to this repo.
+Classificação final:
 
-**Use your preferred IDE**
+- **Crítico**: 0–50
+- **Em Evolução**: 51–100
+- **Saudável**: 101–125
+- **Avançado**: 126–150
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Requisitos
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- PHP 8.2+
+- Composer
+- SQLite (padrão) ou outro banco compatível com Laravel
 
-Follow these steps:
+## Configuração
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+cp .env.example .env
+composer install
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+php artisan serve
 ```
 
-**Edit a file directly in GitHub**
+A aplicação ficará disponível em `http://localhost:8000`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Estrutura de Pastas
 
-**Use GitHub Codespaces**
+- `app/Http/Controllers` — Controladores para autenticação, diagnóstico, resultados e histórico.
+- `app/Services` — Serviços de validação e cálculo do score.
+- `resources/views` — Layouts Blade e páginas da aplicação.
+- `database/migrations` — Estrutura das tabelas `users` e `diagnostics`.
+- `database/seeders` — Usuário demo e diagnósticos de exemplo.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Fluxo do Usuário
 
-## What technologies are used for this project?
+1. Acessa `/auth/login` ou cria conta em `/auth/register`.
+2. Preenche o formulário de diagnóstico em `/diagnostic` (salvamento automático simplificado).
+3. Revisa as respostas em `/review` com validação de limites (ex.: dívidas > 36× renda).
+4. Recebe o score em `/results/{id}` e consulta os históricos em `/history`.
 
-This project is built with:
+## Próximos Passos (sugestões)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Integrar um provedor de IA (ex.: Gemini) para gerar feedback textual.
+- Adicionar testes de feature para os fluxos principais.
+- Incluir gráficos ou dashboards mais ricos para os resultados.
