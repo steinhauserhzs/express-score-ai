@@ -32,7 +32,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <Logo variant={theme === "light" ? "dark" : "white"} className="h-10" />
+            <Logo className="h-10" />
           </Link>
 
           {/* Desktop Menu */}

@@ -43,7 +43,7 @@ const Index = () => {
           <div className="grid gap-8 md:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mb-10">
             {/* Coluna 1 - Sobre a Firece */}
             <div className="space-y-4 lg:col-span-2">
-              <Logo size="sm" variant="white" />
+              <Logo size="sm" />
               <p className="text-sm text-white/70 max-w-sm">
                 Transformando vidas através da educação financeira há 9 anos. Mais de 1000 clientes atendidos e R$ 70M sob administração.
               </p>
