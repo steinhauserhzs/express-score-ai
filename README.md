@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# Express Score AI (Laravel Edition)
 
-## Project info
+Este repositório contém a reescrita completa do Express Score AI utilizando **PHP 8**, **Laravel 11** e **Blade**. A aplicação cobre os fluxos principais do projeto original desenvolvido em React/Supabase, agora oferecendo uma base consolidada para times backoffice e squads de consultoria.
 
-**URL**: https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65
+## Principais módulos
 
-## How can I edit this code?
+- **Onboarding e autenticação** com login, cadastro e suporte a Laravel Sanctum.
+- **Dashboard consultivo** com cards de score, evolução, recomendações e desafios.
+- **Gestão de diagnósticos** (modo completo e quick update), incluindo recomendações, recursos e análise de dimensões.
+- **Metas e jornada** para acompanhamento de objetivos, badges gamificados e passos de customer success.
+- **Learning Hub** com trilhas personalizadas e integração simples para conteúdos externos.
+- **Painel administrativo** com métricas, leads, consultas e segmentos estratégicos.
 
-There are several ways of editing your application.
+## Como executar localmente
 
-**Use Lovable**
+1. Instale dependências PHP (requer PHP 8.2+) e Node opcionais para assets:
+   ```bash
+   composer install
+   npm install
+   npm run build # ou npm run dev para HMR
+   ```
+2. Copie o arquivo de ambiente:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+3. Execute migrações e seeds com dados de demonstração:
+   ```bash
+   php artisan migrate --seed
+   ```
+4. Suba o servidor de desenvolvimento:
+   ```bash
+   php artisan serve
+   ```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and start prompting.
+## Estrutura de dados
 
-Changes made via Lovable will be committed automatically to this repo.
+As migrações contemplam tabelas para usuários, diagnósticos, respostas, recomendações, metas, alertas, consultas, leads, recursos de aprendizagem, segmentos, jornadas e badges. Os seeds fornecem um ambiente demo pronto para validar fluxos end-to-end.
 
-**Use your preferred IDE**
+## Testes
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Execute a suíte de testes feature/unit com:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+phpunit
 ```
 
-**Edit a file directly in GitHub**
+## Próximos passos sugeridos
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Conectar integrações reais (Supabase, OpenAI, CRMs) através do arquivo `config/services.php`.
+- Implementar filas/Jobs para automações de relatórios e alertas.
+- Ajustar design system migrando gradualmente para componentes Blade reutilizáveis ou Livewire.
