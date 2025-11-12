@@ -15,7 +15,7 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const services = [
-    { name: "Diagnóstico IA Firece", path: "/diagnostic" },
+    { name: "Diagnóstico IA Flare", path: "/diagnostic" },
     { name: "Consultoria Individual", path: "/consultations" },
     { name: "Planejamento Financeiro", path: "/servicos#planejamento" },
     { name: "Gestão de Investimentos", path: "/servicos#investimentos" },

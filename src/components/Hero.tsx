@@ -7,7 +7,7 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
-      {/* Background effects Firece */}
+      {/* Background effects Flare */}
       <div className="absolute inset-0 bg-gradient-hero" />
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-glow-pulse" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
@@ -16,10 +16,10 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           {/* Left side - Content */}
           <div className="text-center lg:text-left">
-            {/* Badge Produto Firece */}
-            <div className="inline-flex items-center gap-2 firece-highlight rounded-full mb-4 animate-bounce-in shadow-glow">
+            {/* Badge Produto Flare */}
+            <div className="inline-flex items-center gap-2 flare-highlight rounded-full mb-4 animate-bounce-in shadow-glow">
               <span className="text-xl">🔥</span>
-              <span className="text-xs md:text-sm font-bold">Tecnologia IA desenvolvida pela Firece</span>
+              <span className="text-xs md:text-sm font-bold">Tecnologia IA desenvolvida pela Flare</span>
             </div>
             
             {/* Badge Diagnóstico */}
@@ -28,28 +28,28 @@ const Hero = () => {
               <span className="text-sm font-bold">Diagnóstico Gratuito com IA</span>
             </div>
             
-            {/* Main heading Firece */}
+            {/* Main heading Flare */}
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-extrabold mb-4 md:mb-6 animate-slide-up text-white break-words">
               Transforme sua{" "}
-              <span className="firece-text-highlight">
+              <span className="flare-text-highlight">
                 Vida Financeira
               </span>
             </h1>
             
-            {/* Description Firece */}
+            {/* Description Flare */}
             <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-4 animate-fade-in font-medium">
               Educação financeira e planejamento estratégico em 5 minutos
             </p>
             
             <p className="text-sm md:text-base text-white/70 mb-6 md:mb-8 animate-fade-in italic">
-              Diagnóstico financeiro inteligente desenvolvido pela Firece - 9 anos transformando vidas
+              Diagnóstico financeiro inteligente desenvolvido pela Flare - 9 anos transformando vidas
             </p>
             
-            {/* CTA Buttons Firece */}
+            {/* CTA Buttons Flare */}
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start mb-6 md:mb-8 animate-scale-in">
               <Button 
                 size="lg"
-                variant="fire"
+                variant="flare"
                 className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 w-full sm:w-auto font-bold"
                 onClick={() => navigate('/auth')}
               >
@@ -67,7 +67,7 @@ const Hero = () => {
               </Button>
             </div>
             
-            {/* Trust indicators Firece */}
+            {/* Trust indicators Flare */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-6 text-xs md:text-sm text-white/80 animate-fade-in">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-full">
                 <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
@@ -83,17 +83,17 @@ const Hero = () => {
               </div>
             </div>
             
-            {/* Security badge Firece */}
+            {/* Security badge Flare */}
             <div className="mt-6 md:mt-8 inline-flex items-center gap-2 text-xs md:text-sm text-white bg-white/10 backdrop-blur-sm border border-white/20 px-4 md:px-6 py-2 md:py-3 rounded-full">
               <Shield className="h-4 w-4 text-primary flex-shrink-0" />
               <span className="break-words font-semibold">Seus dados estão protegidos e criptografados</span>
             </div>
           </div>
 
-          {/* Right side - Illustration Firece */}
+          {/* Right side - Illustration Flare */}
           <div className="hidden lg:flex justify-center items-center animate-fade-in">
             <div className="relative w-full max-w-lg">
-              {/* Dashboard Illustration com cores Firece */}
+              {/* Dashboard Illustration com cores Flare */}
               <div className="relative bg-card border-4 border-primary rounded-2xl p-6 shadow-2xl hover-lift">
                 {/* Mini header */}
                 <div className="flex items-center gap-2 mb-6">
@@ -102,7 +102,7 @@ const Hero = () => {
                   <div className="w-3 h-3 rounded-full bg-success" />
                 </div>
                 
-                {/* Score display com gradiente Firece */}
+                {/* Score display com gradiente Flare */}
                 <div className="bg-gradient-fire rounded-xl p-6 mb-6 text-white text-center shadow-glow">
                   <div className="text-sm mb-2 font-bold opacity-90">Seu Score Financeiro</div>
                   <div className="text-5xl font-extrabold mb-1">78</div>
@@ -132,7 +132,7 @@ const Hero = () => {
                   </div>
                 </div>
                 
-                {/* Stats com cores Firece */}
+                {/* Stats com cores Flare */}
                 <div className="grid grid-cols-3 gap-2">
                   <div className="bg-success/10 rounded p-2 text-center border-2 border-success/30">
                     <div className="text-xs mb-1 font-bold text-success">↑ 12pts</div>
@@ -149,7 +149,7 @@ const Hero = () => {
                 </div>
               </div>
               
-              {/* Floating elements com cores Firece */}
+              {/* Floating elements com cores Flare */}
               <div className="absolute -top-4 -right-4 bg-primary text-white rounded-full p-3 shadow-glow animate-bounce-in">
                 <TrendingUp className="h-6 w-6" />
               </div>

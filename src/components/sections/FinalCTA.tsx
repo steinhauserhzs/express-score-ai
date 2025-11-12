@@ -31,7 +31,8 @@ export default function FinalCTA() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-scale-in">
             <Button 
-              size="lg" 
+              size="lg"
+              variant="flare"
               className="text-lg px-8 py-6 shadow-glow hover-scale"
               onClick={() => navigate('/auth')}
             >
