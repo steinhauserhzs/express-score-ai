@@ -1,73 +1,73 @@
-# Welcome to your Lovable project
+# Express Score AI — Laravel 11 Edition
 
-## Project info
+Este repositório agora contém uma aplicação completa em **Laravel 11** com **Blade** pronta para ser utilizada pela sua equipe de desenvolvimento. O objetivo desta migração é oferecer uma base backend sólida, configurável e moderna, substituindo o antigo projeto em JavaScript.
 
-**URL**: https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65
+## Requisitos
 
-## How can I edit this code?
+- PHP >= 8.2
+- Composer >= 2.6
+- Node.js >= 18
+- SQLite (recomendado para desenvolvimento) ou outro banco de dados suportado
 
-There are several ways of editing your application.
+## Primeiros passos
 
-**Use Lovable**
+1. Instale as dependências do PHP:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and start prompting.
+   ```bash
+   composer install
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. Copie o arquivo de variáveis de ambiente:
 
-**Use your preferred IDE**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3. Crie o banco de dados SQLite (caso opte por ele):
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+   ```bash
+   touch database/database.sqlite
+   ```
 
-Follow these steps:
+4. Execute as migrações e (opcionalmente) as seeders:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+   ```bash
+   php artisan migrate --seed
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+5. Instale as dependências front-end e execute o ambiente de desenvolvimento com Vite:
 
-# Step 3: Install the necessary dependencies.
-npm i
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+6. Inicie o servidor de desenvolvimento do Laravel:
 
-**Edit a file directly in GitHub**
+   ```bash
+   php artisan serve
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+O site estará disponível em `http://localhost:8000` e carregará automaticamente os assets gerados pelo Vite.
 
-**Use GitHub Codespaces**
+## Estrutura principal
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- `app/` — código PHP da aplicação (controladores, modelos, middlewares, providers).
+- `config/` — arquivos de configuração do Laravel.
+- `database/` — migrações, factories e seeders.
+- `resources/views/` — templates Blade.
+- `resources/js/` e `resources/css/` — assets compilados pelo Vite.
+- `routes/` — definição das rotas web, API, console e health-check.
 
-## What technologies are used for this project?
+## Deploy na Netlify
 
-This project is built with:
+A Netlify pode ser utilizada apenas para servir o front-end. Para projetos Laravel completos recomenda-se utilizar serviços com suporte a PHP (Forge, Vapor, Railway, Render, etc.). Caso deseje manter a Netlify, configure uma build que execute `npm run build` para gerar os assets e utilize um serviço separado para hospedar o backend PHP.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Próximos passos sugeridos
 
-## How can I deploy this project?
+- Configurar pipelines CI/CD que executem `composer test` e `npm run build`.
+- Criar componentes Blade para as principais funcionalidades do produto.
+- Definir a estratégia de autenticação (Laravel Breeze, Jetstream ou customizada).
 
-Simply open [Lovable](https://lovable.dev/projects/f58e02d0-c02b-489f-addf-cee417f24c65) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Boa codificação! 🚀
